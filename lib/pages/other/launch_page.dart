@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_im/pages/home/home_page.dart';
+import 'package:flutter_im/pages/login/login_page.dart';
 import 'dart:async';
 
 // 一个容器的组件
@@ -26,7 +26,7 @@ class _LaunchPage extends State<LaunchPage>{
   }
 
   void newHomePage() {
-    Navigator.of(context).pushAndRemoveUntil(new MaterialPageRoute(builder: (context)=>new HomePage()), (Route<dynamic> rout)=>false);
+    Navigator.of(context).pushAndRemoveUntil(new MaterialPageRoute(builder: (context)=>new LoginPage()), (Route<dynamic> rout)=>false);
   }
 
   Widget build(BuildContext context) {
