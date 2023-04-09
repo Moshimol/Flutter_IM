@@ -16,7 +16,7 @@ class _LaunchPage extends State<LaunchPage>{
   void initState() {
     super.initState();
     //开启倒计时
-    countDown();
+    // countDown();
   }
 
   // 倒计时
@@ -45,13 +45,15 @@ class _LaunchPage extends State<LaunchPage>{
           Container(
             alignment: Alignment.topRight,
             padding: EdgeInsets.fromLTRB(0.0, 45.0, 10, 0.0),
-            width: 80,
-            height: 70,
-            child: OutlinedButton(
-              child: Text("跳过",textAlign: TextAlign.center,style: TextStyle(color: Colors.black,fontSize: 12)),
-              onPressed: (){
-                newHomePage();
-              },
+            child: Container(
+              width: 60,
+              height: 30,
+              child: OutlinedButton(
+                child: Text("跳过",textAlign: TextAlign.center,style: TextStyle(color: Colors.black,fontSize: 12)),
+                onPressed: (){
+                  newHomePage();
+                  },
+              ),
             ),
           )
         ],
