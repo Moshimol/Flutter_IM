@@ -86,6 +86,7 @@ class _RootPageState extends State<RootPage> {
         ],
       ),
       body: PageView(
+        physics: NeverScrollableScrollPhysics(),
         controller: pageController,
         onPageChanged: (index) {
           currentIndex = index;
