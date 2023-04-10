@@ -16,7 +16,7 @@ class _LaunchPage extends State<LaunchPage>{
   void initState() {
     super.initState();
     //开启倒计时
-    // countDown();
+    countDown();
   }
 
   // 倒计时

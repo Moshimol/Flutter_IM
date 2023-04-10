@@ -112,6 +112,30 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "8.2.1"
+  getx_translator:
+    dependency: "direct main"
+    description:
+      name: getx_translator
+      sha256: "37ad5c1519677812d085c14bfdc7ea217e560f95ab895c8b5559bad47ed67574"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.2"
+  http:
+    dependency: transitive
+    description:
+      name: http
+      sha256: "6aa2946395183537c8b880962d935877325d6a09a2867c3970c05c0fed6ac482"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.13.5"
+  http_parser:
+    dependency: transitive
+    description:
+      name: http_parser
+      sha256: "2aa08ce0341cc9b354a498388e30986515406668dbcc4f7c950c3e715496693b"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "4.0.2"
   icons_launcher:
     dependency: "direct main"
     description:
@@ -136,6 +160,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.6.5"
+  logger:
+    dependency: transitive
+    description:
+      name: logger
+      sha256: db2ff852ed77090ba9f62d3611e4208a3d11dfa35991a81ae724c113fcb3e3f7
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.3.0"
   matcher:
     dependency: transitive
     description:
