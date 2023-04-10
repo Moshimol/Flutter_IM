@@ -18,6 +18,7 @@ dependencies:
   fluttertoast: ^8.2.1
   icons_launcher: ^2.1.0
   getx_translator: ^1.0.2
+  cached_network_image: ^3.2.3
 
 dev_dependencies:
   flutter_test:

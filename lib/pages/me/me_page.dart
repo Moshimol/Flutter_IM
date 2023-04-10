@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../widgets/appbar/main_appbar.dart';
+
 class MePage extends StatefulWidget {
   const MePage({Key? key}) : super(key: key);
 
@@ -10,9 +12,12 @@ class _MePageState extends State<MePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("首页"),
-        )
+        appBar: MainAppBar(
+            rightIconName: "assets/images/message_add.png",
+            titleName: "我",
+            onClickTap: () {
+              print("我");
+            })
     );
   }
 }

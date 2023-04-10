@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_im/widgets/appbar/main_appbar.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -9,6 +10,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<String> mockData = ["小五", "买买买", "中台设计群", "办公团队"];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,7 +47,68 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(6))),
             ),
-          )
+          ),
+          Expanded(
+              child: ListView.builder(
+            itemBuilder: (context, index) {
+              return Row(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(
+                        left: 16, top: 16, bottom: 16, right: 18),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(2),
+                      child: CachedNetworkImage(
+                        imageUrl: "http://via.placeholder.com/440x440",
+                        width: 44,
+                        height: 44,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                      child: Container(
+                        padding: EdgeInsets.only(top: 5),
+                        height: 71,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                          children: [
+                            Expanded(
+                                child: Text(mockData[index],
+                                    style: TextStyle(
+                                        color: Color(0xFF333333),
+                                        fontSize: 17,))),
+                            Container(
+                              padding: EdgeInsets.only(right: 16),
+                              child: Text("昨天15:20",
+                                  style: TextStyle(
+                                      color: Color(0xFFCCCCCC),
+                                      fontSize: 12,)),
+                            ),
+                          ],
+                        ),
+                            SizedBox(
+                          height: 7.5,
+                        ),
+                            Text("聊天记录",
+                            style: TextStyle(
+                                color: Color(0xFF999999),
+                                fontSize: 14))
+                      ],
+                    ),
+                    decoration: BoxDecoration(
+                        border: Border(
+                            bottom: BorderSide(
+                              color: Color(0xFFEEEEEE),
+                    ))),
+                  ))
+                ],
+              );
+            },
+            itemCount: mockData.length,
+          ))
         ],
       ),
     );

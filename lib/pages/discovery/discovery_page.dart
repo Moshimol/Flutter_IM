@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../widgets/appbar/main_appbar.dart';
+
 class DisPage extends StatefulWidget {
   const DisPage({Key? key}) : super(key: key);
 
@@ -11,9 +13,12 @@ class _DisPageState extends State<DisPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("办公"),
-      )
+      appBar: MainAppBar(
+          rightIconName: "assets/images/message_add.png",
+          titleName: "办公",
+          onClickTap: () {
+            print("办公");
+          })
     );
   }
 }
