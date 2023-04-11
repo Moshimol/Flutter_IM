@@ -13,7 +13,6 @@ class _ContaCtPageState extends State<ContaCtPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: MainAppBar(
-            rightIconName: "assets/images/message_add.png",
             titleName: "通讯录",
             onClickTap: () {
               print("通讯录");

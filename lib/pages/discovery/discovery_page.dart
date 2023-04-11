@@ -14,7 +14,6 @@ class _DisPageState extends State<DisPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MainAppBar(
-          rightIconName: "assets/images/message_add.png",
           titleName: "办公",
           onClickTap: () {
             print("办公");
