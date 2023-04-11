@@ -14,7 +14,7 @@ class _MePageState extends State<MePage> {
     return Scaffold(
         appBar: MainAppBar(
             titleName: "我",
-            onClickTap: () {
+            onClickTap: (context) {
               print("我");
             })
     );

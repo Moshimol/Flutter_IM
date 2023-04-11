@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_im/widgets/appbar/main_appbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+import '../../widgets/doalog/more_doalog.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -19,8 +21,8 @@ class _HomePageState extends State<HomePage> {
       appBar: MainAppBar(
           rightIconName: "assets/images/message_add.png",
           titleName: "消息",
-          onClickTap: () {
-            print("12");
+          onClickTap: (clickContext) {
+            moreDialog(clickContext);
           }),
       body: Column(
         children: [
@@ -68,40 +70,41 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Expanded(
                       child: Container(
-                        padding: EdgeInsets.only(top: 5),
-                        height: 71,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
+                    padding: EdgeInsets.only(top: 5),
+                    height: 71,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
                           children: [
                             Expanded(
                                 child: Text(mockData[index],
                                     style: TextStyle(
-                                        color: Color(0xFF333333),
-                                        fontSize: 17,))),
+                                      color: Color(0xFF333333),
+                                      fontSize: 17,
+                                    ))),
                             Container(
                               padding: EdgeInsets.only(right: 16),
                               child: Text("昨天15:20",
                                   style: TextStyle(
-                                      color: Color(0xFFCCCCCC),
-                                      fontSize: 12,)),
+                                    color: Color(0xFFCCCCCC),
+                                    fontSize: 12,
+                                  )),
                             ),
                           ],
                         ),
-                            SizedBox(
+                        SizedBox(
                           height: 7.5,
                         ),
-                            Text("聊天记录",
+                        Text("聊天记录",
                             style: TextStyle(
-                                color: Color(0xFF999999),
-                                fontSize: 14))
+                                color: Color(0xFF999999), fontSize: 14))
                       ],
                     ),
                     decoration: BoxDecoration(
                         border: Border(
                             bottom: BorderSide(
-                              color: Color(0xFFEEEEEE),
+                      color: Color(0xFFEEEEEE),
                     ))),
                   ))
                 ],

@@ -14,7 +14,7 @@ class _ContaCtPageState extends State<ContaCtPage> {
     return Scaffold(
         appBar: MainAppBar(
             titleName: "通讯录",
-            onClickTap: () {
+            onClickTap: (context) {
               print("通讯录");
             })
     );

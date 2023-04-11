@@ -15,7 +15,7 @@ class _DisPageState extends State<DisPage> {
     return Scaffold(
       appBar: MainAppBar(
           titleName: "办公",
-          onClickTap: () {
+          onClickTap: (context) {
             print("办公");
           })
     );
