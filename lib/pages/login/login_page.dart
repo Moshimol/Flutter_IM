@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_im/pages/other/root_page.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../../utils/storage/storage_shared.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -34,6 +36,8 @@ class _LoginPage extends State<LoginPage>{
         Fluttertoast.showToast(msg:"密码输入为空",gravity: ToastGravity.CENTER);
       } else {
         // 执行登录操作 跳转到首页
+        // 存储数据
+        StorageShared.setString("login");
         Navigator.of(context).pushAndRemoveUntil(
             CupertinoPageRoute(builder: (context){
               return RootPage();

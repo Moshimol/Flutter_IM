@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_im/pages/login/login_page.dart';
+import 'package:flutter_im/pages/other/root_page.dart';
 import 'dart:async';
+import 'package:flutter_im/utils/storage/storage_shared.dart';
 
 // 一个容器的组件
 class LaunchPage extends StatefulWidget {
@@ -26,7 +28,13 @@ class _LaunchPage extends State<LaunchPage>{
   }
 
   void newHomePage() {
-    Navigator.of(context).pushAndRemoveUntil(new MaterialPageRoute(builder: (context)=>new LoginPage()), (Route<dynamic> rout)=>false);
+    // 判断是不是已经登陆
+    String loginString = StorageShared.getString("login") ?? "";
+    if (loginString.length > 0){
+      Navigator.of(context).pushAndRemoveUntil(new MaterialPageRoute(builder: (context)=>new LoginPage()), (Route<dynamic> rout)=>false);
+    } else {
+      Navigator.of(context).pushAndRemoveUntil(new MaterialPageRoute(builder: (context)=>new RootPage()), (Route<dynamic> rout)=>false);
+    }
   }
 
   Widget build(BuildContext context) {
