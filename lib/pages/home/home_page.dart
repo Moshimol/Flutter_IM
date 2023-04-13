@@ -3,6 +3,7 @@ import 'package:flutter_im/widgets/appbar/main_appbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../widgets/doalog/more_doalog.dart';
+import 'package:flutter_im/request/config.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);

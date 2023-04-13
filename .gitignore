@@ -45,3 +45,5 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /._README.md
+# 忽略网络请求下的改变 目前网络不对外进行暴露
+config.dart
