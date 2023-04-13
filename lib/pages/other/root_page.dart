@@ -31,7 +31,7 @@ class _RootPageState extends State<RootPage> {
     BottomModel("me", "我"),
   ];
 
-  List<Widget> pages = [HomePage(), ContaCtPage(), DisPage(), MePage()];
+  List<Widget> pages = [HomePage(), ContactPage(), DisPage(), MePage()];
 
   @override
   Widget build(BuildContext context) {
