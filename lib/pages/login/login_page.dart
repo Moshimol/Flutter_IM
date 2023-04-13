@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_im/pages/other/root_page.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../../request/config.dart';
+import '../../request/request/request.dart';
 import '../../utils/storage/storage_shared.dart';
 
 class LoginPage extends StatefulWidget {
@@ -18,14 +22,32 @@ class _LoginPage extends State<LoginPage>{
   Widget build(BuildContext context) {
 
     TextStyle labelStyle = TextStyle(color: Color(0xff333333),fontSize: 17);
-    bool isCanLogin = true;
 
     TextEditingController phoneController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
+    TextEditingController orgController = TextEditingController();
+
+    String _orgName = "";
+    bool isCanLogin = true;
+
+    List orgList = [];
 
     @override
     void initState() {
       super.initState();
+    }
+
+    void getOrgList(String orgName) async {
+
+      var res = await Request().post(Login.SEARCH_ORG,data: {"name":orgName});
+      Request().setHeader({"RequestStack":json.encode(API.REQUEST_STACK)});
+      orgList = res["data"]["items"];
+      print(orgList);
+
+      /*
+      拿到机构信息后刷新
+      * */
+
     }
 
     // 进行登录
@@ -34,6 +56,10 @@ class _LoginPage extends State<LoginPage>{
         Fluttertoast.showToast(msg:"手机号输入为空",gravity: ToastGravity.CENTER);
       } else if (passwordController.text.length == 0) {
         Fluttertoast.showToast(msg:"密码输入为空",gravity: ToastGravity.CENTER);
+      } else if (orgController.text.length == 0) {
+        print("123");
+        print(_orgName);
+        Fluttertoast.showToast(msg:"请选择机构",gravity: ToastGravity.CENTER);
       } else {
         // 执行登录操作 跳转到首页
         // 存储数据
@@ -108,6 +134,11 @@ class _LoginPage extends State<LoginPage>{
                 Text("密码",style: labelStyle),
                 SizedBox(width: 36),
                 Expanded(child: TextField(
+                  obscureText: true,
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(11),
+                    FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9!@#\$%^&*(),.?":{}|<>]'))
+                  ],
                   controller: passwordController,
                   onChanged: (value){
 
@@ -129,7 +160,36 @@ class _LoginPage extends State<LoginPage>{
               color: Color(0xffD8D8D8),
               height: 0.5,
             ),
-            SizedBox(height: 60),
+            SizedBox(height: 10),
+            Row(
+              children: [
+                Text("选择机构",style: labelStyle),
+                SizedBox(width: 36),
+                Expanded(child: TextField(
+                  controller: orgController,
+                  onChanged: (value){
+                    if (_orgName.length > 1) {
+                      getOrgList(_orgName);
+                    }
+                  },
+                  keyboardType: TextInputType.visiblePassword,
+                  cursorColor: Color(0xff108EE9),
+                  cursorWidth: 2,
+                  decoration: InputDecoration(
+                      hintText: "请输入机构名",
+                      border: InputBorder.none,
+                      hintStyle: TextStyle(fontSize: 16,color: Color(0xffD8D8D8))
+                  ),
+                ))
+              ],
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 10),
+              alignment: Alignment.center,
+              color: Color(0xffD8D8D8),
+              height: 0.5,
+            ),
+            SizedBox(height: 40),
             GestureDetector(
               onTap: (){
                 login();

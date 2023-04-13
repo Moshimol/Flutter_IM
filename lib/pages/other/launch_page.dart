@@ -30,7 +30,7 @@ class _LaunchPage extends State<LaunchPage>{
   void newHomePage() {
     // 判断是不是已经登陆
     String loginString = StorageShared.getString("login") ?? "";
-    if (loginString.length > 0){
+    if (loginString.length == 0){
       Navigator.of(context).pushAndRemoveUntil(new MaterialPageRoute(builder: (context)=>new LoginPage()), (Route<dynamic> rout)=>false);
     } else {
       Navigator.of(context).pushAndRemoveUntil(new MaterialPageRoute(builder: (context)=>new RootPage()), (Route<dynamic> rout)=>false);
