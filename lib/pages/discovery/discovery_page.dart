@@ -12,10 +12,10 @@ class DisPage extends StatefulWidget {
 
 class _DisPageState extends State<DisPage> {
   List<Map<String, String>> disList = [
-    {"icon": "", "name": "工作圈"},
-    {"icon": "", "name": "扫一扫"},
-    {"icon": "", "name": "会议"},
-    {"icon": "", "name": "市场"},
+    {"icon": "moment", "name": "工作圈"},
+    {"icon": "sao", "name": "扫一扫"},
+    {"icon": "metting", "name": "会议"},
+    {"icon": "mark", "name": "市场"},
   ];
 
   @override
@@ -27,11 +27,13 @@ class _DisPageState extends State<DisPage> {
             print("办公");
           }),
       body: Column(
-        children: disList.map((e) {
-          return SingleColumn(
-            singleMap: e,
-          );
-        }).toList(),
+        children: [
+          Expanded(
+            child: ListView.builder(itemBuilder: (context,index) {
+              return SingleColumn(singleMap: disList[index],shouBottom: index > 0,);
+            },itemCount: disList.length),
+          )
+        ],
       ),
     );
   }
@@ -39,31 +41,28 @@ class _DisPageState extends State<DisPage> {
 
 class SingleColumn extends StatelessWidget {
   final Map<String, String> singleMap;
+  final bool shouBottom;
 
-  const SingleColumn({required this.singleMap, Key? key}) : super(key: key);
+  const SingleColumn({required this.singleMap,required this.shouBottom, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
-      height: 56,
+      height: shouBottom ? 56 : 46,
       child: Column(
         children: [
-          Container(
+          Visibility(child: Container(
             color: Color(0xFFF5F5F5),
             height: 10,
-          ),
+          ),visible: shouBottom),
           Row(
             children: [
               Container(
                 margin:
-                    EdgeInsets.only(left: 16, top: 12, bottom: 6, right: 16),
+                    EdgeInsets.only(left: 16, top: 8, bottom: 6, right: 16),
                 alignment: Alignment.centerLeft,
-                child: CachedNetworkImage(
-                  imageUrl: "http://via.placeholder.com/440x440",
-                  width: 22,
-                  height: 22,
-                ),
+                child: Image.asset("assets/images/dis_${singleMap["icon"]!}.png",width: 22,height: 22,),
               ),
               Container(
                 alignment: Alignment.center,
@@ -73,6 +72,11 @@ class SingleColumn extends StatelessWidget {
                   style: TextStyle(fontSize: 17, color: Color(0xFF333333)),
                 ),
               ),
+              Expanded(child: Container(
+                alignment: Alignment.centerRight,
+                padding: EdgeInsets.only(right: 16),
+                child: Image.asset("assets/images/dis_arrow.png",width: 8,height: 12.5,),
+              )),
             ],
           )
         ],
