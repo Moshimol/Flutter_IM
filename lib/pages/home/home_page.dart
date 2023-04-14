@@ -8,6 +8,8 @@ import '../../widgets/doalog/more_doalog.dart';
 import 'package:flutter_im/request/config.dart';
 import 'package:dio/dio.dart';
 
+import 'message_details.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -60,7 +62,11 @@ class _HomePageState extends State<HomePage> {
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: (){
-                  // 点击跳转到新的页面
+                  // 点击跳转到新的页面 MessageDetails()
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => MessageDetails()),
+                  );
+
                 },
                 child: Row(
                   children: [

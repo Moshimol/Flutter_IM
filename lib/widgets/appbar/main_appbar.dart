@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 
 class MainAppBar extends AppBar {
-
-
   MainAppBar({Key? key, required titleName,String? rightIconName, void Function(BuildContext)? onClickTap})
       : super(
       backgroundColor: Color(0xFFF5F5F5),
@@ -30,12 +28,10 @@ class MainAppBar extends AppBar {
         }),
       ],
       title: Text(
-        titleName,
-        style: TextStyle(
-            color: Color(0xff333333),
-            fontSize: 18,
-            fontWeight: FontWeight.w200),
-      )
-  );
-
+              titleName,
+              style: TextStyle(
+                  color: Color(0xff333333),
+                  fontSize: 18,
+                  fontWeight: FontWeight.w200),
+            ));
 }

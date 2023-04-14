@@ -57,15 +57,9 @@ class _LoginPage extends State<LoginPage> {
         return;
       }
       
-      print("11111111");
-      print(orgInfoList.length);
-      
       for (var orgItem in orgInfoList) {
         requestOrgList.add(search_login_data.fromJson(orgItem));
       }
-
-      print("22222222");
-      print(requestOrgList.length);
 
       setState(() {
         this.showSearchOrg = requestOrgList.length > 0;
