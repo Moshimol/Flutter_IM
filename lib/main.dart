@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_im/pages/other/launch_page.dart';
+import 'package:flutter_im/request/request/request.dart';
 
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
+
+  Request().init();
+  // 初始化
   runApp(const MyApp());
 }
 
