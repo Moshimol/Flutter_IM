@@ -24,6 +24,8 @@ dependencies:
   # 网络请求
   dio: ^5.1.1
 
+  logger: ^1.3.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

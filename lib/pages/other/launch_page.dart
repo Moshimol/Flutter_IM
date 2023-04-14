@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_im/pages/login/login_page.dart';
 import 'package:flutter_im/pages/other/root_page.dart';
@@ -29,8 +31,13 @@ class _LaunchPage extends State<LaunchPage>{
 
   void newHomePage() {
     // 判断是不是已经登陆
-    String loginString = StorageShared.getString("login") ?? "";
-    if (loginString.length == 0){
+    StorageShared().getStorage("LoginState").then((value) => {
+      jumpRouter(value == null)
+    });
+  }
+
+  void jumpRouter(bool isNotLogin) {
+    if (isNotLogin){
       Navigator.of(context).pushAndRemoveUntil(new MaterialPageRoute(builder: (context)=>new LoginPage()), (Route<dynamic> rout)=>false);
     } else {
       Navigator.of(context).pushAndRemoveUntil(new MaterialPageRoute(builder: (context)=>new RootPage()), (Route<dynamic> rout)=>false);

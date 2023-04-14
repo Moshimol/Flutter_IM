@@ -28,13 +28,6 @@ class _HomePageState extends State<HomePage> {
           titleName: "消息",
           onClickTap: (clickContext) {
             moreDialog(clickContext);
-            String loginString = StorageShared.getString("login") ?? "";
-            if (loginString.length > 0) {
-              print("The string is not empty.");
-            } else {
-              print("The string is empty.");
-            }
-
           }),
       body: Column(
         children: [

@@ -30,13 +30,14 @@ class Request {
 
     // 做一些其他相关设置
     // 请求处理
+    /*
     dio.interceptors.add(RequestInterceptor());
     // 日志
     dio.interceptors.add(DioLogInterceptor());
     // 链接处理
     dio.interceptors.add(ConnectsInterceptor());
     // 缓存相关设置
-    dio.interceptors.add(NetCacheInterceptor());
+    dio.interceptors.add(NetCacheInterceptor());*/
   }
 
   // 初始化网络请求库

@@ -10,6 +10,9 @@ import '../../request/config.dart';
 import '../../request/request/request.dart';
 import '../../utils/storage/storage_shared.dart';
 
+// 模型
+import 'package:flutter_im/utils/module_model/login/search_login_data.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -19,18 +22,18 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPage extends State<LoginPage>{
   @override
+
+  List<search_login_data> orgList = [];
+  TextStyle labelStyle = TextStyle(color: Color(0xff333333),fontSize: 17);
+
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController orgController = TextEditingController();
+
+
   Widget build(BuildContext context) {
-
-    TextStyle labelStyle = TextStyle(color: Color(0xff333333),fontSize: 17);
-
-    TextEditingController phoneController = TextEditingController();
-    TextEditingController passwordController = TextEditingController();
-    TextEditingController orgController = TextEditingController();
-
     String _orgName = "";
     bool isCanLogin = true;
-
-    List orgList = [];
 
     @override
     void initState() {
@@ -41,13 +44,18 @@ class _LoginPage extends State<LoginPage>{
 
       var res = await Request().post(Login.SEARCH_ORG,data: {"name":orgName});
       Request().setHeader({"RequestStack":json.encode(API.REQUEST_STACK)});
-      orgList = res["data"]["items"];
-      print(orgList);
-
-      /*
-      拿到机构信息后刷新
-      * */
-
+      final orgInfoList = res["data"]["items"];
+      print(res);
+      if (res["state"] != 1) {
+        return;
+      }
+      for(var orgItem in orgInfoList){
+        orgList.add(search_login_data.fromJson(orgItem));
+      }
+      print(orgList.length);
+      setState(() {
+        this.orgList = orgList;
+      });
     }
 
     // 进行登录
@@ -57,13 +65,10 @@ class _LoginPage extends State<LoginPage>{
       } else if (passwordController.text.length == 0) {
         Fluttertoast.showToast(msg:"密码输入为空",gravity: ToastGravity.CENTER);
       } else if (orgController.text.length == 0) {
-        print("123");
-        print(_orgName);
         Fluttertoast.showToast(msg:"请选择机构",gravity: ToastGravity.CENTER);
       } else {
         // 执行登录操作 跳转到首页
         // 存储数据
-        StorageShared.setString("login");
         Navigator.of(context).pushAndRemoveUntil(
             CupertinoPageRoute(builder: (context){
               return RootPage();
@@ -161,33 +166,52 @@ class _LoginPage extends State<LoginPage>{
               height: 0.5,
             ),
             SizedBox(height: 10),
-            Row(
-              children: [
-                Text("选择机构",style: labelStyle),
-                SizedBox(width: 36),
-                Expanded(child: TextField(
-                  controller: orgController,
-                  onChanged: (value){
-                    if (_orgName.length > 1) {
-                      getOrgList(_orgName);
-                    }
-                  },
-                  keyboardType: TextInputType.visiblePassword,
-                  cursorColor: Color(0xff108EE9),
-                  cursorWidth: 2,
-                  decoration: InputDecoration(
-                      hintText: "请输入机构名",
-                      border: InputBorder.none,
-                      hintStyle: TextStyle(fontSize: 16,color: Color(0xffD8D8D8))
-                  ),
-                ))
-              ],
-            ),
             Container(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              alignment: Alignment.center,
-              color: Color(0xffD8D8D8),
-              height: 0.5,
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Text("选择机构",style: labelStyle),
+                      SizedBox(width: 36),
+                      Expanded(child: TextField(
+                        controller: orgController,
+                        onChanged: (value){
+                          if (value.length > 1) {
+                            getOrgList(value);
+                          }
+                        },
+                        keyboardType: TextInputType.visiblePassword,
+                        cursorColor: Color(0xff108EE9),
+                        cursorWidth: 2,
+                        decoration: InputDecoration(
+                            hintText: "请输入机构名",
+                            border: InputBorder.none,
+                            hintStyle: TextStyle(fontSize: 16,color: Color(0xffD8D8D8))
+                        ),
+                      ))
+                    ],
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    alignment: Alignment.center,
+                    color: Color(0xffD8D8D8),
+                    height: 0.5,
+                  ),
+                  Container(
+                    child: Column(
+                      children: orgList.map((e) {
+                        return Container(
+                          padding: EdgeInsets.only(left: 100),
+                          alignment: Alignment.centerLeft,
+                          height: 30,
+                          color: Colors.red,
+                          child: Text(e.orgKey!),
+                        );
+                      }).toList(),
+                    ),
+                  )
+                ],
+              ),
             ),
             SizedBox(height: 40),
             GestureDetector(
