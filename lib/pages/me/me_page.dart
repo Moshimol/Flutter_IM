@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/appbar/main_appbar.dart';
 
@@ -12,11 +13,164 @@ class _MePageState extends State<MePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: MainAppBar(
-            titleName: "我",
-            onClickTap: (context) {
-              print("我");
-            })
+      appBar: MainAppBar(
+          titleName: "我",
+          rightIconName: "assets/images/me_camera.png",
+          onClickTap: (context) {
+            print("我");
+          }),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView(
+              children: [
+                // 顶部和中间部分
+                MeTopWidget(),
+                Container(
+                  color: Color(0xFFEEEEEE),
+                  height: 8.5,
+                ),
+                InkWell(
+                  onTap: (){
+                    print("点击了设置页面");
+                  },
+                  child: MeBottomList(),
+                )
+
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class MeTopWidget extends StatefulWidget {
+  const MeTopWidget({Key? key}) : super(key: key);
+
+  @override
+  State<MeTopWidget> createState() => _MeTopWidgetState();
+}
+
+class _MeTopWidgetState extends State<MeTopWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 132,
+      color: Colors.white,
+      child: Row(
+        children: [
+          Container(
+            margin: EdgeInsets.only(left: 24),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: CachedNetworkImage(
+                imageUrl:
+                    "https://p3-passport.byteimg.com/img/user-avatar/d4e4ff8f64d24fa24208deb7b926f4ca~180x180.awebp",
+                width: 64,
+                height: 64,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 18,
+          ),
+          Container(
+            padding: EdgeInsets.only(top: 30),
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width - 106 - 76,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Moshimol",
+                  style: TextStyle(
+                      color: Color(0xff333333),
+                      fontSize: 20,
+                      fontWeight: FontWeight.w200),
+                ),
+                Text(
+                  "账号: 123456789101121314151617181920",
+                  style: TextStyle(
+                    color: Color(0xff999999),
+                    fontSize: 16,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.clip,
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            width: 12,
+          ),
+          Expanded(
+              child: Container(
+                margin: EdgeInsets.only(top: 7),
+                child: Row(
+                  children: [
+                    Image.asset(
+                      "assets/images/me_id.png",
+                      width: 16,
+                      height: 16,
+                    ),
+                    Expanded(child: Container(
+                      alignment: Alignment.centerRight,
+                      padding: EdgeInsets.only(right: 16),
+                      child: Image.asset(
+                        "assets/images/dis_arrow.png",
+                        width: 16,
+                        height: 16,
+                      ),
+                    ))
+                  ],
+                )
+          ))
+        ],
+      ),
+    );
+  }
+}
+
+
+class MeBottomList extends StatefulWidget {
+  const MeBottomList({Key? key}) : super(key: key);
+
+  @override
+  State<MeBottomList> createState() => _MeBottomListState();
+}
+
+class _MeBottomListState extends State<MeBottomList> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      child: Row(
+        children: [
+          Container(
+            margin:
+            EdgeInsets.only(left: 16, top: 8, bottom: 6, right: 16),
+            alignment: Alignment.centerLeft,
+            child: Image.asset("assets/images/me_setting.png",width: 22,height: 22,),
+          ),
+          Container(
+            alignment: Alignment.center,
+            height: 46,
+            child: Text(
+              "设置",
+              style: TextStyle(fontSize: 17, color: Color(0xFF333333)),
+            ),
+          ),
+          Expanded(child: Container(
+            alignment: Alignment.centerRight,
+            padding: EdgeInsets.only(right: 16),
+            child: Image.asset("assets/images/dis_arrow.png",width: 8,height: 12.5,),
+          )),
+        ],
+      ),
     );
   }
 }
