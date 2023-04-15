@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_im/pages/other/launch_page.dart';
 import 'package:flutter_im/request/config.dart';
 import 'package:flutter_im/request/request/request.dart';
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
       ),
       home: LaunchPage(),
       navigatorKey: navigatorKey,
+      builder: EasyLoading.init(),
     );
   }
 }

@@ -1,14 +1,15 @@
+import 'package:dio/dio.dart';
+import 'message_details.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_im/widgets/appbar/main_appbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-import '../../request/request/request.dart';
-import '../../utils/storage/storage_shared.dart';
-import '../../widgets/doalog/more_doalog.dart';
-import 'package:flutter_im/request/config.dart';
-import 'package:dio/dio.dart';
 
-import 'message_details.dart';
+import '../../request/request/request.dart';
+import '../../widgets/doalog/more_doalog.dart';
+import 'package:flutter_im/widgets/loading/lb_loading.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -66,7 +67,6 @@ class _HomePageState extends State<HomePage> {
                   Navigator.of(context).push(
                     MaterialPageRoute(builder: (context) => MessageDetails()),
                   );
-
                 },
                 child: Row(
                   children: [

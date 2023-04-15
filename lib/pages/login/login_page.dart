@@ -101,6 +101,7 @@ class _LoginPage extends State<LoginPage> {
             Fluttertoast.showToast(msg: response["msg"], gravity: ToastGravity.CENTER);
           } else {
             /* 获取Account 然后再进行登录操作 */
+            StorageShared().setStorage("LoginState","LoginState");
 
             Navigator.of(context).pushAndRemoveUntil(
                 CupertinoPageRoute(builder: (context) {
@@ -246,6 +247,7 @@ class _LoginPage extends State<LoginPage> {
                         itemBuilder: (context, index) {
                           return GestureDetector(
                             onTap: (){
+                              print(index);
                               setState(() {
                                 // 点击之后然后进行赋值
                                 this.orgController.text = this.orgList[index].name!;
