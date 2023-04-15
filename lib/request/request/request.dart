@@ -13,15 +13,17 @@ class Request {
 
   factory Request() => instance;
 
-
   Dio dio = Dio();
   CancelToken _cancelToken = new CancelToken();
 
-  Request._internal() {
+  Request._internal();
+
+  // 初始化网络请求库
+  void init() {
     dio.options
-        ..baseUrl = API.SEARCH_HOST.length > 0 ? API.SEARCH_HOST : API().requestHost!
-        ..connectTimeout = Duration(milliseconds: CONNECT_TIMEOUT)
-        ..receiveTimeout = Duration(milliseconds: RECEIVE_TIMEOUT)
+      ..baseUrl = API().requestHost.length > 0 ? API().requestHost :API.SEARCH_HOST
+      ..connectTimeout = Duration(milliseconds: CONNECT_TIMEOUT)
+      ..receiveTimeout = Duration(milliseconds: RECEIVE_TIMEOUT)
       ..sendTimeout = Duration(milliseconds: SEND_TIMEOUT)
       ..contentType = Headers.jsonContentType
       ..validateStatus = (int? status) {
@@ -40,12 +42,17 @@ class Request {
     dio.interceptors.add(NetCacheInterceptor());
   }
 
-  // 初始化网络请求库
-  void init() {
+  void reloadNetBaseUrl () {
+    dio.options
+      ..baseUrl = API().requestHost != null ? API().requestHost! :API.SEARCH_HOST;
   }
 
   void setHeader(Map<String, dynamic> map) {
     dio.options.headers.addAll(map);
+  }
+
+  void removeAllHeader() {
+    dio.options.headers = {};
   }
 
   void cancelRequest({CancelToken? token}) {

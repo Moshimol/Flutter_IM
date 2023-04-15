@@ -22,41 +22,35 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPage extends State<LoginPage> {
-  @override
+
+
   List<search_login_data> orgList = [];
   TextStyle labelStyle = TextStyle(color: Color(0xff333333), fontSize: 17);
+
+  late search_login_data currentInfo;
 
   TextEditingController phoneController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController orgController = TextEditingController();
 
   bool showSearchOrg = false;
+  bool isCanLogin = true;
 
+  @override
   Widget build(BuildContext context) {
-    String _orgName = "";
-    bool isCanLogin = true;
-
-    @override
-    void initState() {
-      super.initState();
-    }
 
     void getOrgList(String orgName) async {
       List<search_login_data> requestOrgList = [];
 
-      var response = await Request().post(Login.SEARCH_ORG, data: FormData.fromMap({"name": orgName}));
+      var response = await Request().post(Login.SEARCH_ORG, data: FormData.fromMap({"name": orgName,"page":1,"page_size":10000}));
       Request().setHeader({"RequestStack": json.encode(API.REQUEST_STACK)});
 
-
       List<dynamic> orgInfoList = response["data"]["items"];
-
-
-      print(orgInfoList.runtimeType);
 
       if (response["state"] != 1) {
         return;
       }
-      
+
       for (var orgItem in orgInfoList) {
         requestOrgList.add(search_login_data.fromJson(orgItem));
       }
@@ -68,7 +62,7 @@ class _LoginPage extends State<LoginPage> {
     }
 
     // 进行登录
-    void login() {
+    Future<void> login() async {
       if (phoneController.text.length == 0) {
         Fluttertoast.showToast(msg: "手机号输入为空", gravity: ToastGravity.CENTER);
       } else if (passwordController.text.length == 0) {
@@ -76,12 +70,47 @@ class _LoginPage extends State<LoginPage> {
       } else if (orgController.text.length == 0) {
         Fluttertoast.showToast(msg: "请选择机构", gravity: ToastGravity.CENTER);
       } else {
-        // 执行登录操作 跳转到首页
-        // 存储数据
-        Navigator.of(context).pushAndRemoveUntil(
-            CupertinoPageRoute(builder: (context) {
-              return RootPage();
-            }), (router) => false);
+        // 1、判断当前所选机构是不是对应的机构 且结构信息完整
+        // 1、执行登录操作 跳转到首页
+        // 2、存储数据
+        if (currentInfo.deployInfo != null) {
+          // 先设置HOST
+          var deployInfoDic = json.decode(currentInfo.deployInfo!);
+          print(deployInfoDic);
+          // 设置请求的总的API
+          API().requestHost = "https://" + deployInfoDic["backend_host"];
+          print(API().requestHost);
+
+          Request().reloadNetBaseUrl();
+
+          String reStack =  json.encode([{
+            "appid":deployInfoDic["deploy_appid"],
+            "appkey":deployInfoDic["deploy_appkey"],
+            "channel":deployInfoDic["deploy_channel"],
+          }]);
+
+          var response = await Request().post(Login.LoginApi,data: FormData.fromMap({
+            "username":phoneController.text,
+            "password":passwordController.text,
+            "platform":"ios",
+          }));
+
+          Request().setHeader({"RequestStack": reStack});
+
+          if (response["state"] != 1) {
+            Fluttertoast.showToast(msg: response["msg"], gravity: ToastGravity.CENTER);
+          } else {
+            /* 获取Account 然后再进行登录操作 */
+
+            Navigator.of(context).pushAndRemoveUntil(
+                CupertinoPageRoute(builder: (context) {
+                  return RootPage();
+                }), (router) => false);
+          }
+
+        } else {
+          Fluttertoast.showToast(msg: "选择机构错误", gravity: ToastGravity.CENTER);
+        }
       }
     }
 
@@ -220,8 +249,10 @@ class _LoginPage extends State<LoginPage> {
                               setState(() {
                                 // 点击之后然后进行赋值
                                 this.orgController.text = this.orgList[index].name!;
+                                this.currentInfo = this.orgList[index];
                                 this.showSearchOrg = false;
                                 this.orgList = [];
+                                orgController.selection = TextSelection.fromPosition(TextPosition(offset: orgController.text.length));
                               });
                             },
                             child: Container(
