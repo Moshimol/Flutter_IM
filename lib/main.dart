@@ -15,10 +15,8 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+
   const MyApp({Key? key}) : super(key: key);
-
-  //final double ScreenWidth =  (MediaQuery.of(context).size.width);
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

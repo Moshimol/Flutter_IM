@@ -13,6 +13,7 @@ import '../../utils/storage/storage_shared.dart';
 
 // 模型
 import 'package:flutter_im/utils/module_model/login/search_login_data.dart';
+import 'package:flutter_im/widgets/loading/lb_loading.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -74,6 +75,7 @@ class _LoginPage extends State<LoginPage> {
         // 1、执行登录操作 跳转到首页
         // 2、存储数据
         if (currentInfo.deployInfo != null) {
+          LBLoading.show();
           // 先设置HOST
           var deployInfoDic = json.decode(currentInfo.deployInfo!);
           print(deployInfoDic);
@@ -96,6 +98,8 @@ class _LoginPage extends State<LoginPage> {
           }));
 
           Request().setHeader({"RequestStack": reStack});
+
+          LBLoading.dissMiss();
 
           if (response["state"] != 1) {
             Fluttertoast.showToast(msg: response["msg"], gravity: ToastGravity.CENTER);

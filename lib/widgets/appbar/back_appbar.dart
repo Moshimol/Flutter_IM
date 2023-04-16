@@ -11,7 +11,7 @@ class BackBar extends AppBar {
           fontSize: 18,
           fontWeight: FontWeight.w300),
     ),
-    backgroundColor: Colors.white,
+    backgroundColor: Color(0xFFF5F5F5),
     elevation: 0,
     leading: InkWell(
       onTap: () {

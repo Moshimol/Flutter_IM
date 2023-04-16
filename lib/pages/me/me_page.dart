@@ -1,5 +1,7 @@
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_im/pages/me/setting_page.dart';
 import '../../widgets/appbar/main_appbar.dart';
 
 class MePage extends StatefulWidget {
@@ -33,6 +35,10 @@ class _MePageState extends State<MePage> {
                 InkWell(
                   onTap: (){
                     print("点击了设置页面");
+
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => SettingPage()),
+                    );
                   },
                   child: MeBottomList(),
                 )

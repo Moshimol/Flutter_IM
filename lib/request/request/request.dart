@@ -44,7 +44,7 @@ class Request {
 
   void reloadNetBaseUrl () {
     dio.options
-      ..baseUrl = API().requestHost != null ? API().requestHost! :API.SEARCH_HOST;
+      ..baseUrl = API().requestHost.length > 0 ? API().requestHost : API.SEARCH_HOST;
   }
 
   void setHeader(Map<String, dynamic> map) {

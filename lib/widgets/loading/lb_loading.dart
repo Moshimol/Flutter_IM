@@ -12,4 +12,12 @@ class LBLoading {
   static showError(String statue) {
     EasyLoading.showError(statue,maskType: EasyLoadingMaskType.black,duration: durationTime);
   }
+
+  static show() {
+    EasyLoading.show(maskType: EasyLoadingMaskType.black);
+  }
+
+  static dissMiss() {
+    EasyLoading.dismiss(animation: true);
+  }
 }
