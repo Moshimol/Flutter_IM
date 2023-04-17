@@ -70,7 +70,7 @@ class AccountManager {
       ])
     };
     print(json.encode({"app_type": AppType,"account_id":accountId}));
-    var res = await Request().post(Login.LoginByAccount,data: FormData.fromMap({"app_type": AppType,"account_id":accountId,"flag":1}),options: Options(headers: header));
+    var res = await Request().post(Login.LoginByAccount,data: {"app_type": AppType,"account_id":accountId,"flag":1},options: Options(headers: header));
     return res;
   }
 }

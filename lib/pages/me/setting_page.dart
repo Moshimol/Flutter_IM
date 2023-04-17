@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../widgets/appbar/back_appbar.dart';
 import 'package:flutter_im/utils/manager/account_manager.dart';
 
-
 class SettingPage extends StatefulWidget {
   const SettingPage({Key? key}) : super(key: key);
 
@@ -31,25 +30,40 @@ class _SettingPageState extends State<SettingPage> {
                       leftTitle: e, showBottomLine: e != setList.last);
                 }).toList(),
               ),
-                  SizedBox(height: 10,),
-                  Container(
-                    alignment: Alignment.center,
-                    color: Colors.white,
-                    height: 44,
-                    child: Text("管理账号",style: TextStyle(color: Color(0xFF333333),fontSize: 17),),
+              SizedBox(
+                height: 10,
+              ),
+              InkWell(
+              onTap: () {
+                print("管理账号页面");
+              },
+                child: Container(
+                  alignment: Alignment.center,
+                  color: Colors.white,
+                  height: 44,
+                  child: Text(
+                    "管理账号",
+                    style: TextStyle(color: Color(0xFF333333), fontSize: 17),
                   ),
-                  SizedBox(height: 10,),
-                  Container(
-                    alignment: Alignment.center,
-                    color: Colors.white,
-                    height: 44,
-                    child: InkWell(
-                      onTap: (){
-                        AccountManager.logOutAction(context);
-                      },
-                      child: Text("退出登录",style: TextStyle(color: Color(0xFF333333),fontSize: 17),),
-                    ),
-                  )
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              InkWell(
+                onTap: () {
+                  AccountManager.logOutAction(context);
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  color: Colors.white,
+                  height: 44,
+                  child: Text(
+                    "退出登录",
+                    style: TextStyle(color: Color(0xFF333333), fontSize: 17),
+                  ),
+                ),
+              )
             ]),
           )
         ],

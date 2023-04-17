@@ -99,9 +99,7 @@ class _LoginPage extends State<LoginPage> {
             "username":phoneController.text,
             "password":passwordController.text,
             "platform":"ios",
-          }));
-
-          Request().setHeader({"RequestStack": reStack});
+          },),options:Options(headers: {"RequestStack": reStack}));
 
           LBLoading.dissMiss();
 
@@ -120,10 +118,10 @@ class _LoginPage extends State<LoginPage> {
             if (accountRes["state"] != 1) {
 
             } else {
-              // Navigator.of(context).pushAndRemoveUntil(
-              //     CupertinoPageRoute(builder: (context) {
-              //   return RootPage();
-              // }), (router) => false);
+              Navigator.of(context).pushAndRemoveUntil(
+                  CupertinoPageRoute(builder: (context) {
+                return RootPage();
+              }), (router) => false);
             }
           }
         } else {
