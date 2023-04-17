@@ -6,6 +6,8 @@ import 'package:flutter_im/pages/other/root_page.dart';
 import 'dart:async';
 import 'package:flutter_im/utils/storage/storage_shared.dart';
 
+import '../../constant/cache_key.dart';
+
 // 一个容器的组件
 class LaunchPage extends StatefulWidget {
   const LaunchPage({Key? key}) : super(key: key);
@@ -31,7 +33,7 @@ class _LaunchPage extends State<LaunchPage>{
 
   void newHomePage() {
     // 判断是不是已经登陆
-    StorageShared().getStorage("LoginState").then((value) => {
+    StorageShared().getStorage(CacheKey.loginState).then((value) => {
       jumpRouter(value == null)
     });
   }

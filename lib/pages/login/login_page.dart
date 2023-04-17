@@ -1,15 +1,18 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_im/pages/other/root_page.dart';
+import 'package:flutter_im/utils/manager/account_manager.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../request/config.dart';
 import '../../request/request/request.dart';
 import '../../utils/storage/storage_shared.dart';
+import '../../constant/cache_key.dart';
 
 // 模型
 import 'package:flutter_im/utils/module_model/login/search_login_data.dart';
@@ -46,12 +49,11 @@ class _LoginPage extends State<LoginPage> {
       var response = await Request().post(Login.SEARCH_ORG, data: FormData.fromMap({"name": orgName,"page":1,"page_size":10000}));
       Request().setHeader({"RequestStack": json.encode(API.REQUEST_STACK)});
 
-      List<dynamic> orgInfoList = response["data"]["items"];
-
       if (response["state"] != 1) {
         return;
       }
 
+      List<dynamic> orgInfoList = response["data"]["items"];
       for (var orgItem in orgInfoList) {
         requestOrgList.add(search_login_data.fromJson(orgItem));
       }
@@ -85,11 +87,13 @@ class _LoginPage extends State<LoginPage> {
 
           Request().reloadNetBaseUrl();
 
-          String reStack =  json.encode([{
+          Map<String, dynamic> appInfoMap = {
             "appid":deployInfoDic["deploy_appid"],
             "appkey":deployInfoDic["deploy_appkey"],
             "channel":deployInfoDic["deploy_channel"],
-          }]);
+          };
+
+          String reStack =  json.encode([appInfoMap]);
 
           var response = await Request().post(Login.LoginApi,data: FormData.fromMap({
             "username":phoneController.text,
@@ -105,14 +109,23 @@ class _LoginPage extends State<LoginPage> {
             Fluttertoast.showToast(msg: response["msg"], gravity: ToastGravity.CENTER);
           } else {
             /* 获取Account 然后再进行登录操作 */
-            StorageShared().setStorage("LoginState","LoginState");
+            StorageShared().setStorage(CacheKey.loginState,"LoginState");
+            StorageShared().setStorage(CacheKey.accountId,response["data"]["account_id"]);
 
-            Navigator.of(context).pushAndRemoveUntil(
-                CupertinoPageRoute(builder: (context) {
-                  return RootPage();
-                }), (router) => false);
+
+            // 用accountid 再去请求其他的处理
+            var accountRes = AccountManager.loginByAccountId(response["data"]["accountId"],response["data"]["token"],response["data"]["sub_org_key"],appInfoMap);
+
+            print(accountRes);
+            if (accountRes["state"] != 1) {
+
+            } else {
+              // Navigator.of(context).pushAndRemoveUntil(
+              //     CupertinoPageRoute(builder: (context) {
+              //   return RootPage();
+              // }), (router) => false);
+            }
           }
-
         } else {
           Fluttertoast.showToast(msg: "选择机构错误", gravity: ToastGravity.CENTER);
         }

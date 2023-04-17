@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -11,6 +13,8 @@ class DioLogInterceptor extends Interceptor {
         "- URL:\n${options.baseUrl + options.path}\n"
         "- METHOD: ${options.method}\n";
     debugPrint(requestStr);
+    debugPrint(json.encode(options.headers));
+
     return handler.next(options);
   }
 
