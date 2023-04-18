@@ -25,7 +25,8 @@ class Request {
       ..connectTimeout = Duration(milliseconds: CONNECT_TIMEOUT)
       ..receiveTimeout = Duration(milliseconds: RECEIVE_TIMEOUT)
       ..sendTimeout = Duration(milliseconds: SEND_TIMEOUT)
-      ..contentType = Headers.jsonContentType
+      ..contentType = Headers.formUrlEncodedContentType
+      ..responseType = ResponseType.json
       ..validateStatus = (int? status) {
         return status != null && status > 0;
       }

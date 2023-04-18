@@ -26,8 +26,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPage extends State<LoginPage> {
-
-
   List<search_login_data> orgList = [];
   TextStyle labelStyle = TextStyle(color: Color(0xff333333), fontSize: 17);
 
@@ -42,11 +40,11 @@ class _LoginPage extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-
     void getOrgList(String orgName) async {
       List<search_login_data> requestOrgList = [];
 
-      var response = await Request().post(Login.SEARCH_ORG, data: FormData.fromMap({"name": orgName,"page":1,"page_size":10000}));
+      var response = await Request().post(Login.SEARCH_ORG,
+          data:{"name": orgName, "page": 1, "page_size": 10000});
       Request().setHeader({"RequestStack": json.encode(API.REQUEST_STACK)});
 
       if (response["state"] != 1) {
@@ -78,46 +76,58 @@ class _LoginPage extends State<LoginPage> {
         // 2、存储数据
         if (currentInfo.deployInfo != null) {
           LBLoading.show();
+
+          Dio dio = new Dio();
+          FormData formData = FormData.fromMap({
+            "username": phoneController.text,
+            "password": passwordController.text,
+            "platform": "ios",
+          });
+
           // 先设置HOST
           var deployInfoDic = json.decode(currentInfo.deployInfo!);
-          print(deployInfoDic);
-          // 设置请求的总的API
-          API().requestHost = "https://" + deployInfoDic["backend_host"];
-          print(API().requestHost);
 
-          Request().reloadNetBaseUrl();
+          String hostApi = "https://" + deployInfoDic["backend_host"];
 
           Map<String, dynamic> appInfoMap = {
-            "appid":deployInfoDic["deploy_appid"],
-            "appkey":deployInfoDic["deploy_appkey"],
-            "channel":deployInfoDic["deploy_channel"],
+            "appid": deployInfoDic["deploy_appid"],
+            "appkey": deployInfoDic["deploy_appkey"],
+            "channel": deployInfoDic["deploy_channel"],
           };
 
-          String reStack =  json.encode([appInfoMap]);
+          String reStack = json.encode([appInfoMap]);
 
-          var response = await Request().post(Login.LoginApi,data: FormData.fromMap({
-            "username":phoneController.text,
-            "password":passwordController.text,
-            "platform":"ios",
-          },),options:Options(headers: {"RequestStack": reStack}));
+          Response response = await dio.post(hostApi + Login.LoginApi,
+              data: formData,
+              options: Options(headers: {"RequestStack": reStack}));
 
           LBLoading.dissMiss();
 
-          if (response["state"] != 1) {
-            Fluttertoast.showToast(msg: response["msg"], gravity: ToastGravity.CENTER);
+          var res = response.data["data"];
+          print(res);
+
+          if (response.data["state"] != 1) {
+            Fluttertoast.showToast(
+                msg: response.data["msg"], gravity: ToastGravity.CENTER);
           } else {
-            /* 获取Account 然后再进行登录操作 */
-            StorageShared().setStorage(CacheKey.loginState,"LoginState");
-            StorageShared().setStorage(CacheKey.accountId,response["data"]["account_id"]);
+            API().requestHost = hostApi;
+            // 设置请求的Host
+            Request().reloadNetBaseUrl();
 
-
-            // 用accountid 再去请求其他的处理
-            var accountRes = AccountManager.loginByAccountId(response["data"]["accountId"],response["data"]["token"],response["data"]["sub_org_key"],appInfoMap);
+            var accountRes = await AccountManager.loginByAccountId(
+                res["accountId"],
+                res["token"],
+                res["sub_org_key"],
+                appInfoMap);
 
             print(accountRes);
-            if (accountRes["state"] != 1) {
 
+            if (accountRes["state"] != 1) {
+              Fluttertoast.showToast(
+                  msg: accountRes["msg"], gravity: ToastGravity.CENTER);
             } else {
+              StorageShared().setStorage(CacheKey.loginState, "LoginState");
+              StorageShared().setStorage(CacheKey.accountId, res["accountId"]);
               Navigator.of(context).pushAndRemoveUntil(
                   CupertinoPageRoute(builder: (context) {
                 return RootPage();
@@ -163,21 +173,21 @@ class _LoginPage extends State<LoginPage> {
                 SizedBox(width: 20),
                 Expanded(
                     child: TextField(
-                      inputFormatters: [
-                        LengthLimitingTextInputFormatter(11),
-                        FilteringTextInputFormatter.allow(RegExp('[0-9]'))
-                      ],
-                      controller: phoneController,
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {},
-                      cursorColor: Color(0xff108EE9),
-                      cursorWidth: 2,
-                      decoration: InputDecoration(
-                          hintText: "请输入手机号",
-                          border: InputBorder.none,
-                          hintStyle:
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(11),
+                    FilteringTextInputFormatter.allow(RegExp('[0-9]'))
+                  ],
+                  controller: phoneController,
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) {},
+                  cursorColor: Color(0xff108EE9),
+                  cursorWidth: 2,
+                  decoration: InputDecoration(
+                      hintText: "请输入手机号",
+                      border: InputBorder.none,
+                      hintStyle:
                           TextStyle(fontSize: 16, color: Color(0xffD8D8D8))),
-                    ))
+                ))
               ],
             ),
             Container(
@@ -192,23 +202,23 @@ class _LoginPage extends State<LoginPage> {
                 SizedBox(width: 36),
                 Expanded(
                     child: TextField(
-                      obscureText: true,
-                      inputFormatters: [
-                        LengthLimitingTextInputFormatter(11),
-                        FilteringTextInputFormatter.allow(
-                            RegExp('[a-zA-Z0-9!@#\$%^&*(),.?":{}|<>]'))
-                      ],
-                      controller: passwordController,
-                      onChanged: (value) {},
-                      keyboardType: TextInputType.visiblePassword,
-                      cursorColor: Color(0xff108EE9),
-                      cursorWidth: 2,
-                      decoration: InputDecoration(
-                          hintText: "请输入密码",
-                          border: InputBorder.none,
-                          hintStyle:
+                  obscureText: true,
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(11),
+                    FilteringTextInputFormatter.allow(
+                        RegExp('[a-zA-Z0-9!@#\$%^&*(),.?":{}|<>]'))
+                  ],
+                  controller: passwordController,
+                  onChanged: (value) {},
+                  keyboardType: TextInputType.visiblePassword,
+                  cursorColor: Color(0xff108EE9),
+                  cursorWidth: 2,
+                  decoration: InputDecoration(
+                      hintText: "请输入密码",
+                      border: InputBorder.none,
+                      hintStyle:
                           TextStyle(fontSize: 16, color: Color(0xffD8D8D8))),
-                    ))
+                ))
               ],
             ),
             Container(
@@ -227,26 +237,26 @@ class _LoginPage extends State<LoginPage> {
                       SizedBox(width: 36),
                       Expanded(
                           child: TextField(
-                            controller: orgController,
-                            onChanged: (value) {
-                              if (value.length >= 1) {
-                                getOrgList(value);
-                              } else {
-                                setState(() {
-                                  this.showSearchOrg = false;
-                                  this.orgList = [];
-                                });
-                              }
-                            },
-                            keyboardType: TextInputType.visiblePassword,
-                            cursorColor: Color(0xff108EE9),
-                            cursorWidth: 2,
-                            decoration: InputDecoration(
-                                hintText: "请输入机构名",
-                                border: InputBorder.none,
-                                hintStyle: TextStyle(
-                                    fontSize: 16, color: Color(0xffD8D8D8))),
-                          ))
+                        controller: orgController,
+                        onChanged: (value) {
+                          if (value.length >= 1) {
+                            getOrgList(value);
+                          } else {
+                            setState(() {
+                              this.showSearchOrg = false;
+                              this.orgList = [];
+                            });
+                          }
+                        },
+                        keyboardType: TextInputType.visiblePassword,
+                        cursorColor: Color(0xff108EE9),
+                        cursorWidth: 2,
+                        decoration: InputDecoration(
+                            hintText: "请输入机构名",
+                            border: InputBorder.none,
+                            hintStyle: TextStyle(
+                                fontSize: 16, color: Color(0xffD8D8D8))),
+                      ))
                     ],
                   ),
                   Container(
@@ -255,37 +265,43 @@ class _LoginPage extends State<LoginPage> {
                     color: Color(0xffD8D8D8),
                     height: 0.5,
                   ),
-                  Visibility(child: Container(
-                    constraints: BoxConstraints(maxHeight: 120),
-                    child: ListView.builder(
-                        padding: EdgeInsets.zero,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: (){
-                              print(index);
-                              setState(() {
-                                // 点击之后然后进行赋值
-                                this.orgController.text = this.orgList[index].name!;
-                                this.currentInfo = this.orgList[index];
-                                this.showSearchOrg = false;
-                                this.orgList = [];
-                                orgController.selection = TextSelection.fromPosition(TextPosition(offset: orgController.text.length));
-                              });
-                            },
-                            child: Container(
-                              padding: EdgeInsets.only(left: 100),
-                              alignment: Alignment.centerLeft,
-                              height: 40,
-                              child: Text(orgList[index].name!,
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 16),),
-                            ),
-                          );
-                        },
-                        itemCount: orgList.length,
-                        shrinkWrap: true),
-                  ), visible: showSearchOrg,),
-
+                  Visibility(
+                    child: Container(
+                      constraints: BoxConstraints(maxHeight: 120),
+                      child: ListView.builder(
+                          padding: EdgeInsets.zero,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  // 点击之后然后进行赋值
+                                  this.orgController.text =
+                                      this.orgList[index].name!;
+                                  this.currentInfo = this.orgList[index];
+                                  this.showSearchOrg = false;
+                                  this.orgList = [];
+                                  orgController.selection =
+                                      TextSelection.fromPosition(TextPosition(
+                                          offset: orgController.text.length));
+                                });
+                              },
+                              child: Container(
+                                padding: EdgeInsets.only(left: 100),
+                                alignment: Alignment.centerLeft,
+                                height: 40,
+                                child: Text(
+                                  orgList[index].name!,
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 16),
+                                ),
+                              ),
+                            );
+                          },
+                          itemCount: orgList.length,
+                          shrinkWrap: true),
+                    ),
+                    visible: showSearchOrg,
+                  ),
                 ],
               ),
             ),

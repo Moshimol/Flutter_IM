@@ -12,8 +12,10 @@ class DioLogInterceptor extends Interceptor {
     String requestStr = "\n==================== REQUEST ====================\n"
         "- URL:\n${options.baseUrl + options.path}\n"
         "- METHOD: ${options.method}\n";
+
     debugPrint(requestStr);
-    debugPrint(json.encode(options.headers));
+    debugPrint("Header\n" + json.encode(options.headers));
+    debugPrint(json.encode(options.data));
 
     return handler.next(options);
   }
