@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter_im/request/request/request_interceptor.dart';
 import 'package:flutter_im/request/config.dart';
@@ -10,29 +8,25 @@ class Request {
   static const int SEND_TIMEOUT = 300000;
 
   static Request instance = Request._internal();
-
   factory Request() => instance;
 
   Dio dio = Dio();
+
   CancelToken _cancelToken = new CancelToken();
 
-  Request._internal();
-
-  // 初始化网络请求库
-  void init() {
-    dio.options
-      ..baseUrl = API().requestHost.length > 0 ? API().requestHost :API.SEARCH_HOST
-      ..connectTimeout = Duration(milliseconds: CONNECT_TIMEOUT)
-      ..receiveTimeout = Duration(milliseconds: RECEIVE_TIMEOUT)
-      ..sendTimeout = Duration(milliseconds: SEND_TIMEOUT)
-      ..contentType = Headers.formUrlEncodedContentType
-      ..responseType = ResponseType.json
-      ..validateStatus = (int? status) {
-        return status != null && status > 0;
-      }
-      ..headers = {};
-
-    // 做一些其他相关设置
+  Request._internal() {
+    BaseOptions options = BaseOptions(
+        baseUrl: API().requestHost.length > 0 ? API().requestHost : API.SEARCH_HOST,
+        connectTimeout: Duration(milliseconds: CONNECT_TIMEOUT),
+        receiveTimeout: Duration(milliseconds: RECEIVE_TIMEOUT),
+        sendTimeout : Duration(milliseconds: SEND_TIMEOUT),
+        contentType : Headers.formUrlEncodedContentType,
+        responseType : ResponseType.json,
+        validateStatus: (int? status) {
+          return status != null && status > 0;
+        }
+    );
+    dio = Dio(options);
     // 请求处理
     dio.interceptors.add(RequestInterceptor());
     // 日志
@@ -43,9 +37,19 @@ class Request {
     dio.interceptors.add(NetCacheInterceptor());
   }
 
-  void reloadNetBaseUrl () {
+  // 初始化网络请求库
+  void init() {
+    dio.options = dio.options.copyWith(
+      baseUrl: API().requestHost.length > 0 ? API().requestHost : API.SEARCH_HOST,
+      connectTimeout: Duration(milliseconds: CONNECT_TIMEOUT),
+      receiveTimeout: Duration(milliseconds: RECEIVE_TIMEOUT),
+    );
+  }
+
+  void reloadNetBaseUrl() {
     dio.options
-      ..baseUrl = API().requestHost.length > 0 ? API().requestHost : API.SEARCH_HOST;
+      ..baseUrl =
+          API().requestHost.length > 0 ? API().requestHost : API.SEARCH_HOST;
   }
 
   void setHeader(Map<String, dynamic> map) {
@@ -60,14 +64,16 @@ class Request {
     token ?? _cancelToken.cancel("cancelled");
   }
 
-  Future get(String path,{
+  Future get(
+    String path, {
     Map<String, dynamic>? params,
     Options? options,
     CancelToken? cancelToken,
     bool refresh = false,
     bool noCache = true,
     String? cacheKey,
-    bool cacheDisk = false,}) async{
+    bool cacheDisk = false,
+  }) async {
     Options requestOptions = options ?? Options();
     requestOptions = requestOptions.copyWith(extra: {
       "refresh": refresh,
@@ -84,12 +90,12 @@ class Request {
   }
 
   Future post(
-      String path, {
-        Map<String, dynamic>? params,
-        data,
-        Options? options,
-        CancelToken? cancelToken,
-      }) async {
+    String path, {
+    Map<String, dynamic>? params,
+    data,
+    Options? options,
+    CancelToken? cancelToken,
+  }) async {
     Options requestOptions = options ?? Options();
     var response = await dio.post(path,
         data: data,
@@ -98,7 +104,4 @@ class Request {
         cancelToken: cancelToken ?? _cancelToken);
     return response.data;
   }
-
-
-
 }

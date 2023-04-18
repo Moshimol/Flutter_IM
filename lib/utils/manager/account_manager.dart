@@ -44,12 +44,14 @@ class AccountManager {
     StorageShared().removeStorage(CacheKey.loginState);
   }
 
+
   // 根据account_id 去登陆
   static loginByAccountId(String accountId, String token, String subKey,Map<String, dynamic> other) async {
+
     Map<String, dynamic> header = {
       "Authorization":token,
       "SubOrgKey":subKey,
-      "RequestStack":[
+      "RequestStack":jsonEncode([
         {
           "appid": other["appid"],
           "appkey":other["appkey"],
@@ -63,10 +65,10 @@ class AccountManager {
           "appid":"i9wzpz8ntvlhrfcetw20lk4b7acnbuds",
           "channelAlias":"default",
         },
-      ]
+      ])
     };
-    print(json.encode({"app_type": AppType,"account_id":accountId,"Authorization":token}));
-    var res = await Request().post(Login.LoginByAccount,data: {"app_type": AppType,"account_id":accountId,"flag":1},options: Options(headers: header));
+
+    var res = await Request().post(Login.LoginByAccount, data: {"app_type": AppType,"account_id":accountId,"flag":1},options: Options(headers: header));
     return res;
   }
 }

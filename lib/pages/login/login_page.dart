@@ -44,8 +44,7 @@ class _LoginPage extends State<LoginPage> {
       List<search_login_data> requestOrgList = [];
 
       var response = await Request().post(Login.SEARCH_ORG,
-          data:{"name": orgName, "page": 1, "page_size": 10000});
-      Request().setHeader({"RequestStack": json.encode(API.REQUEST_STACK)});
+          data:{"name": orgName, "page": 1, "page_size": 10000},options: Options(headers: {"RequestStack": json.encode(API.REQUEST_STACK),"content-type":Headers.formUrlEncodedContentType}));
 
       if (response["state"] != 1) {
         return;
