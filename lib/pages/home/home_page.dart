@@ -1,5 +1,8 @@
-import 'package:dio/dio.dart';
+import 'dart:convert';
+
 import 'package:flutter_im/utils/manager/account_manager.dart';
+import 'package:flutter_im/utils/module_model/message/message_single.dart';
+import 'package:flutter_im/utils/utils.dart';
 import '../../utils/manager/message_manager.dart';
 import '../../utils/manager/request_manager.dart';
 import 'message_details.dart';
@@ -21,7 +24,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<String> mockData = ["小五", "买买买", "中台设计群", "办公团队"];
+  List<MessageSingle> messageList = [];
 
   @override
   void initState() {
@@ -31,7 +34,22 @@ class _HomePageState extends State<HomePage> {
 
     // 获取当前的列表
     MessageManager.getMessageList().then((value) {
-      print(value);
+      if (value["state"] != 1) {
+
+      } else {
+        var data = value["data"];
+        List responseJson = data;
+        List<MessageSingle> msgList = responseJson.map((m) => new MessageSingle.fromJson(m)).toList();
+
+        setState(() {
+          print("--------");
+          print(json.encode(msgList.first.msg));
+
+          print(jsonDecode(msgList.first.msg!));
+
+          messageList = msgList;
+        });
+      }
     });
   }
 
@@ -77,6 +95,9 @@ class _HomePageState extends State<HomePage> {
           Expanded(
               child: ListView.builder(
             itemBuilder: (context, index) {
+              MessageSingle msg = messageList[index];
+              var singleData = jsonDecode(msg.msg!);
+
               return GestureDetector(
                 onTap: () {
                   // 点击跳转到新的页面 MessageDetails()
@@ -109,7 +130,7 @@ class _HomePageState extends State<HomePage> {
                           Row(
                             children: [
                               Expanded(
-                                  child: Text(mockData[index],
+                                  child: Text(HomePageUtils.getName(singleData!,msg),
                                       style: TextStyle(
                                         color: Color(0xFF333333),
                                         fontSize: 17,
@@ -127,7 +148,7 @@ class _HomePageState extends State<HomePage> {
                           SizedBox(
                             height: 7.5,
                           ),
-                          Text("聊天记录",
+                          Text(Utils.getMsgType(singleData),
                               style: TextStyle(
                                   color: Color(0xFF999999), fontSize: 14))
                         ],
@@ -142,10 +163,22 @@ class _HomePageState extends State<HomePage> {
                 ),
               );
             },
-            itemCount: mockData.length,
+            itemCount: messageList.length,
           ))
         ],
       ),
     );
+  }
+}
+
+class HomePageUtils {
+  static String getName(Map<String, dynamic> msg, MessageSingle data) {
+    String msgName = "1";
+    if (data.chatType == 1) {
+      msgName = "个人";
+    } else {
+      msgName = "群聊";
+    }
+    return msgName;
   }
 }
