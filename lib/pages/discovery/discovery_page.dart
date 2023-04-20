@@ -29,9 +29,14 @@ class _DisPageState extends State<DisPage> {
       body: Column(
         children: [
           Expanded(
-            child: ListView.builder(itemBuilder: (context,index) {
-              return SingleColumn(singleMap: disList[index],shouBottom: index > 0,);
-            },itemCount: disList.length),
+            child: ListView.builder(
+                itemBuilder: (context, index) {
+                  return SingleColumn(
+                    singleMap: disList[index],
+                    shouBottom: index > 0,
+                  );
+                },
+                itemCount: disList.length),
           )
         ],
       ),
@@ -43,7 +48,9 @@ class SingleColumn extends StatelessWidget {
   final Map<String, String> singleMap;
   final bool shouBottom;
 
-  const SingleColumn({required this.singleMap,required this.shouBottom, Key? key}) : super(key: key);
+  const SingleColumn(
+      {required this.singleMap, required this.shouBottom, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -52,17 +59,22 @@ class SingleColumn extends StatelessWidget {
       height: shouBottom ? 56 : 46,
       child: Column(
         children: [
-          Visibility(child: Container(
-            color: Color(0xFFF5F5F5),
-            height: 10,
-          ),visible: shouBottom),
+          Visibility(
+              child: Container(
+                color: Color(0xFFF5F5F5),
+                height: 10,
+              ),
+              visible: shouBottom),
           Row(
             children: [
               Container(
-                margin:
-                    EdgeInsets.only(left: 16, top: 8, bottom: 6, right: 16),
+                margin: EdgeInsets.only(left: 16, top: 8, bottom: 6, right: 16),
                 alignment: Alignment.centerLeft,
-                child: Image.asset("assets/images/dis_${singleMap["icon"]!}.png",width: 22,height: 22,),
+                child: Image.asset(
+                  "assets/images/dis_${singleMap["icon"]!}.png",
+                  width: 22,
+                  height: 22,
+                ),
               ),
               Container(
                 alignment: Alignment.center,
@@ -72,10 +84,15 @@ class SingleColumn extends StatelessWidget {
                   style: TextStyle(fontSize: 17, color: Color(0xFF333333)),
                 ),
               ),
-              Expanded(child: Container(
+              Expanded(
+                  child: Container(
                 alignment: Alignment.centerRight,
                 padding: EdgeInsets.only(right: 16),
-                child: Image.asset("assets/images/dis_arrow.png",width: 8,height: 12.5,),
+                child: Image.asset(
+                  "assets/images/dis_arrow.png",
+                  width: 8,
+                  height: 12.5,
+                ),
               )),
             ],
           )

@@ -16,16 +16,16 @@ class Request {
 
   Request._internal() {
     BaseOptions options = BaseOptions(
-        baseUrl: API().requestHost.length > 0 ? API().requestHost : API.SEARCH_HOST,
+        baseUrl:
+            API().requestHost.length > 0 ? API().requestHost : API.SEARCH_HOST,
         connectTimeout: Duration(milliseconds: CONNECT_TIMEOUT),
         receiveTimeout: Duration(milliseconds: RECEIVE_TIMEOUT),
-        sendTimeout : Duration(milliseconds: SEND_TIMEOUT),
-        contentType : Headers.formUrlEncodedContentType,
-        responseType : ResponseType.json,
+        sendTimeout: Duration(milliseconds: SEND_TIMEOUT),
+        contentType: Headers.formUrlEncodedContentType,
+        responseType: ResponseType.json,
         validateStatus: (int? status) {
           return status != null && status > 0;
-        }
-    );
+        });
     dio = Dio(options);
     // 请求处理
     dio.interceptors.add(RequestInterceptor());
@@ -40,7 +40,8 @@ class Request {
   // 初始化网络请求库
   void init() {
     dio.options = dio.options.copyWith(
-      baseUrl: API().requestHost.length > 0 ? API().requestHost : API.SEARCH_HOST,
+      baseUrl:
+          API().requestHost.length > 0 ? API().requestHost : API.SEARCH_HOST,
       connectTimeout: Duration(milliseconds: CONNECT_TIMEOUT),
       receiveTimeout: Duration(milliseconds: RECEIVE_TIMEOUT),
     );

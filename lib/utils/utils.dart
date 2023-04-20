@@ -1,11 +1,9 @@
-
 export 'storage/storage_shared.dart';
 export 'module_model/login/search_login_data.dart';
 
 import 'package:flutter/material.dart';
 
 class Utils {
-
   static bool isEmptyString(String str) {
     if (str == null || str.isEmpty) {
       return true;

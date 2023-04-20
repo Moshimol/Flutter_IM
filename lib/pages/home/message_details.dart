@@ -13,7 +13,9 @@ class _MessageDetailsState extends State<MessageDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: BackBar(titleName: "聊天框",),
+      appBar: BackBar(
+        titleName: "聊天框",
+      ),
     );
   }
 }

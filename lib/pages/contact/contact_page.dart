@@ -131,8 +131,10 @@ class _ContactPageState extends State<ContactPage> {
                   var firstKey = map.keys.first;
 
                   return Container(
-                    padding: EdgeInsets.symmetric(vertical: 3,horizontal: 6),
-                    child: Text(firstKey,style: TextStyle(fontSize: 9,color: Color(0xFF666666))),
+                    padding: EdgeInsets.symmetric(vertical: 3, horizontal: 6),
+                    child: Text(firstKey,
+                        style:
+                            TextStyle(fontSize: 9, color: Color(0xFF666666))),
                   );
                 }).toList(),
               )),

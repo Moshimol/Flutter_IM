@@ -6,9 +6,9 @@ import 'package:flutter/cupertino.dart';
 // 定义拦截器相关内容
 
 class DioLogInterceptor extends Interceptor {
-
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
+  void onRequest(
+      RequestOptions options, RequestInterceptorHandler handler) async {
     String requestStr = "\n==================== REQUEST ====================\n"
         "- URL:\n${options.baseUrl + options.path}\n"
         "- METHOD: ${options.method}\n";
@@ -27,7 +27,7 @@ class DioLogInterceptor extends Interceptor {
         "- URL:\n${response.requestOptions.uri}\n";
     responseStr += "- HEADER:\n{";
     response.headers.forEach(
-            (key, list) => responseStr += "\n  " + "\"$key\" : \"$list\",");
+        (key, list) => responseStr += "\n  " + "\"$key\" : \"$list\",");
     responseStr += "\n}\n";
     responseStr += "- STATUS: ${response.statusCode}\n";
 
@@ -37,7 +37,6 @@ class DioLogInterceptor extends Interceptor {
     debugPrint(responseStr);
     return handler.next(response);
   }
-
 
   String _parseResponse(Response response) {
     String responseStr = "";
@@ -59,18 +58,13 @@ class RequestInterceptor extends Interceptor {
   onRequest(options, handle) {
     handle.next(options);
   }
-
 }
 
 // 网络拦截
-class ConnectsInterceptor extends Interceptor {
-
-}
+class ConnectsInterceptor extends Interceptor {}
 
 // 缓存设置
-class NetCacheInterceptor extends Interceptor {
-
-}
+class NetCacheInterceptor extends Interceptor {}
 
 extension Map2StringEx on Map {
   String mapToStructureString({int indentation = 2}) {

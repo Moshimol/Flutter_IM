@@ -11,9 +11,10 @@ class CacheKey {
 
   static String appUser = "app_user";
 
+  static String requestHeader = "request_header";
+
   // 单独用户的appid
-  static String appUserInf(String chatId) {
-    return CacheKey.appUser + chatId;
+  static String appUserInfo(String chatId) {
+    return CacheKey.appUser + "-" + chatId;
   }
-  
 }

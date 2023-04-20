@@ -12,12 +12,11 @@ import '../../constant/cache_key.dart';
 class LaunchPage extends StatefulWidget {
   const LaunchPage({Key? key}) : super(key: key);
 
-
   @override
-  _LaunchPage createState()=> new _LaunchPage();
+  _LaunchPage createState() => new _LaunchPage();
 }
 
-class _LaunchPage extends State<LaunchPage>{
+class _LaunchPage extends State<LaunchPage> {
   @override
   void initState() {
     super.initState();
@@ -33,16 +32,20 @@ class _LaunchPage extends State<LaunchPage>{
 
   void newHomePage() {
     // 判断是不是已经登陆
-    StorageShared().getStorage(CacheKey.loginState).then((value) => {
-      jumpRouter(value == null)
-    });
+    StorageShared()
+        .getStorage(CacheKey.loginState)
+        .then((value) => {jumpRouter(value == null)});
   }
 
   void jumpRouter(bool isNotLogin) {
-    if (isNotLogin){
-      Navigator.of(context).pushAndRemoveUntil(new MaterialPageRoute(builder: (context)=>new LoginPage()), (Route<dynamic> rout)=>false);
+    if (isNotLogin) {
+      Navigator.of(context).pushAndRemoveUntil(
+          new MaterialPageRoute(builder: (context) => new LoginPage()),
+          (Route<dynamic> rout) => false);
     } else {
-      Navigator.of(context).pushAndRemoveUntil(new MaterialPageRoute(builder: (context)=>new RootPage()), (Route<dynamic> rout)=>false);
+      Navigator.of(context).pushAndRemoveUntil(
+          new MaterialPageRoute(builder: (context) => new RootPage()),
+          (Route<dynamic> rout) => false);
     }
   }
 
@@ -55,8 +58,7 @@ class _LaunchPage extends State<LaunchPage>{
               color: Colors.white,
               image: DecorationImage(
                   image: AssetImage("assets/images/applanuch.png"),
-                  fit: BoxFit.fitWidth
-              ),
+                  fit: BoxFit.fitWidth),
             ),
           ),
           Container(
@@ -66,10 +68,12 @@ class _LaunchPage extends State<LaunchPage>{
               width: 60,
               height: 30,
               child: OutlinedButton(
-                child: Text("跳过",textAlign: TextAlign.center,style: TextStyle(color: Colors.black,fontSize: 12)),
-                onPressed: (){
+                child: Text("跳过",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.black, fontSize: 12)),
+                onPressed: () {
                   newHomePage();
-                  },
+                },
               ),
             ),
           )

@@ -34,9 +34,9 @@ class _SettingPageState extends State<SettingPage> {
                 height: 10,
               ),
               InkWell(
-              onTap: () {
-                print("管理账号页面");
-              },
+                onTap: () {
+                  print("管理账号页面");
+                },
                 child: Container(
                   alignment: Alignment.center,
                   color: Colors.white,

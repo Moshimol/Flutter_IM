@@ -7,7 +7,6 @@ import 'package:flutter_im/request/request/request.dart';
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
-
   API().init();
   Request().init();
   // 初始化
@@ -15,7 +14,6 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-
   const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {

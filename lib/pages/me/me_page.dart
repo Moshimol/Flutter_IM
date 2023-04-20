@@ -33,7 +33,7 @@ class _MePageState extends State<MePage> {
                   height: 8.5,
                 ),
                 InkWell(
-                  onTap: (){
+                  onTap: () {
                     print("点击了设置页面");
 
                     Navigator.of(context).push(
@@ -42,7 +42,6 @@ class _MePageState extends State<MePage> {
                   },
                   child: MeBottomList(),
                 )
-
               ],
             ),
           )
@@ -115,32 +114,31 @@ class _MeTopWidgetState extends State<MeTopWidget> {
           ),
           Expanded(
               child: Container(
-                margin: EdgeInsets.only(top: 7),
-                child: Row(
-                  children: [
-                    Image.asset(
-                      "assets/images/me_id.png",
-                      width: 16,
-                      height: 16,
-                    ),
-                    Expanded(child: Container(
-                      alignment: Alignment.centerRight,
-                      padding: EdgeInsets.only(right: 16),
-                      child: Image.asset(
-                        "assets/images/dis_arrow.png",
+                  margin: EdgeInsets.only(top: 7),
+                  child: Row(
+                    children: [
+                      Image.asset(
+                        "assets/images/me_id.png",
                         width: 16,
                         height: 16,
                       ),
-                    ))
-                  ],
-                )
-          ))
+                      Expanded(
+                          child: Container(
+                        alignment: Alignment.centerRight,
+                        padding: EdgeInsets.only(right: 16),
+                        child: Image.asset(
+                          "assets/images/dis_arrow.png",
+                          width: 16,
+                          height: 16,
+                        ),
+                      ))
+                    ],
+                  )))
         ],
       ),
     );
   }
 }
-
 
 class MeBottomList extends StatefulWidget {
   const MeBottomList({Key? key}) : super(key: key);
@@ -157,10 +155,13 @@ class _MeBottomListState extends State<MeBottomList> {
       child: Row(
         children: [
           Container(
-            margin:
-            EdgeInsets.only(left: 16, top: 8, bottom: 6, right: 16),
+            margin: EdgeInsets.only(left: 16, top: 8, bottom: 6, right: 16),
             alignment: Alignment.centerLeft,
-            child: Image.asset("assets/images/me_setting.png",width: 22,height: 22,),
+            child: Image.asset(
+              "assets/images/me_setting.png",
+              width: 22,
+              height: 22,
+            ),
           ),
           Container(
             alignment: Alignment.center,
@@ -170,10 +171,15 @@ class _MeBottomListState extends State<MeBottomList> {
               style: TextStyle(fontSize: 17, color: Color(0xFF333333)),
             ),
           ),
-          Expanded(child: Container(
+          Expanded(
+              child: Container(
             alignment: Alignment.centerRight,
             padding: EdgeInsets.only(right: 16),
-            child: Image.asset("assets/images/dis_arrow.png",width: 8,height: 12.5,),
+            child: Image.asset(
+              "assets/images/dis_arrow.png",
+              width: 8,
+              height: 12.5,
+            ),
           )),
         ],
       ),

@@ -11,6 +11,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../request/config.dart';
 import '../../request/request/request.dart';
+import '../../utils/manager/request_manager.dart';
 import '../../utils/storage/storage_shared.dart';
 import '../../constant/cache_key.dart';
 
@@ -44,7 +45,11 @@ class _LoginPage extends State<LoginPage> {
       List<search_login_data> requestOrgList = [];
 
       var response = await Request().post(Login.SEARCH_ORG,
-          data:{"name": orgName, "page": 1, "page_size": 10000},options: Options(headers: {"RequestStack": json.encode(API.REQUEST_STACK),"content-type":Headers.formUrlEncodedContentType}));
+          data: {"name": orgName, "page": 1, "page_size": 10000},
+          options: Options(headers: {
+            "RequestStack": json.encode(API.REQUEST_STACK),
+            "content-type": Headers.formUrlEncodedContentType
+          }));
 
       if (response["state"] != 1) {
         return;
@@ -112,21 +117,27 @@ class _LoginPage extends State<LoginPage> {
             API().requestHost = hostApi;
             // 设置请求的Host
             Request().reloadNetBaseUrl();
+            // 设置Header
+            RequestManager.setUserHeader(
+                res["token"], res["sub_org_key"], appInfoMap);
 
             var accountRes = await AccountManager.loginByAccountId(
-                res["accountId"],
-                res["token"],
-                res["sub_org_key"],
-                appInfoMap);
-
-            print(accountRes);
+                res["accountId"], res["token"], res["sub_org_key"], appInfoMap);
 
             if (accountRes["state"] != 1) {
               Fluttertoast.showToast(
                   msg: accountRes["msg"], gravity: ToastGravity.CENTER);
             } else {
+              // 存储用户信息
               StorageShared().setStorage(CacheKey.loginState, "LoginState");
-              StorageShared().setStorage(CacheKey.accountId, res["accountId"]);
+              StorageShared()
+                  .setStorage(CacheKey.accountId, accountRes["accountId"]);
+              StorageShared()
+                  .setStorage(CacheKey.chatId, accountRes["data"]["chat_id"]);
+              StorageShared().setStorage(
+                  CacheKey.appUserInfo(accountRes["data"]["chat_id"]),
+                  accountRes["data"]);
+
               Navigator.of(context).pushAndRemoveUntil(
                   CupertinoPageRoute(builder: (context) {
                 return RootPage();

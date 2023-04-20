@@ -13,6 +13,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  equatable: any
+  json_annotation: any
+  freezed_annotation: any
   cupertino_icons: ^1.0.2
   # toast
   fluttertoast: ^8.2.1
@@ -35,6 +38,9 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  json_serializable: any
+  build_runner: any
+  freezed: any
 
 flutter:
 

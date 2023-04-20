@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_im/utils/manager/account_manager.dart';
 import 'message_details.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_im/widgets/appbar/main_appbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-
 
 import '../../request/request/request.dart';
 import '../../widgets/doalog/more_doalog.dart';
@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
               child: ListView.builder(
             itemBuilder: (context, index) {
               return GestureDetector(
-                onTap: (){
+                onTap: () {
                   // 点击跳转到新的页面 MessageDetails()
                   Navigator.of(context).push(
                     MaterialPageRoute(builder: (context) => MessageDetails()),
@@ -85,43 +85,43 @@ class _HomePageState extends State<HomePage> {
                     ),
                     Expanded(
                         child: Container(
-                          padding: EdgeInsets.only(top: 5),
-                          height: 71,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                      padding: EdgeInsets.only(top: 5),
+                      height: 71,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
                             children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                      child: Text(mockData[index],
-                                          style: TextStyle(
-                                            color: Color(0xFF333333),
-                                            fontSize: 17,
-                                          ))),
-                                  Container(
-                                    padding: EdgeInsets.only(right: 16),
-                                    child: Text("昨天15:20",
-                                        style: TextStyle(
-                                          color: Color(0xFFCCCCCC),
-                                          fontSize: 12,
-                                        )),
-                                  ),
-                                ],
+                              Expanded(
+                                  child: Text(mockData[index],
+                                      style: TextStyle(
+                                        color: Color(0xFF333333),
+                                        fontSize: 17,
+                                      ))),
+                              Container(
+                                padding: EdgeInsets.only(right: 16),
+                                child: Text("昨天15:20",
+                                    style: TextStyle(
+                                      color: Color(0xFFCCCCCC),
+                                      fontSize: 12,
+                                    )),
                               ),
-                              SizedBox(
-                                height: 7.5,
-                              ),
-                              Text("聊天记录",
-                                  style: TextStyle(
-                                      color: Color(0xFF999999), fontSize: 14))
                             ],
                           ),
-                          decoration: BoxDecoration(
-                              border: Border(
-                                  bottom: BorderSide(
-                                    color: Color(0xFFEEEEEE),
-                                  ))),
-                        ))
+                          SizedBox(
+                            height: 7.5,
+                          ),
+                          Text("聊天记录",
+                              style: TextStyle(
+                                  color: Color(0xFF999999), fontSize: 14))
+                        ],
+                      ),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(
+                        color: Color(0xFFEEEEEE),
+                      ))),
+                    ))
                   ],
                 ),
               );
