@@ -13,6 +13,8 @@ class CacheKey {
 
   static String requestHeader = "request_header";
 
+  static String host = "host";
+
   // 单独用户的appid
   static String appUserInfo(String chatId) {
     return CacheKey.appUser + "-" + chatId;

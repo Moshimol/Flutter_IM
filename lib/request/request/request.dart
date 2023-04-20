@@ -1,6 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_im/constant/cache_key.dart';
 import 'package:flutter_im/request/request/request_interceptor.dart';
 import 'package:flutter_im/request/config.dart';
+import 'package:flutter_im/utils/manager/request_manager.dart';
+
+import '../../utils/storage/storage_shared.dart';
 
 class Request {
   static const int CONNECT_TIMEOUT = 300000;
@@ -15,6 +19,7 @@ class Request {
   CancelToken _cancelToken = new CancelToken();
 
   Request._internal() {
+    // 获取当前的Host信息
     BaseOptions options = BaseOptions(
         baseUrl:
             API().requestHost.length > 0 ? API().requestHost : API.SEARCH_HOST,
@@ -45,6 +50,7 @@ class Request {
       connectTimeout: Duration(milliseconds: CONNECT_TIMEOUT),
       receiveTimeout: Duration(milliseconds: RECEIVE_TIMEOUT),
     );
+    RequestManager().init();
   }
 
   void reloadNetBaseUrl() {

@@ -43,34 +43,12 @@ class AccountManager {
     StorageShared().removeStorage(CacheKey.loginState);
   }
 
-
-
   // 根据account_id 去登陆
   static loginByAccountId(String accountId, String token, String subKey,
       Map<String, dynamic> other) async {
-    Map<String, dynamic> header = {
-      "Authorization": token,
-      "SubOrgKey": subKey,
-      "RequestStack": jsonEncode([
-        {
-          "appid": other["appid"],
-          "appkey": other["appkey"],
-          "channel": other["channel"],
-        },
-        {
-          "appid": "yb1t50npewrab4gorlizfsxwjsvqyz6u",
-          "channelAlias": "default",
-        },
-        {
-          "appid": "i9wzpz8ntvlhrfcetw20lk4b7acnbuds",
-          "channelAlias": "default",
-        },
-      ])
-    };
 
     var res = await Request().post(Login.LoginByAccount,
-        data: {"app_type": AppType, "account_id": accountId, "flag": 1},
-        options: Options(headers: header));
+        data: {"app_type": AppType, "account_id": accountId, "flag": 1},);
 
     return res;
   }
@@ -80,4 +58,6 @@ class AccountManager {
     var res = Request().post(Login.CleanBadge);
     return res;
   }
+
+  // 清除
 }

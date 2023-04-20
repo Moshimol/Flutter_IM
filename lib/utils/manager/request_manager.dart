@@ -1,14 +1,19 @@
 import 'dart:convert';
 
+import 'package:flutter_im/constant/cache_key.dart';
+import 'package:flutter_im/request/config.dart';
+
 import '../../request/request/request.dart';
+import '../storage/storage_shared.dart';
 
 class RequestManager {
   // 初始化网络请求
   void init(){
-    var header = RequestManager.getUserHeader();
-    if (header != null) {
-      Request().setHeader(header);
-    }
+    RequestManager.getUserHeader().then((value) {
+      if (value != null) {
+        Request().setHeader(value);
+      }
+    });
   }
 
   // 设置header
@@ -32,11 +37,12 @@ class RequestManager {
         },
       ])
     };
+    StorageShared().setStorage(CacheKey.requestHeader, header);
     Request().setHeader(header);
   }
 
-  static Map<String, dynamic> getUserHeader() {
-    
-    return {};
+  static Future<Map<String, dynamic>> getUserHeader() async {
+    var res =  await StorageShared().getStorage(CacheKey.requestHeader);
+    return res;
   }
 }

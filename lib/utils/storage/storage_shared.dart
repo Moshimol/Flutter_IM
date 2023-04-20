@@ -32,7 +32,6 @@ class StorageShared {
   setStorage(String key, dynamic value) async {
     await _initStorage();
     String type;
-    print("检测开始------");
     // 监测value的类型 如果是Map和List,则转换成JSON，以字符串进行存储
     if (value is Map || value is List) {
       type = 'String';

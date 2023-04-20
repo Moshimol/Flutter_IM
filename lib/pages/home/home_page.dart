@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_im/utils/manager/account_manager.dart';
+import '../../utils/manager/message_manager.dart';
+import '../../utils/manager/request_manager.dart';
 import 'message_details.dart';
 
 import 'package:flutter/material.dart';
@@ -20,7 +22,18 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<String> mockData = ["小五", "买买买", "中台设计群", "办公团队"];
-  final dio = Dio();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    AccountManager.clearBadge();
+
+    // 获取当前的列表
+    MessageManager.getMessageList().then((value) {
+      print(value);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +43,9 @@ class _HomePageState extends State<HomePage> {
           rightIconName: "assets/images/message_add.png",
           titleName: "消息",
           onClickTap: (clickContext) {
+            RequestManager.getUserHeader().then((value) {
+              print(value);
+            });
             moreDialog(clickContext);
           }),
       body: Column(

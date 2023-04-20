@@ -7,8 +7,10 @@ import 'package:flutter_im/request/request/request.dart';
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
-  API().init();
+  WidgetsFlutterBinding.ensureInitialized();
+
   Request().init();
+  API().init();
   // 初始化
   runApp(const MyApp());
 }

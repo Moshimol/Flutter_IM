@@ -108,6 +108,7 @@ class _LoginPage extends State<LoginPage> {
           LBLoading.dissMiss();
 
           var res = response.data["data"];
+          print(response.data);
           print(res);
 
           if (response.data["state"] != 1) {
