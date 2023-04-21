@@ -35,11 +35,11 @@ class _HomePageState extends State<HomePage> {
     // 获取当前的列表
     MessageManager.getMessageList().then((value) {
       if (value["state"] != 1) {
-
       } else {
         var data = value["data"];
         List responseJson = data;
-        List<MessageSingle> msgList = responseJson.map((m) => new MessageSingle.fromJson(m)).toList();
+        List<MessageSingle> msgList =
+            responseJson.map((m) => new MessageSingle.fromJson(m)).toList();
 
         setState(() {
           print("--------");
@@ -109,12 +109,18 @@ class _HomePageState extends State<HomePage> {
                           left: 16, top: 16, bottom: 16, right: 18),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(2),
-                        child: CachedNetworkImage(
-                          imageUrl: "http://via.placeholder.com/440x440",
-                          width: 44,
-                          height: 44,
-                          fit: BoxFit.cover,
-                        ),
+                        child: msg.chatType == 2
+                            ? Image.asset(
+                                "assets/images/group_avatar.png",
+                                width: 44,
+                                height: 44,
+                              )
+                            : CachedNetworkImage(
+                                imageUrl: HomePageUtils.getAvatar(msg),
+                                width: 44,
+                                height: 44,
+                                fit: BoxFit.cover,
+                              ),
                       ),
                     ),
                     Expanded(
@@ -127,7 +133,8 @@ class _HomePageState extends State<HomePage> {
                           Row(
                             children: [
                               Expanded(
-                                  child: Text(HomePageUtils.getName(singleData!,msg),
+                                  child: Text(
+                                      HomePageUtils.getName(singleData!, msg),
                                       style: TextStyle(
                                         color: Color(0xFF333333),
                                         fontSize: 17,
@@ -177,5 +184,13 @@ class HomePageUtils {
       msgName = data.groupInfo!.name!;
     }
     return msgName;
+  }
+
+  static String getAvatar(MessageSingle data) {
+    String iconUlr = "";
+    if (data.chatType == 1) {
+      iconUlr = data.userInfo!.avatar!;
+    }
+    return iconUlr;
   }
 }
