@@ -135,17 +135,19 @@ class _HomePageState extends State<HomePage> {
                               Expanded(
                                   child: Text(
                                       HomePageUtils.getName(singleData!, msg),
+                                      maxLines: 1,
                                       style: TextStyle(
-                                        color: Color(0xFF333333),
-                                        fontSize: 17,
-                                      ))),
+                                          color: Color(0xFF333333),
+                                          fontSize: 17,
+                                          overflow: TextOverflow.ellipsis))),
                               Container(
                                 padding: EdgeInsets.only(right: 16),
-                                child: Text("昨天15:20",
-                                    style: TextStyle(
-                                      color: Color(0xFFCCCCCC),
-                                      fontSize: 12,
-                                    )),
+                                child:
+                                    Text(Utils.getTimeDifference(msg.created!),
+                                        style: TextStyle(
+                                          color: Color(0xFFCCCCCC),
+                                          fontSize: 12,
+                                        )),
                               ),
                             ],
                           ),
