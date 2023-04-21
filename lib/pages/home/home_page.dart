@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_im/utils/manager/account_manager.dart';
 import 'package:flutter_im/utils/module_model/message/message_single.dart';
 import 'package:flutter_im/utils/utils.dart';
+import '../../constant/cache_key.dart';
 import '../../utils/manager/message_manager.dart';
 import '../../utils/manager/request_manager.dart';
 import 'message_details.dart';
@@ -31,7 +32,6 @@ class _HomePageState extends State<HomePage> {
     // TODO: implement initState
     super.initState();
     AccountManager.clearBadge();
-
     // 获取当前的列表
     MessageManager.getMessageList().then((value) {
       if (value["state"] != 1) {
@@ -61,9 +61,6 @@ class _HomePageState extends State<HomePage> {
           rightIconName: "assets/images/message_add.png",
           titleName: "消息",
           onClickTap: (clickContext) {
-            RequestManager.getUserHeader().then((value) {
-              print(value);
-            });
             moreDialog(clickContext);
           }),
       body: Column(
@@ -175,9 +172,9 @@ class HomePageUtils {
   static String getName(Map<String, dynamic> msg, MessageSingle data) {
     String msgName = "1";
     if (data.chatType == 1) {
-      msgName = "个人";
+      msgName = data.userInfo!.nickname!;
     } else {
-      msgName = "群聊";
+      msgName = data.groupInfo!.name!;
     }
     return msgName;
   }

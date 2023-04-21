@@ -37,7 +37,7 @@ class AccountManager {
 
   // 退出所有的处理方式
   static cleanAccount() {
-    API().requestHost = "";
+    API.requestHost = "";
     Request().reloadNetBaseUrl();
     Request().removeAllHeader();
     StorageShared().removeStorage(CacheKey.loginState);

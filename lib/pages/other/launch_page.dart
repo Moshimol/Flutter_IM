@@ -44,11 +44,13 @@ class _LaunchPage extends State<LaunchPage> {
           new MaterialPageRoute(builder: (context) => new LoginPage()),
           (Route<dynamic> rout) => false);
     } else {
-      // 如果已经登录的话 再设置Host 相关
-      API().requestHost = StorageShared().getStorage(CacheKey.host) as String;
-      Navigator.of(context).pushAndRemoveUntil(
-          new MaterialPageRoute(builder: (context) => new RootPage()),
-          (Route<dynamic> rout) => false);
+      // 如果已经登录的话 再设置Host
+      StorageShared().getStorage(CacheKey.host).then((value) {
+        API.requestHost = value;
+        Navigator.of(context).pushAndRemoveUntil(
+            new MaterialPageRoute(builder: (context) => new RootPage()),
+                (Route<dynamic> rout) => false);
+      });
     }
   }
 

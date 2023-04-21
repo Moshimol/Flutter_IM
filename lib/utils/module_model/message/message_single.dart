@@ -27,7 +27,8 @@ class MessageSingle {
       String? createdAt, 
       String? retract, 
       num? chatType, 
-      GroupInfo? groupInfo, 
+      GroupInfo? groupInfo,
+      UserInfo ? userInfo,
       String? unreadNum, 
       String? nickname, 
       String? senderChatId, 
@@ -44,6 +45,7 @@ class MessageSingle {
     _retract = retract;
     _chatType = chatType;
     _groupInfo = groupInfo;
+    _userInfo = userInfo;
     _unreadNum = unreadNum;
     _nickname = nickname;
     _senderChatId = senderChatId;
@@ -63,6 +65,7 @@ class MessageSingle {
     _retract = json['retract'];
     _chatType = json['chat_type'];
     _groupInfo = json['group_info'] != null ? GroupInfo.fromJson(json['group_info']) : null;
+    _userInfo = json['user_info'] != null ? UserInfo.fromJson(json['user_info']) : null;
     _unreadNum = json['unread_num'];
     _nickname = json['nickname'];
     _senderChatId = json['sender_chat_id'];
@@ -80,6 +83,7 @@ class MessageSingle {
   String? _retract;
   num? _chatType;
   GroupInfo? _groupInfo;
+  UserInfo ? _userInfo;
   String? _unreadNum;
   String? _nickname;
   String? _senderChatId;
@@ -96,6 +100,7 @@ MessageSingle copyWith({  String? isExternal,
   String? retract,
   num? chatType,
   GroupInfo? groupInfo,
+  UserInfo ? userInfo,
   String? unreadNum,
   String? nickname,
   String? senderChatId,
@@ -112,6 +117,7 @@ MessageSingle copyWith({  String? isExternal,
   retract: retract ?? _retract,
   chatType: chatType ?? _chatType,
   groupInfo: groupInfo ?? _groupInfo,
+  userInfo: userInfo ?? _userInfo,
   unreadNum: unreadNum ?? _unreadNum,
   nickname: nickname ?? _nickname,
   senderChatId: senderChatId ?? _senderChatId,
@@ -129,6 +135,7 @@ MessageSingle copyWith({  String? isExternal,
   String? get retract => _retract;
   num? get chatType => _chatType;
   GroupInfo? get groupInfo => _groupInfo;
+  UserInfo? get userInfo => _userInfo;
   String? get unreadNum => _unreadNum;
   String? get nickname => _nickname;
   String? get senderChatId => _senderChatId;
@@ -149,6 +156,9 @@ MessageSingle copyWith({  String? isExternal,
     map['chat_type'] = _chatType;
     if (_groupInfo != null) {
       map['group_info'] = _groupInfo?.toJson();
+    }
+    if (_userInfo != null) {
+      map['user_info'] = _userInfo?.toJson();
     }
     map['unread_num'] = _unreadNum;
     map['nickname'] = _nickname;
@@ -216,6 +226,102 @@ GroupInfo copyWith({  String? appkey,
     map['gid'] = _gid;
     map['name'] = _name;
     map['avatar'] = _avatar;
+    return map;
+  }
+
+}
+
+/// appkey : "8e226bed7b5647acbfd37038118e968c"
+/// channel : "32"
+/// sub_org_key : "57d078fa2b5648e8ad2f65dd5a4dc54b"
+/// sub_org_name : "GUI"
+/// account_id : "055f550860ed13bb0ebf8cd0c74c20f8"
+/// chat_id : "d98815d1qao00t6930053d41220509523yoeacpj"
+/// nickname : "黄凌霄"
+/// avatar : "https://s2-cdn.oneitfarm.com/FnclIh4L_-YxxVHDLe-_eAyICD2E"
+/// type : "1"
+class UserInfo {
+  UserInfo({
+    String? appkey,
+    String? channel,
+    String? subOrgKey,
+    String? subOrgName,
+    String? accountId,
+    String? chatId,
+    String? nickname,
+    String? avatar,
+    String? type,}){
+    _appkey = appkey;
+    _channel = channel;
+    _subOrgKey = subOrgKey;
+    _subOrgName = subOrgName;
+    _accountId = accountId;
+    _chatId = chatId;
+    _nickname = nickname;
+    _avatar = avatar;
+    _type = type;
+  }
+
+  UserInfo.fromJson(dynamic json) {
+    _appkey = json['appkey'];
+    _channel = json['channel'];
+    _subOrgKey = json['sub_org_key'];
+    _subOrgName = json['sub_org_name'];
+    _accountId = json['account_id'];
+    _chatId = json['chat_id'];
+    _nickname = json['nickname'];
+    _avatar = json['avatar'];
+    _type = json['type'];
+  }
+  String? _appkey;
+  String? _channel;
+  String? _subOrgKey;
+  String? _subOrgName;
+  String? _accountId;
+  String? _chatId;
+  String? _nickname;
+  String? _avatar;
+  String? _type;
+  UserInfo copyWith({  String? appkey,
+    String? channel,
+    String? subOrgKey,
+    String? subOrgName,
+    String? accountId,
+    String? chatId,
+    String? nickname,
+    String? avatar,
+    String? type,
+  }) => UserInfo(  appkey: appkey ?? _appkey,
+    channel: channel ?? _channel,
+    subOrgKey: subOrgKey ?? _subOrgKey,
+    subOrgName: subOrgName ?? _subOrgName,
+    accountId: accountId ?? _accountId,
+    chatId: chatId ?? _chatId,
+    nickname: nickname ?? _nickname,
+    avatar: avatar ?? _avatar,
+    type: type ?? _type,
+  );
+  String? get appkey => _appkey;
+  String? get channel => _channel;
+  String? get subOrgKey => _subOrgKey;
+  String? get subOrgName => _subOrgName;
+  String? get accountId => _accountId;
+  String? get chatId => _chatId;
+  String? get nickname => _nickname;
+  String? get avatar => _avatar;
+  String? get type => _type;
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['appkey'] = _appkey;
+    map['channel'] = _channel;
+    map['sub_org_key'] = _subOrgKey;
+    map['sub_org_name'] = _subOrgName;
+    map['account_id'] = _accountId;
+    map['chat_id'] = _chatId;
+    map['nickname'] = _nickname;
+    map['avatar'] = _avatar;
+    map['type'] = _type;
     return map;
   }
 

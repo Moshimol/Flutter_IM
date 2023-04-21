@@ -93,6 +93,8 @@ class _LoginPage extends State<LoginPage> {
 
           String hostApi = "https://" + deployInfoDic["backend_host"];
 
+          StorageShared().setStorage(CacheKey.host, hostApi);
+
           Map<String, dynamic> appInfoMap = {
             "appid": deployInfoDic["deploy_appid"],
             "appkey": deployInfoDic["deploy_appkey"],
@@ -115,7 +117,7 @@ class _LoginPage extends State<LoginPage> {
             Fluttertoast.showToast(
                 msg: response.data["msg"], gravity: ToastGravity.CENTER);
           } else {
-            API().requestHost = hostApi;
+            API.requestHost = hostApi;
             // 设置请求的Host
             Request().reloadNetBaseUrl();
             // 设置Header
