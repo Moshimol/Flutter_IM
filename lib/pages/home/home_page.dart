@@ -3,54 +3,44 @@ import 'dart:convert';
 import 'package:flutter_im/utils/manager/account_manager.dart';
 import 'package:flutter_im/utils/module_model/message/message_single.dart';
 import 'package:flutter_im/utils/utils.dart';
-import '../../constant/cache_key.dart';
 import '../../utils/manager/message_manager.dart';
-import '../../utils/manager/request_manager.dart';
 import 'message_details.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_im/widgets/appbar/main_appbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-import '../../request/request/request.dart';
 import '../../widgets/doalog/more_doalog.dart';
-import 'package:flutter_im/widgets/loading/lb_loading.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
 
+  const HomePage({Key? key}) : super(key: key);
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  List<MessageSingle> messageList = [];
+  Future<List<MessageSingle>>? _messageList;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     AccountManager.clearBadge();
     // 获取当前的列表
-    MessageManager.getMessageList().then((value) {
-      if (value["state"] != 1) {
-      } else {
-        var data = value["data"];
-        List responseJson = data;
-        List<MessageSingle> msgList =
-            responseJson.map((m) => new MessageSingle.fromJson(m)).toList();
+    _messageList = _getMessageListFuture();
+  }
 
-        setState(() {
-          print("--------");
-          print(json.encode(msgList.first.msg));
+  Future<List<MessageSingle>> _getMessageListFuture() async {
+    final value = await MessageManager.getMessageList();
 
-          print(jsonDecode(msgList.first.msg!));
+    if (value["state"] != 1) {
+      // Data fetching failed.
+      throw Exception('Failed to load message list.');
+    }
 
-          messageList = msgList;
-        });
-      }
-    });
+    List responseJson = value["data"];
+    List<MessageSingle> msgList = responseJson.map((m) => new MessageSingle.fromJson(m)).toList();
+    return msgList;
   }
 
   @override
@@ -90,87 +80,94 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           Expanded(
-              child: ListView.builder(
-            itemBuilder: (context, index) {
-              MessageSingle msg = messageList[index];
-              var singleData = jsonDecode(msg.msg!);
-
-              return GestureDetector(
-                onTap: () {
-                  // 点击跳转到新的页面 MessageDetails()
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => MessageDetails()),
-                  );
-                },
-                child: Row(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(
-                          left: 16, top: 16, bottom: 16, right: 18),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(2),
-                        child: msg.chatType == 2
-                            ? Image.asset(
-                                "assets/images/group_avatar.png",
-                                width: 44,
-                                height: 44,
-                              )
-                            : CachedNetworkImage(
-                                imageUrl: HomePageUtils.getAvatar(msg),
-                                width: 44,
-                                height: 44,
-                                fit: BoxFit.cover,
-                              ),
-                      ),
-                    ),
-                    Expanded(
-                        child: Container(
-                      padding: EdgeInsets.only(top: 5),
-                      height: 71,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
+              child: FutureBuilder<List<MessageSingle>>(
+                  future: _messageList,
+                  builder: (BuildContext context, AsyncSnapshot<List<MessageSingle>> snapshot) {
+                    List<MessageSingle> data = snapshot.data ?? [];
+                    return ListView.builder(
+                      itemBuilder: (BuildContext context, int index) {
+                        MessageSingle msg = data[index];
+                        var singleData = jsonDecode(msg.msg!);
+                        return GestureDetector(
+                          onTap: () {
+                            // 点击跳转到新的页面 MessageDetails()
+                            Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => MessageDetails()),
+                            );
+                          },
+                          child: Row(
                             children: [
-                              Expanded(
-                                  child: Text(
-                                      HomePageUtils.getName(singleData!, msg),
-                                      maxLines: 1,
-                                      style: TextStyle(
-                                          color: Color(0xFF333333),
-                                          fontSize: 17,
-                                          overflow: TextOverflow.ellipsis))),
                               Container(
-                                padding: EdgeInsets.only(right: 16),
-                                child:
-                                    Text(Utils.getTimeDifference(msg.created!),
-                                        style: TextStyle(
-                                          color: Color(0xFFCCCCCC),
-                                          fontSize: 12,
-                                        )),
+                                margin: EdgeInsets.only(
+                                    left: 16, top: 16, bottom: 16, right: 18),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(2),
+                                  child: msg.chatType == 2
+                                      ? Image.asset(
+                                    "assets/images/group_avatar.png",
+                                    width: 44,
+                                    height: 44,
+                                  )
+                                      : CachedNetworkImage(
+                                    imageUrl: HomePageUtils.getAvatar(msg),
+                                    width: 44,
+                                    height: 44,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
                               ),
+                              Expanded(
+                                  child: Container(
+                                    padding: EdgeInsets.only(top: 5),
+                                    height: 71,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                                child: Text(
+                                                    HomePageUtils.getName(singleData!, msg),
+                                                    maxLines: 1,
+                                                    style: TextStyle(
+                                                        color: Color(0xFF333333),
+                                                        fontSize: 17,
+                                                        overflow: TextOverflow.ellipsis))),
+                                            Container(
+                                              padding: EdgeInsets.only(right: 16),
+                                              child:
+                                              Text(Utils.getTimeDifference(msg.created!),
+                                                  style: TextStyle(
+                                                    color: Color(0xFFCCCCCC),
+                                                    fontSize: 12,
+                                                  )),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 7.5,
+                                        ),
+                                        Text(Utils.getMsgType(singleData),
+                                            style: TextStyle(
+                                                color: Color(0xFF999999), fontSize: 14))
+                                      ],
+                                    ),
+                                    decoration: BoxDecoration(
+                                        border: Border(
+                                            bottom: BorderSide(
+                                              color: Color(0xFFEEEEEE),
+                                            ))),
+                                  ))
                             ],
                           ),
-                          SizedBox(
-                            height: 7.5,
-                          ),
-                          Text(Utils.getMsgType(singleData),
-                              style: TextStyle(
-                                  color: Color(0xFF999999), fontSize: 14))
-                        ],
-                      ),
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                        color: Color(0xFFEEEEEE),
-                      ))),
-                    ))
-                  ],
-                ),
-              );
-            },
-            itemCount: messageList.length,
-          ))
+                        );
+                      },
+                      itemCount: data.length,
+                    );
+                  }
+              ),
+                // future and builder properties
+          )
         ],
       ),
     );
