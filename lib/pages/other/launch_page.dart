@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:flutter_im/pages/login/login_page.dart';
 import 'package:flutter_im/pages/other/root_page.dart';
+import 'package:flutter_im/request/request/request.dart';
 import 'dart:async';
 import 'package:flutter_im/utils/storage/storage_shared.dart';
 
@@ -47,6 +48,7 @@ class _LaunchPage extends State<LaunchPage> {
       // 如果已经登录的话 再设置Host
       StorageShared().getStorage(CacheKey.host).then((value) {
         API.requestHost = value;
+        Request().reloadNetBaseUrl();
         Navigator.of(context).pushAndRemoveUntil(
             new MaterialPageRoute(builder: (context) => new RootPage()),
                 (Route<dynamic> rout) => false);

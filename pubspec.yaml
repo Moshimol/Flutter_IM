@@ -34,6 +34,8 @@ dependencies:
   flutter_easyloading: ^3.0.5
   # 弹框
   adaptive_dialog: ^1.8.3
+  # 拼音
+  lpinyin: ^2.0.3
 
 dev_dependencies:
   flutter_test:

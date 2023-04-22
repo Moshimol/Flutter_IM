@@ -1,6 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_im/utils/manager/contact_manager.dart';
 import 'package:flutter_im/widgets/appbar/main_appbar.dart';
+
+import '../../utils/module_model/contact/contact_data.dart';
+import 'package:lpinyin/lpinyin.dart';
 
 final double height = 36;
 
@@ -22,7 +26,7 @@ class _ContactPageState extends State<ContactPage> {
   List<Map<String, List<Map<String, String>>>> contactItems = [
     {
       'A': [
-        {'name': 'A', 'avatar': 'http://via.placeholder.com/440x440'},
+        {'name': 'de,', 'avatar': 'https://s2-cdn.oneitfarm.com/FpiT0YQLPvrW5aGxsCfRWTsbslLp'},
         {'name': 'A1', 'avatar': 'http://via.placeholder.com/440x440'},
         {'name': 'A2', 'avatar': 'http://via.placeholder.com/440x440'}
       ]
@@ -38,6 +42,31 @@ class _ContactPageState extends State<ContactPage> {
       ]
     }
   ];
+
+  Future<List<ContactData>> _getContactListFuture() async {
+    final value = await ContactManager.getContactList();
+    if (value["state"] != 1) {
+      // Data fetching failed.
+      throw Exception('Failed to load message list.');
+    }
+    List responseJson = value["data"];
+    List<ContactData> contactList = responseJson.map((m) => new ContactData.fromJson(m)).toList();
+    return contactList;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getContactListFuture().then((value) {
+      // 对value进行处理
+      List<ContactData> contactList = value;
+
+      for (int i = 0; i < contactList.length; i++) {
+        ContactData data = contactList[i];
+        print(PinyinHelper.getFirstWordPinyin(data.name!));
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
