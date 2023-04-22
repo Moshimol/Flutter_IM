@@ -26,7 +26,7 @@ class _ContactPageState extends State<ContactPage> {
   List<Map<String, List<Map<String, String>>>> contactItems = [
     {
       'A': [
-        {'name': 'de,', 'avatar': 'https://s2-cdn.oneitfarm.com/FpiT0YQLPvrW5aGxsCfRWTsbslLp'},
+        {'name': 'A,', 'avatar': 'https://s2-cdn.oneitfarm.com/FpiT0YQLPvrW5aGxsCfRWTsbslLp'},
         {'name': 'A1', 'avatar': 'http://via.placeholder.com/440x440'},
         {'name': 'A2', 'avatar': 'http://via.placeholder.com/440x440'}
       ]
@@ -42,6 +42,8 @@ class _ContactPageState extends State<ContactPage> {
       ]
     }
   ];
+
+  Map<String, List<Map<String, String>>> contactDic = {};
 
   Future<List<ContactData>> _getContactListFuture() async {
     final value = await ContactManager.getContactList();
@@ -63,7 +65,13 @@ class _ContactPageState extends State<ContactPage> {
 
       for (int i = 0; i < contactList.length; i++) {
         ContactData data = contactList[i];
-        print(PinyinHelper.getFirstWordPinyin(data.name!));
+        var firstChr = PinyinHelper.getFirstWordPinyin(data.name!).toUpperCase().substring(0,1);
+
+        if (contactDic.containsKey(firstChr)) {
+
+        } else {
+
+        }
       }
     });
   }
