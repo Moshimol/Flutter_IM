@@ -16,7 +16,7 @@ class CacheKey {
   static String host = "host";
 
   // 单独用户的appid
-  static String appUserInfo(String chatId) {
-    return CacheKey.appUser + "-" + chatId;
+  static String appUserInfo(String accountId) {
+    return CacheKey.appUser + "-" + accountId;
   }
 }

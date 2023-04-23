@@ -2,7 +2,11 @@ import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_im/pages/me/setting_page.dart';
+import '../../constant/cache_key.dart';
+import '../../utils/module_model/user/user_data.dart';
+import '../../utils/storage/storage_shared.dart';
 import '../../widgets/appbar/main_appbar.dart';
+import 'me_info_page.dart';
 
 class MePage extends StatefulWidget {
   const MePage({Key? key}) : super(key: key);
@@ -12,6 +16,21 @@ class MePage extends StatefulWidget {
 }
 
 class _MePageState extends State<MePage> {
+  Future<UserData>? _pageUserData;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageUserData = _getAccountInfoFuture();
+  }
+  
+  Future<UserData> _getAccountInfoFuture() async {
+    var accountId = await StorageShared().getStorage(CacheKey.accountId);
+    var accountInfo = await StorageShared().getStorage(CacheKey.appUserInfo(accountId));
+    UserData userData = UserData.fromJson(accountInfo);
+    return userData;
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +46,20 @@ class _MePageState extends State<MePage> {
             child: ListView(
               children: [
                 // 顶部和中间部分
-                MeTopWidget(),
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => MeInfoPage()),
+                    );
+                  },
+                  child: FutureBuilder<UserData>(
+                    future: _pageUserData,
+                    builder: (BuildContext context, AsyncSnapshot<UserData> snapshot) {
+                      UserData data = snapshot.data ?? UserData(name: "lu");
+                      return MeTopWidget(data: data);
+                    },
+                  ),
+                ),
                 Container(
                   color: Color(0xFFEEEEEE),
                   height: 8.5,
@@ -52,7 +84,9 @@ class _MePageState extends State<MePage> {
 }
 
 class MeTopWidget extends StatefulWidget {
-  const MeTopWidget({Key? key}) : super(key: key);
+  final UserData data;
+
+  const MeTopWidget({Key? key,required this.data}) : super(key: key);
 
   @override
   State<MeTopWidget> createState() => _MeTopWidgetState();
@@ -72,7 +106,7 @@ class _MeTopWidgetState extends State<MeTopWidget> {
               borderRadius: BorderRadius.circular(4),
               child: CachedNetworkImage(
                 imageUrl:
-                    "https://p3-passport.byteimg.com/img/user-avatar/d4e4ff8f64d24fa24208deb7b926f4ca~180x180.awebp",
+                widget.data.avatar ?? "https://p3-passport.byteimg.com/img/user-avatar/d4e4ff8f64d24fa24208deb7b926f4ca~180x180.awebp",
                 width: 64,
                 height: 64,
                 fit: BoxFit.cover,
@@ -91,14 +125,14 @@ class _MeTopWidgetState extends State<MeTopWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Moshimol",
+                  widget.data.name ?? "1",
                   style: TextStyle(
                       color: Color(0xff333333),
                       fontSize: 20,
                       fontWeight: FontWeight.w200),
                 ),
                 Text(
-                  "账号: 123456789101121314151617181920",
+                  "账号: ${widget.data.accountId}",
                   style: TextStyle(
                     color: Color(0xff999999),
                     fontSize: 16,

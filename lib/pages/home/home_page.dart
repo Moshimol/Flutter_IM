@@ -26,6 +26,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     AccountManager.clearBadge();
+    print("开始#");
     // 获取当前的列表
     _messageList = _getMessageListFuture();
   }

@@ -50,7 +50,7 @@ class _RootPageState extends State<RootPage> {
             onTap: (index) {
               currentIndex = index;
               pageController.jumpToPage(currentIndex);
-              setState(() {});
+              // setState(() {});
             },
             items: items.map((e) {
               BottomModel model = e;

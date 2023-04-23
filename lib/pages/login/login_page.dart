@@ -109,8 +109,6 @@ class _LoginPage extends State<LoginPage> {
           LBLoading.dissMiss();
 
           var res = response.data["data"];
-          print(response.data);
-          print(res);
 
           if (response.data["state"] != 1) {
             Fluttertoast.showToast(
@@ -131,13 +129,15 @@ class _LoginPage extends State<LoginPage> {
                   msg: accountRes["msg"], gravity: ToastGravity.CENTER);
             } else {
               // 存储用户信息
+              print("记录信息");
+              print(accountRes);
               StorageShared().setStorage(CacheKey.loginState, "LoginState");
               StorageShared()
-                  .setStorage(CacheKey.accountId, accountRes["accountId"]);
+                  .setStorage(CacheKey.accountId, accountRes["data"]["account_id"]);
               StorageShared()
                   .setStorage(CacheKey.chatId, accountRes["data"]["chat_id"]);
               StorageShared().setStorage(
-                  CacheKey.appUserInfo(accountRes["data"]["chat_id"]),
+                  CacheKey.appUserInfo(accountRes["data"]["account_id"]),
                   accountRes["data"]);
 
               Navigator.of(context).pushAndRemoveUntil(
