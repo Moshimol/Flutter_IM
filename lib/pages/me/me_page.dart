@@ -1,11 +1,8 @@
-import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_im/pages/me/setting_page.dart';
-import '../../constant/cache_key.dart';
 import '../../utils/global/global_params.dart';
 import '../../utils/module_model/user/user_data.dart';
-import '../../utils/storage/storage_shared.dart';
 import '../../widgets/appbar/main_appbar.dart';
 import 'me_info_page.dart';
 
@@ -21,9 +18,9 @@ class _MePageState extends State<MePage> {
   @override
   void initState() {
     super.initState();
-
+    print("11");
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,7 +39,7 @@ class _MePageState extends State<MePage> {
                 InkWell(
                   onTap: () {
                     Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => MeInfoPage()),
+                      MaterialPageRoute(builder: (context) => MeInfoPage(data: GlobalParams().currentUser,)),
                     );
                   },
                   child: MeTopWidget(),
@@ -78,7 +75,7 @@ class MeTopWidget extends StatefulWidget {
 }
 
 class _MeTopWidgetState extends State<MeTopWidget> {
-  
+
   UserData data = GlobalParams().currentUser;
 
   @override
