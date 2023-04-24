@@ -10,7 +10,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../request/config.dart';
 import '../../request/request/request.dart';
+import '../../utils/global/global_params.dart';
 import '../../utils/manager/request_manager.dart';
+import '../../utils/module_model/user/user_data.dart';
 import '../../utils/storage/storage_shared.dart';
 import '../../constant/cache_key.dart';
 
@@ -139,6 +141,9 @@ class _LoginPage extends State<LoginPage> {
               StorageShared().setStorage(
                   CacheKey.appUserInfo(accountRes["data"]["account_id"]),
                   accountRes["data"]);
+
+              GlobalParams().accountId = accountRes["data"]["account_id"];
+              GlobalParams().currentUser = UserData.fromJson(accountRes["data"]);
 
               Navigator.of(context).pushAndRemoveUntil(
                   CupertinoPageRoute(builder: (context) {

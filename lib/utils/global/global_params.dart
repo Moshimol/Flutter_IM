@@ -7,7 +7,7 @@ class GlobalParams {
   static GlobalParams instance = GlobalParams._internal();
   
   String accountId = "";
-  UserData currentuser = UserData.new();
+  UserData currentUser = UserData.new();
 
   factory GlobalParams() => instance;
   
@@ -16,7 +16,7 @@ class GlobalParams {
      StorageShared().getStorage(CacheKey.accountId).then((value) {
       accountId = value;
       StorageShared().getStorage(CacheKey.appUserInfo(accountId)).then((user){
-        currentuser = UserData.fromJson(user);
+        currentUser = UserData.fromJson(user);
       });
     });
   }

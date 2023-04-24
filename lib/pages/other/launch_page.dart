@@ -9,6 +9,7 @@ import 'package:flutter_im/utils/storage/storage_shared.dart';
 
 import '../../constant/cache_key.dart';
 import '../../request/config.dart';
+import '../../utils/global/global_params.dart';
 
 // 一个容器的组件
 class LaunchPage extends StatefulWidget {
@@ -45,6 +46,7 @@ class _LaunchPage extends State<LaunchPage> {
           new MaterialPageRoute(builder: (context) => new LoginPage()),
           (Route<dynamic> rout) => false);
     } else {
+      GlobalParams();
       // 如果已经登录的话 再设置Host
       StorageShared().getStorage(CacheKey.host).then((value) {
         API.requestHost = value;
