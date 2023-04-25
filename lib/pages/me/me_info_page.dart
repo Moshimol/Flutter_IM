@@ -18,6 +18,8 @@ class _MeInfoPageState extends State<MeInfoPage> {
     super.initState();
   }
 
+  // 点击处理的跳转问题
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,289 +27,159 @@ class _MeInfoPageState extends State<MeInfoPage> {
         titleName: "个人信息",
       ),
       body: Container(
-        color: Colors.white,
+        color: Color(0xFFF5F5F5),
         child: Column(
           children: [
             Expanded(
                 child: ListView(
               children: [
-                Container(
-                  height: 56,
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    children: [
-                      Container(
-                        height: 55,
-                        child: Row(
-                          children: [
-                            Text("头像",
-                                style: TextStyle(
-                                    fontSize: 17, color: Color(0xFF333333))),
-                            Expanded(
-                              child: Container(
-                                padding: EdgeInsets.only(right: 10),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(4),
-                                      child: CachedNetworkImage(
-                                        imageUrl: widget.data.avatar ??
-                                            "https://p3-passport.byteimg.com/img/user-avatar/d4e4ff8f64d24fa24208deb7b926f4ca~180x180.awebp",
-                                        width: 36,
-                                        height: 36,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Image.asset(
-                              "assets/images/dis_arrow.png",
-                              width: 8,
-                              height: 12.5,
-                            )
-                          ],
-                        ),
-                      ),
-                      Container(
-                          decoration: BoxDecoration(
-                              border: Border(
-                        bottom: BorderSide(
-                          color: Color(0xffEEEEEE),
-                        ),
-                      )))
-                    ],
+                MeInfoItem(
+                  needBorder: true,
+                  leftText: "头像",
+                  children: ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: CachedNetworkImage(
+                      imageUrl:
+                          widget.data.avatar!,
+                      width: 36,
+                      height: 36,
+                      fit: BoxFit.cover,
+                    ),
                   ),
+                  onClickTap: (context){
+                    print("点击了头像");
+                  },
                 ),
-                Container(
-                  height: 56,
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    children: [
-                      Container(
-                        height: 55,
-                        child: Row(
-                          children: [
-                            Text("名字",
-                                style: TextStyle(
-                                    fontSize: 17, color: Color(0xFF333333))),
-                            Expanded(
-                              child: Container(
-                                padding: EdgeInsets.only(right: 10),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text("名字",
-                                        style: TextStyle(
-                                            fontSize: 17,
-                                            color: Color(0xFF999999)))
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Image.asset(
-                              "assets/images/dis_arrow.png",
-                              width: 8,
-                              height: 12.5,
-                            )
-                          ],
-                        ),
-                      ),
-                      Container(
-                          decoration: BoxDecoration(
-                              border: Border(
-                        bottom: BorderSide(
-                          color: Color(0xffEEEEEE),
-                        ),
-                      )))
-                    ],
+                MeInfoItem(
+                  needBorder: true,
+                  leftText: "名字",
+                  children: Text(
+                    widget.data.name!,
+                    style: TextStyle(fontSize: 17, color: Color(0xFF999999)),
                   ),
+                  onClickTap: (context){
+                    print("点击了名字");
+                  },
                 ),
-                Container(
-                  height: 56,
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    children: [
-                      Container(
-                        height: 55,
-                        child: Row(
-                          children: [
-                            Text("账号",
-                                style: TextStyle(
-                                    fontSize: 17, color: Color(0xFF333333))),
-                            Expanded(
-                              child: Container(
-                                padding: EdgeInsets.only(right: 10),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(4),
-                                      child: CachedNetworkImage(
-                                        imageUrl: widget.data.avatar ??
-                                            "https://p3-passport.byteimg.com/img/user-avatar/d4e4ff8f64d24fa24208deb7b926f4ca~180x180.awebp",
-                                        width: 36,
-                                        height: 36,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Image.asset(
-                              "assets/images/dis_arrow.png",
-                              width: 8,
-                              height: 12.5,
-                            )
-                          ],
-                        ),
-                      ),
-                      Container(
-                          decoration: BoxDecoration(
-                              border: Border(
-                        bottom: BorderSide(
-                          color: Color(0xffEEEEEE),
-                        ),
-                      )))
-                    ],
+                MeInfoItem(
+                  needBorder: true,
+                  leftText: "账号",
+                  children: Container(
+                    padding: EdgeInsets.only(left: 80),
+                    child: Text(
+                      widget.data.accountId!.substring(0,widget.data.accountId!.length - 15) + "...",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 17, color: Color(0xFF999999)),
+                    ),
                   ),
+                  onClickTap: (context){
+                    print("点击了账号");
+                  },
                 ),
-                Container(
-                  height: 56,
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    children: [
-                      Container(
-                        height: 55,
-                        child: Row(
-                          children: [
-                            Text("我的二维码",
-                                style: TextStyle(
-                                    fontSize: 17, color: Color(0xFF333333))),
-                            Expanded(
-                              child: Container(
-                                padding: EdgeInsets.only(right: 10),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(4),
-                                      child: CachedNetworkImage(
-                                        imageUrl: widget.data.avatar ??
-                                            "https://p3-passport.byteimg.com/img/user-avatar/d4e4ff8f64d24fa24208deb7b926f4ca~180x180.awebp",
-                                        width: 36,
-                                        height: 36,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Image.asset(
-                              "assets/images/dis_arrow.png",
-                              width: 8,
-                              height: 12.5,
-                            )
-                          ],
-                        ),
-                      ),
-                      Container(
-                          decoration: BoxDecoration(
-                              border: Border(
-                        bottom: BorderSide(
-                          color: Color(0xffEEEEEE),
-                        ),
-                      )))
-                    ],
+                MeInfoItem(
+                  needBorder: true,
+                  leftText: "我的二维码",
+                  children: Image.asset(
+                    "assets/images/me_id.png",
+                    width: 22,
+                    height: 22,
                   ),
+                  onClickTap: (context){
+                    print("点击我的二维码");
+                  },
                 ),
-                Container(
-                  height: 56,
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    children: [
-                      Container(
-                        height: 55,
-                        child: Row(
-                          children: [
-                            Text("更多",
-                                style: TextStyle(
-                                    fontSize: 17, color: Color(0xFF333333))),
-                            Expanded(
-                              child: Container(
-                                padding: EdgeInsets.only(right: 10),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(4),
-                                      child: CachedNetworkImage(
-                                        imageUrl: widget.data.avatar ??
-                                            "https://p3-passport.byteimg.com/img/user-avatar/d4e4ff8f64d24fa24208deb7b926f4ca~180x180.awebp",
-                                        width: 36,
-                                        height: 36,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Image.asset(
-                              "assets/images/dis_arrow.png",
-                              width: 8,
-                              height: 12.5,
-                            )
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
+                MeInfoItem(
+                  needBorder: true,
+                  leftText: "更多",
+                  children: SizedBox(),
+                  onClickTap: (context){
+                    print("点击更多");
+                  },
                 ),
-                Container(
-                  color: Color(0xFFEEEEEE),
-                  child: SizedBox(
-                    height: 19,
-                  ),
+                SizedBox(
+                  height: 8,
                 ),
-                Container(
-                  height: 56,
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    children: [
-                      Container(
-                        height: 55,
-                        child: Row(
-                          children: [
-                            Text("更多",
-                                style: TextStyle(
-                                    fontSize: 17, color: Color(0xFF333333))),
-                            Expanded(
-                              child: Container(
-                                padding: EdgeInsets.only(right: 10),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [],
-                                ),
-                              ),
-                            ),
-                            Image.asset(
-                              "assets/images/dis_arrow.png",
-                              width: 8,
-                              height: 12.5,
-                            )
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                )
+                MeInfoItem(
+                  needBorder: true,
+                  leftText: "我的地址",
+                  children: SizedBox(),
+                  onClickTap: (context){
+                    print("点击我的地址");
+                  },
+                ),
               ],
             ))
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class MeInfoItem extends StatefulWidget {
+  final bool needBorder;
+  final String leftText;
+  final Widget children;
+  final void Function(BuildContext)? onClickTap;
+
+  const MeInfoItem(
+      {Key? key,
+      required this.needBorder,
+      required this.leftText,
+      required this.children, this.onClickTap})
+      : super(key: key);
+
+  @override
+  State<MeInfoItem> createState() => _MeInfoItemState();
+}
+
+class _MeInfoItemState extends State<MeInfoItem> {
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      height: 56,
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      child: InkWell(
+        onTap: (){
+          widget.onClickTap!(context);
+        },
+        child: Column(
+          children: [
+            Container(
+              height: 55,
+              child: Row(
+                children: [
+                  Text(widget.leftText,
+                      style: TextStyle(fontSize: 17, color: Color(0xFF333333))),
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.only(right: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          widget.children,
+                        ],
+                      ),
+                    ),
+                  ),
+                  Image.asset(
+                    "assets/images/dis_arrow.png",
+                    width: 8,
+                    height: 12.5,
+                  )
+                ],
+              ),
+            ),
+            Container(
+                decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: Color(0xffEEEEEE),
+                      ),
+                    )))
           ],
         ),
       ),
