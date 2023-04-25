@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_im/pages/other/abount_im_page.dart';
 import '../../widgets/appbar/back_appbar.dart';
 import 'package:flutter_im/utils/manager/account_manager.dart';
 
@@ -36,6 +37,9 @@ class _SettingPageState extends State<SettingPage> {
               InkWell(
                 onTap: () {
                   print("管理账号页面");
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => AboutImPage()),
+                  );
                 },
                 child: Container(
                   alignment: Alignment.center,

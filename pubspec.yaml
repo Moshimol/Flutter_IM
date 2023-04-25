@@ -36,6 +36,8 @@ dependencies:
   adaptive_dialog: ^1.8.3
   # 拼音
   lpinyin: ^2.0.3
+  # 网络判断
+  connectivity_plus: ^3.0.4
 
 dev_dependencies:
   flutter_test:

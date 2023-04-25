@@ -1,7 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_im/request/config.dart';
 import '../../utils/module_model/user/user_data.dart';
 import '../../widgets/appbar/back_appbar.dart';
+
+// 枚举类型
+enum MeItem {
+  avatar,
+  name,
+  account,
+  qrcode,
+}
 
 class MeInfoPage extends StatefulWidget {
   final UserData data;
@@ -19,6 +28,11 @@ class _MeInfoPageState extends State<MeInfoPage> {
   }
 
   // 点击处理的跳转问题
+  void clickPush(MeItem item){
+    if (item == MeItem.name) {
+
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +62,7 @@ class _MeInfoPageState extends State<MeInfoPage> {
                   ),
                   onClickTap: (context){
                     print("点击了头像");
+                    clickPush(MeItem.avatar);
                   },
                 ),
                 MeInfoItem(
