@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<List<MessageSingle>> _getMessageListFuture() async {
     final value = await MessageManager.getMessageList();
-
+    print(value);
     if (value["state"] != 1) {
       // Data fetching failed.
       throw Exception('Failed to load message list.');
