@@ -19,6 +19,7 @@ class Request {
   CancelToken _cancelToken = new CancelToken();
 
   Request._internal() {
+    print("_internal");
     // 获取当前的Host信息
     BaseOptions options = BaseOptions(
         baseUrl:
@@ -40,32 +41,19 @@ class Request {
     dio.interceptors.add(ConnectsInterceptor());
     // 缓存相关设置
     dio.interceptors.add(NetCacheInterceptor());
+
+    RequestManager().init();
   }
 
   // 初始化网络请求库
   void init() {
-    dio.options = dio.options.copyWith(
-      baseUrl:
-          API.requestHost.length > 0 ? API.requestHost : API.SEARCH_HOST,
-      connectTimeout: Duration(milliseconds: CONNECT_TIMEOUT),
-      receiveTimeout: Duration(milliseconds: RECEIVE_TIMEOUT),
-    );
-    RequestManager().init();
+    print("init");
+
   }
 
   void reloadNetBaseUrl() {
-    BaseOptions options = BaseOptions(
-        baseUrl:
-        API.requestHost.length > 0 ? API.requestHost : API.SEARCH_HOST,
-        connectTimeout: Duration(milliseconds: CONNECT_TIMEOUT),
-        receiveTimeout: Duration(milliseconds: RECEIVE_TIMEOUT),
-        sendTimeout: Duration(milliseconds: SEND_TIMEOUT),
-        contentType: Headers.formUrlEncodedContentType,
-        responseType: ResponseType.json,
-        validateStatus: (int? status) {
-          return status != null && status > 0;
-        });
-    dio = Dio(options);
+    print("reload");
+    dio.options.baseUrl = API.requestHost.length > 0 ? API.requestHost : API.SEARCH_HOST;
   }
 
   void setHeader(Map<String, dynamic> map) {

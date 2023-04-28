@@ -48,6 +48,7 @@ class _LaunchPage extends State<LaunchPage> {
       // 如果已经登录的话 再设置Host
       StorageShared().getStorage(CacheKey.host).then((value) {
         API.requestHost = value;
+        print(value);
         Request().reloadNetBaseUrl();
         Navigator.of(context).pushAndRemoveUntil(
             new MaterialPageRoute(builder: (context) => new RootPage()),

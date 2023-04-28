@@ -13,9 +13,9 @@ class DioLogInterceptor extends Interceptor {
         "- URL:\n${options.baseUrl + options.path}\n"
         "- METHOD: ${options.method}\n";
 
-    debugPrint(requestStr);
-    debugPrint("Header\n" + json.encode(options.headers));
-    debugPrint(json.encode(options.data));
+    print(requestStr);
+    print("Header\n" + json.encode(options.headers));
+    print(json.encode(options.data));
 
     return handler.next(options);
   }
