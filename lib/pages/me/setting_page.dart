@@ -3,6 +3,8 @@ import 'package:flutter_im/pages/other/abount_im_page.dart';
 import '../../widgets/appbar/back_appbar.dart';
 import 'package:flutter_im/utils/manager/account_manager.dart';
 
+import '../other/manager_account_page.dart';
+
 class SettingPage extends StatefulWidget {
   const SettingPage({Key? key}) : super(key: key);
 
@@ -43,7 +45,12 @@ class _SettingPageState extends State<SettingPage> {
               InkWell(
                 onTap: () {
                   print("管理账号页面");
-
+                  // 跳转到管理账号界面
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => AccountPage(),
+                      fullscreenDialog: true
+                  ));
                 },
                 child: Container(
                   alignment: Alignment.center,

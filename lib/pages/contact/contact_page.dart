@@ -8,6 +8,9 @@ import 'package:lpinyin/lpinyin.dart';
 
 final double height = 36;
 
+List<String> alphabetsList =
+    List.generate(26, (index) => String.fromCharCode(index + 65));
+
 class ContactPage extends StatefulWidget {
   const ContactPage({Key? key}) : super(key: key);
 
@@ -26,7 +29,10 @@ class _ContactPageState extends State<ContactPage> {
   List<Map<String, List<Map<String, String>>>> contactItems = [
     {
       'A': [
-        {'name': 'A,', 'avatar': 'https://s2-cdn.oneitfarm.com/FpiT0YQLPvrW5aGxsCfRWTsbslLp'},
+        {
+          'name': 'A,',
+          'avatar': 'https://s2-cdn.oneitfarm.com/FpiT0YQLPvrW5aGxsCfRWTsbslLp'
+        },
         {'name': 'A1', 'avatar': 'http://via.placeholder.com/440x440'},
         {'name': 'A2', 'avatar': 'http://via.placeholder.com/440x440'}
       ]
@@ -43,7 +49,9 @@ class _ContactPageState extends State<ContactPage> {
     }
   ];
 
-  Map<String, List<Map<String, String>>> contactDic = {};
+
+  Map<String, List<ContactData>> contactDic = {};
+  List<ContactData> contactList = [];
 
   Future<List<ContactData>> _getContactListFuture() async {
     final value = await ContactManager.getContactList();
@@ -52,7 +60,8 @@ class _ContactPageState extends State<ContactPage> {
       throw Exception('Failed to load message list.');
     }
     List responseJson = value["data"];
-    List<ContactData> contactList = responseJson.map((m) => new ContactData.fromJson(m)).toList();
+    List<ContactData> contactList =
+        responseJson.map((m) => new ContactData.fromJson(m)).toList();
     return contactList;
   }
 
@@ -61,18 +70,7 @@ class _ContactPageState extends State<ContactPage> {
     super.initState();
     _getContactListFuture().then((value) {
       // 对value进行处理
-      List<ContactData> contactList = value;
-
-      for (int i = 0; i < contactList.length; i++) {
-        ContactData data = contactList[i];
-        var firstChr = PinyinHelper.getFirstWordPinyin(data.name!).toUpperCase().substring(0,1);
-
-        if (contactDic.containsKey(firstChr)) {
-
-        } else {
-
-        }
-      }
+      contactList = value;
     });
   }
 
@@ -82,8 +80,36 @@ class _ContactPageState extends State<ContactPage> {
       backgroundColor: Colors.white,
       appBar: MainAppBar(
           titleName: "通讯录",
+          rightIconName: "assets/images/message_add.png",
           onClickTap: (context) {
-            print("通讯录");
+            Map<String, int> map = {
+              "d": 4,
+              "a": 1,
+              "c": 3,
+              "b": 2,
+            };
+
+            List<MapEntry<String, int>> entries = map.entries.toList();
+            entries.sort((a, b) => a.key.compareTo(b.key));
+            Map<String, int> sortedMap = Map.fromEntries(entries);
+
+            print(sortedMap);
+
+            for (int i = 0; i < contactList.length; i++) {
+              ContactData data = contactList[i];
+              var firstChr = PinyinHelper.getFirstWordPinyin(data.name!)
+                  .toUpperCase()
+                  .substring(0, 1);
+              if (contactDic.keys.contains(firstChr)) {
+                List<ContactData>? list = contactDic[firstChr];
+                list?.add(data);
+                contactDic.putIfAbsent(firstChr, () => list!);
+              } else {
+                contactDic.putIfAbsent(firstChr, () => [data]);
+              }
+            }
+            print("打印结果");
+            print(contactDic.length);
           }),
       body: Stack(
         children: [
@@ -163,10 +189,8 @@ class _ContactPageState extends State<ContactPage> {
               bottom: 0,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: contactItems.map((e) {
-                  Map<String, List<Map<String, String>>> map = e;
-                  var firstKey = map.keys.first;
-
+                children: alphabetsList.map((e) {
+                  var firstKey = e;
                   return Container(
                     padding: EdgeInsets.symmetric(vertical: 3, horizontal: 6),
                     child: Text(firstKey,
