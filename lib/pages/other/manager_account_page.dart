@@ -18,6 +18,8 @@ class _AccountPageState extends State<AccountPage> {
     GlobalParams().currentUser
   ];
 
+  bool isManage = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +28,10 @@ class _AccountPageState extends State<AccountPage> {
         closeName: "取消",
         rightText: "管理",
         onClickTap: (context) {
-          print("点击管理");
+          isManage = !isManage;
+          setState(() {
+
+          });
         },
       ),
       body: Container(
@@ -52,8 +57,10 @@ class _AccountPageState extends State<AccountPage> {
               child: ListView(children: [
                 Column(
                   children: accountItems.map((e) {
+                    bool isCurrent = e.accountId == GlobalParams().accountId;
                     return AccountDetailsItem(
                       user: e,
+                      isCurrent:isManage,
                     );
                   }).toList(),
                 )
@@ -69,8 +76,9 @@ class _AccountPageState extends State<AccountPage> {
 // 列表的信息
 class AccountDetailsItem extends StatefulWidget {
   final UserData user;
+  final bool isCurrent;
 
-  const AccountDetailsItem({required this.user, Key? key}) : super(key: key);
+  const AccountDetailsItem({required this.user, required this.isCurrent,Key? key}) : super(key: key);
 
   @override
   State<AccountDetailsItem> createState() => _AccountDetailsItemState();
@@ -125,6 +133,30 @@ class _AccountDetailsItemState extends State<AccountDetailsItem> {
                     ],
                   ),
                 ),
+                Expanded(
+                    child: Visibility(
+                  visible: widget.isCurrent,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.all(Colors.deepOrange),
+                              elevation: MaterialStateProperty.all(0)),
+                          child: Text("删除"),
+                          onPressed: () {
+                            print("点击了");
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                )),
+                SizedBox(
+                  width: 16,
+                )
               ],
             ),
             decoration: BoxDecoration(
