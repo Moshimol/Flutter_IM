@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 
-const double space = 10.0;
+const double space = 5.0;
+const int maxSelectCount = 9;
 
 class CreateMomentPage extends StatefulWidget {
   const CreateMomentPage({Key? key}) : super(key: key);
@@ -12,26 +13,12 @@ class CreateMomentPage extends StatefulWidget {
 }
 
 class _CreateMomentPageState extends State<CreateMomentPage> {
-  List<AssetEntity> _selectAsset = [];
+  List<AssetEntity> selectAsset = [];
 
   // 主视图
   Widget _mainView(BuildContext context) {
     return Column(
       children: [
-        ElevatedButton(
-            onPressed: () async {
-              final List<AssetEntity>? result = await AssetPicker.pickAssets(
-                context,
-                pickerConfig: const AssetPickerConfig(
-                    textDelegate: AssetPickerTextDelegate()),
-              );
-              print(result);
-
-              setState(() {
-                _selectAsset = result ?? [];
-              });
-            },
-            child: Text("选取照片")),
         _photoList()
       ],
     );
@@ -42,27 +29,44 @@ class _CreateMomentPageState extends State<CreateMomentPage> {
     return LayoutBuilder(builder: (contextFromLayoutBuilder, BoxConstraints constraints) {
       final double width = (constraints.maxWidth - space * 2 - 30) / 3;
       return Container(
-        padding: EdgeInsets.symmetric(horizontal: 15),
+        padding: EdgeInsets.symmetric(horizontal: 15,vertical: 15),
         child: Wrap(
             spacing:space,
           runSpacing: space,
           children: [
-            for (final asset in _selectAsset)
+            for (final asset in selectAsset)
               ClipRRect(
                 borderRadius: BorderRadius.circular(4),
                 child: AssetEntityImage(
                   asset,
+                  isOriginal: false,
                   width: width,
                   height: width,
                   fit: BoxFit.cover,
                 )
               ),
 
-            if (_selectAsset.length < 9)
-              Container(
-                width: width,
-                height: width,
-                child: Icon(Icons.add,size: 48,),
+            if (selectAsset.length < maxSelectCount)
+              GestureDetector(
+                onTap: () async {
+                  final List<AssetEntity>? result = await AssetPicker.pickAssets(
+                    context,
+                    pickerConfig: AssetPickerConfig(
+                        textDelegate: AssetPickerTextDelegate(),
+                      requestType: RequestType(1),
+                      selectedAssets: selectAsset,
+                      maxAssets: maxSelectCount
+                    ),
+                  );
+                  setState(() {
+                    selectAsset = result ?? [];
+                  });
+                },
+                child: Container(
+                  width: width,
+                  height: width,
+                  child: Image.asset("assets/images/moment_add.png",fit: BoxFit.cover,),
+                ),
               )
           ],
         ),
