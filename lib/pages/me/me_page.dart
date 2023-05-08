@@ -18,7 +18,6 @@ class _MePageState extends State<MePage> {
   @override
   void initState() {
     super.initState();
-    print("11");
   }
 
   @override
