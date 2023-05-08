@@ -40,6 +40,8 @@ dependencies:
   connectivity_plus: ^3.0.4
   # 选择照片
   wechat_assets_picker: ^8.4.2
+  # 预览图片
+  extended_image: ^7.0.2
 
 dev_dependencies:
   flutter_test:

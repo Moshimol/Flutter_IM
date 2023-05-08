@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
+import '../../../widgets/moment/photo_widget.dart';
+
 
 const double space = 5.0;
 const int maxSelectCount = 9;
@@ -35,16 +37,26 @@ class _CreateMomentPageState extends State<CreateMomentPage> {
           runSpacing: space,
           children: [
             for (final asset in selectAsset)
-              ClipRRect(
-                borderRadius: BorderRadius.circular(4),
-                child: AssetEntityImage(
-                  asset,
-                  isOriginal: false,
-                  width: width,
-                  height: width,
-                  fit: BoxFit.cover,
-                )
-              ),
+              GestureDetector(onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return PhotoGalleryWidget(
+                    photoIndex: selectAsset.indexOf(asset),
+                    items: selectAsset,
+                  );
+                }));
+              },
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: AssetEntityImage(
+                      asset,
+                      isOriginal: false,
+                      width: width,
+                      height: width,
+                      fit: BoxFit.cover,
+                    )
+                ),
+              )
+              ,
 
             if (selectAsset.length < maxSelectCount)
               GestureDetector(
