@@ -1,3 +1,4 @@
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -29,9 +30,7 @@ class _AccountPageState extends State<AccountPage> {
         rightText: "管理",
         onClickTap: (context) {
           isManage = !isManage;
-          setState(() {
-
-          });
+          setState(() {});
         },
       ),
       body: Container(
@@ -60,7 +59,7 @@ class _AccountPageState extends State<AccountPage> {
                     bool isCurrent = e.accountId == GlobalParams().accountId;
                     return AccountDetailsItem(
                       user: e,
-                      isCurrent:isManage,
+                      isCurrent: isManage,
                     );
                   }).toList(),
                 )
@@ -78,7 +77,9 @@ class AccountDetailsItem extends StatefulWidget {
   final UserData user;
   final bool isCurrent;
 
-  const AccountDetailsItem({required this.user, required this.isCurrent,Key? key}) : super(key: key);
+  const AccountDetailsItem(
+      {required this.user, required this.isCurrent, Key? key})
+      : super(key: key);
 
   @override
   State<AccountDetailsItem> createState() => _AccountDetailsItemState();
@@ -147,7 +148,15 @@ class _AccountDetailsItemState extends State<AccountDetailsItem> {
                               elevation: MaterialStateProperty.all(0)),
                           child: Text("删除"),
                           onPressed: () {
-                            print("点击了");
+                           showConfirmationDialog(
+                                context: context,
+                                title: "是否删除账号信息?",
+                                cancelLabel: "取消",
+                                contentMaxHeight: 40,
+                                actions: [AlertDialogAction(key: 1,label: "删除",isDestructiveAction:true,textStyle:TextStyle(fontSize: 18,color: Color(0xff333333)))],
+                            ).then((value) {
+                              // 处理删除的操作
+                           });
                           },
                         ),
                       )
