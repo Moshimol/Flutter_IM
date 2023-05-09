@@ -48,21 +48,21 @@ class _CreateMomentPageState extends State<CreateMomentPage> {
 
   // 主视图
   Widget _mainView(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildContentInput(),
-        _photoList(),
-        Spacer(),
-        Visibility(
-          child: _deleteRemove(),
-          visible: isDragNow,
+    return SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.all(pagePadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildContentInput(),
+            _photoList(),
+            Padding(
+              padding: const EdgeInsets.only(top: 100),
+              child: _buildMenus(),
+            )
+          ],
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: 100),
-          child: _buildMenus(),
-        )
-      ],
+      ),
     );
   }
 
