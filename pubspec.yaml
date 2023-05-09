@@ -40,10 +40,14 @@ dependencies:
   connectivity_plus: ^3.0.4
   # 选择照片
   wechat_assets_picker: ^8.4.2
+  # 拍照
+  wechat_camera_picker: ^3.7.0
   # 预览图片
   extended_image: ^7.0.2
   # 底部弹框
   modal_bottom_sheet: ^2.1.2
+  uuid: ^3.0.7
+  path_provider: ^2.0.15
 
 dev_dependencies:
   flutter_test:

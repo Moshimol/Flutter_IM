@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_im/main.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
+import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 import '../../../widgets/picker/picker_sheet.dart';
 import 'create_moment_page.dart';
 
@@ -58,6 +59,21 @@ class _MomentPageState extends State<MomentPage> {
                   Future.delayed(Duration(milliseconds: 300), () async {
                     if (index == 0) {
                       // 调用拍摄相关处理
+                      final AssetEntity? result = await CameraPicker.pickFromCamera(
+                        context,
+                        pickerConfig: CameraPickerConfig(
+                            enableRecording:true,
+                            textDelegate:CameraPickerTextDelegate()),
+                      );
+
+                      if (result == null) {
+                        return;
+                      }
+
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => CreateMomentPage(type: PostMomentType.momentVideo,),fullscreenDialog: true),
+                      );
+
 
                     } else {
                       //跳转到相册后 然后展示相册内容 选择相册内容后进入发布朋友圈界面
@@ -76,7 +92,7 @@ class _MomentPageState extends State<MomentPage> {
                       }
 
                       Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => CreateMomentPage(type: PostMomentType.momentImageOrVideo,selectAddress: result,),fullscreenDialog: true),
+                        MaterialPageRoute(builder: (context) => CreateMomentPage(type: PostMomentType.momentImage,selectAddress: result,),fullscreenDialog: true),
                       );
                     }
                   });

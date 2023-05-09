@@ -14,7 +14,8 @@ const int maxContentLength = 140;
 
 enum PostMomentType {
   momentText,
-  momentImageOrVideo,
+  momentImage,
+  momentVideo,
 }
 
 class CreateMomentPage extends StatefulWidget {
@@ -71,7 +72,7 @@ class _CreateMomentPageState extends State<CreateMomentPage> {
             _buildContentInput(),
             Visibility(
               child: _photoList(),
-              visible: widget.type == PostMomentType.momentImageOrVideo,
+              visible: widget.type != PostMomentType.momentText,
             ),
             Padding(
               padding: const EdgeInsets.only(top: 100),
