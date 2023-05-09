@@ -22,6 +22,12 @@ class _CreateMomentPageState extends State<CreateMomentPage> {
   // 是否将要删除
   bool isWillRemove = false;
 
+  // 是不是要排序
+  bool isWillOrder = false;
+
+  // 被拖动的ID
+  String targetAssetId = "";
+
   // 主视图
   Widget _mainView(BuildContext context) {
     return Column(
@@ -36,6 +42,7 @@ class _CreateMomentPageState extends State<CreateMomentPage> {
     );
   }
 
+  // 图片列表
   Widget _buildPhotoItem(AssetEntity asset, double width) {
     return Draggable(
         data: asset,
@@ -47,15 +54,18 @@ class _CreateMomentPageState extends State<CreateMomentPage> {
         },
         onDragEnd: (details) {
           setState(() {
+            isWillOrder = false;
             isDragNow = false;
           });
         },
         onDragCompleted: () {},
         onDraggableCanceled: (velocity, offset) {
           setState(() {
+            isWillOrder = false;
             isDragNow = false;
           });
         },
+
         childWhenDragging: Container(
           decoration:
               BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(4))),
@@ -70,24 +80,64 @@ class _CreateMomentPageState extends State<CreateMomentPage> {
           width: width,
           height: width,
         ),
-        child: GestureDetector(
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return PhotoGalleryWidget(
-                photoIndex: selectAsset.indexOf(asset),
-                items: selectAsset,
-              );
-            }));
+        child: DragTarget<AssetEntity>(
+          builder: (context, candidateData, rejectedData) {
+            return  GestureDetector(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return PhotoGalleryWidget(
+                    photoIndex: selectAsset.indexOf(asset),
+                    items: selectAsset,
+                  );
+                }));
+              },
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: AssetEntityImage(
+                    asset,
+                    isOriginal: false,
+                    width: width,
+                    height: width,
+                    fit: BoxFit.cover,
+                  )),
+            );
           },
-          child: ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: AssetEntityImage(
-                asset,
-                isOriginal: false,
-                width: width,
-                height: width,
-                fit: BoxFit.cover,
-              )),
+          onWillAccept: (data) {
+            // 排除自己
+            if (data?.id == asset.id) {
+              return false;
+            }
+            setState(() {
+              isWillOrder = true;
+              targetAssetId = asset.id;
+            });
+            return true;
+          },
+          onAccept: (data) {
+            // 0 当前元素位置
+            int targetIndex = selectAsset.indexWhere((element) {
+              return element.id == asset.id;
+            });
+
+            // 1 删除原来的
+            selectAsset.removeWhere((element) {
+              return element.id == data.id;
+            });
+
+            // 2 插入到目标前面
+            selectAsset.insert(targetIndex, data);
+
+            setState(() {
+              isWillOrder = false;
+              targetAssetId = "";
+            });
+          },
+          onLeave: (data) {
+            setState(() {
+              isWillOrder = false;
+              targetAssetId = "";
+            });
+          },
         ),
         feedback: Container(
           decoration:
