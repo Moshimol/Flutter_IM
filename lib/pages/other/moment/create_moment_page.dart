@@ -1,13 +1,25 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
+import '../../../widgets/appbar/custom_appbar.dart';
 import '../../../widgets/moment/photo_widget.dart';
 
 const double space = 5.0;
 const int maxSelectCount = 9;
+const double pagePadding = 15.0;
+const int maxContentLength = 140;
+
+enum PostMomentType {
+  momentText,
+  momentImage,
+}
 
 class CreateMomentPage extends StatefulWidget {
-  const CreateMomentPage({Key? key}) : super(key: key);
+  final PostMomentType type;
+  const CreateMomentPage({Key? key, required this.type}) : super(key: key);
 
   @override
   State<CreateMomentPage> createState() => _CreateMomentPageState();
@@ -28,19 +40,52 @@ class _CreateMomentPageState extends State<CreateMomentPage> {
   // 被拖动的ID
   String targetAssetId = "";
 
+  // 文本编辑器
+  TextEditingController _contentController = TextEditingController();
+
+  // 菜单项
+  List<MenuItemModel> _menus = [];
+
   // 主视图
   Widget _mainView(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        _buildContentInput(),
         _photoList(),
         Spacer(),
         Visibility(
           child: _deleteRemove(),
           visible: isDragNow,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 100),
+          child: _buildMenus(),
         )
       ],
     );
   }
+
+  // 底部相关列表
+  Widget _buildMenus() {
+    List<Widget> ws = [];
+    for (var menu in _menus) {
+      ws.add(ListTile(
+        leading: Icon(menu.icon),
+        title: Row(
+          children: [
+            Text(menu.title ?? ""),
+            if (menu.right != null) Spacer(),
+            if (menu.right != null) Text(menu.right!),
+          ],
+        ),
+        trailing: const Icon(Icons.navigate_next_rounded),
+        horizontalTitleGap: -5, // 标题与图标间距
+      ));
+    }
+    return Column(children: ws,);
+  }
+
 
   // 图片列表
   Widget _buildPhotoItem(AssetEntity asset, double width) {
@@ -160,7 +205,7 @@ class _CreateMomentPageState extends State<CreateMomentPage> {
         builder: (contextFromLayoutBuilder, BoxConstraints constraints) {
       final double width = (constraints.maxWidth - space * 2 - 30) / 3;
       return Container(
-        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+        padding: EdgeInsets.symmetric(vertical: 15),
         child: Wrap(
           spacing: space,
           runSpacing: space,
@@ -238,14 +283,83 @@ class _CreateMomentPageState extends State<CreateMomentPage> {
     );
   }
 
+  // 内容输入相关
+  Widget _buildContentInput() {
+    return  LimitedBox(
+      maxHeight: 200,
+      child: TextField(
+        controller: _contentController,
+        style: TextStyle(color: Colors.black54,fontSize: 18,fontWeight: FontWeight.w400),
+        maxLength: maxContentLength,
+        maxLines: null,
+        decoration: InputDecoration(
+          hintText: "输入这一刻的想法",
+          hintStyle: TextStyle(color: Colors.black12,fontSize: 18,fontWeight: FontWeight.w500),
+          border: InputBorder.none,
+          counterText: _contentController.text.isEmpty ? "" : null,
+        ),
+        onChanged: (textValue){
+
+        }
+        ,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _contentController.dispose();
+    super.dispose();
+  }
+
+  // 发送朋友圈页面
+  @override
+  void initState() {
+    super.initState();
+    _menus = [
+      MenuItemModel(icon: Icons.local_convenience_store_outlined,title: "所在位置"),
+      MenuItemModel(icon: Icons.alternate_email_outlined,title: "提醒谁看"),
+      MenuItemModel(icon: Icons.person_outline,title: "谁可以看",right: "公开"),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("发布"),
+      appBar: AppBarWidget(
+        style: SystemUiOverlayStyle(statusBarColor: Colors.black),
+        leading: GestureDetector(
+          onTap: () => Navigator.pop(context),
+          child: const Icon(
+            Icons.close,
+            color: Colors.black,
+          ),
+        ),
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: pagePadding),
+            child: ElevatedButton(
+              onPressed: () {
+                print("点击发布按钮");
+              },
+              child: Text("发布"),
+            ),
+          ),
+        ],
       ),
       body: _mainView(context),
       bottomSheet: isDragNow ? _deleteRemove() : null,
     );
   }
+}
+
+
+// 底部的数据模型
+class MenuItemModel {
+  MenuItemModel({this.icon,this.title,this.right,this.onTap});
+
+  final IconData? icon;
+  final String? title;
+  final Function()? onTap;
+  final String? right;
 }

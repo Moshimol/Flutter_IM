@@ -44,7 +44,6 @@ class _SettingPageState extends State<SettingPage> {
               ),
               InkWell(
                 onTap: () {
-                  print("管理账号页面");
                   // 跳转到管理账号界面
                   Navigator.of(context).push(
                     MaterialPageRoute(
