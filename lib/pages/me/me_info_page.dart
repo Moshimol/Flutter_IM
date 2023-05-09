@@ -30,7 +30,7 @@ class _MeInfoPageState extends State<MeInfoPage> {
   // 点击处理的跳转问题
   void clickPush(MeItem item){
     if (item == MeItem.name) {
-
+      // 点击头像 更换照片
     }
   }
 

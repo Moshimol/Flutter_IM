@@ -14,12 +14,13 @@ const int maxContentLength = 140;
 
 enum PostMomentType {
   momentText,
-  momentImage,
+  momentImageOrVideo,
 }
 
 class CreateMomentPage extends StatefulWidget {
   final PostMomentType type;
-  const CreateMomentPage({Key? key, required this.type}) : super(key: key);
+  final List<AssetEntity>? selectAddress;
+  const CreateMomentPage({Key? key, required this.type, this.selectAddress}) : super(key: key);
 
   @override
   State<CreateMomentPage> createState() => _CreateMomentPageState();
@@ -46,6 +47,19 @@ class _CreateMomentPageState extends State<CreateMomentPage> {
   // 菜单项
   List<MenuItemModel> _menus = [];
 
+  // 发送朋友圈页面
+  @override
+  void initState() {
+    super.initState();
+    _menus = [
+      MenuItemModel(
+          icon: Icons.local_convenience_store_outlined, title: "所在位置"),
+      MenuItemModel(icon: Icons.alternate_email_outlined, title: "提醒谁看"),
+      MenuItemModel(icon: Icons.person_outline, title: "谁可以看", right: "公开"),
+    ];
+    selectAsset = widget.selectAddress!;
+  }
+
   // 主视图
   Widget _mainView(BuildContext context) {
     return SingleChildScrollView(
@@ -55,7 +69,10 @@ class _CreateMomentPageState extends State<CreateMomentPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildContentInput(),
-            _photoList(),
+            Visibility(
+              child: _photoList(),
+              visible: widget.type == PostMomentType.momentImageOrVideo,
+            ),
             Padding(
               padding: const EdgeInsets.only(top: 100),
               child: _buildMenus(),
@@ -83,9 +100,10 @@ class _CreateMomentPageState extends State<CreateMomentPage> {
         horizontalTitleGap: -5, // 标题与图标间距
       ));
     }
-    return Column(children: ws,);
+    return Column(
+      children: ws,
+    );
   }
-
 
   // 图片列表
   Widget _buildPhotoItem(AssetEntity asset, double width) {
@@ -110,7 +128,6 @@ class _CreateMomentPageState extends State<CreateMomentPage> {
             isDragNow = false;
           });
         },
-
         childWhenDragging: Container(
           decoration:
               BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(4))),
@@ -127,7 +144,7 @@ class _CreateMomentPageState extends State<CreateMomentPage> {
         ),
         child: DragTarget<AssetEntity>(
           builder: (context, candidateData, rejectedData) {
-            return  GestureDetector(
+            return GestureDetector(
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return PhotoGalleryWidget(
@@ -242,6 +259,7 @@ class _CreateMomentPageState extends State<CreateMomentPage> {
     });
   }
 
+  // 移除的显示界面
   Widget _deleteRemove() {
     return DragTarget<AssetEntity>(
       builder: (context, candidateData, rejectedData) {
@@ -258,7 +276,10 @@ class _CreateMomentPageState extends State<CreateMomentPage> {
                 height: 22,
                 fit: BoxFit.cover,
               ),
-              Text("拖动到此处删除",style: TextStyle(fontSize: 14,color: Colors.white),)
+              Text(
+                "拖动到此处删除",
+                style: TextStyle(fontSize: 14, color: Colors.white),
+              )
             ],
           ),
         );
@@ -285,23 +306,22 @@ class _CreateMomentPageState extends State<CreateMomentPage> {
 
   // 内容输入相关
   Widget _buildContentInput() {
-    return  LimitedBox(
+    return LimitedBox(
       maxHeight: 200,
       child: TextField(
         controller: _contentController,
-        style: TextStyle(color: Colors.black54,fontSize: 18,fontWeight: FontWeight.w400),
+        style: TextStyle(
+            color: Colors.black54, fontSize: 18, fontWeight: FontWeight.w400),
         maxLength: maxContentLength,
         maxLines: null,
         decoration: InputDecoration(
           hintText: "输入这一刻的想法",
-          hintStyle: TextStyle(color: Colors.black12,fontSize: 18,fontWeight: FontWeight.w500),
+          hintStyle: TextStyle(
+              color: Colors.black12, fontSize: 18, fontWeight: FontWeight.w500),
           border: InputBorder.none,
           counterText: _contentController.text.isEmpty ? "" : null,
         ),
-        onChanged: (textValue){
-
-        }
-        ,
+        onChanged: (textValue) {},
       ),
     );
   }
@@ -310,17 +330,6 @@ class _CreateMomentPageState extends State<CreateMomentPage> {
   void dispose() {
     _contentController.dispose();
     super.dispose();
-  }
-
-  // 发送朋友圈页面
-  @override
-  void initState() {
-    super.initState();
-    _menus = [
-      MenuItemModel(icon: Icons.local_convenience_store_outlined,title: "所在位置"),
-      MenuItemModel(icon: Icons.alternate_email_outlined,title: "提醒谁看"),
-      MenuItemModel(icon: Icons.person_outline,title: "谁可以看",right: "公开"),
-    ];
   }
 
   @override
@@ -353,10 +362,9 @@ class _CreateMomentPageState extends State<CreateMomentPage> {
   }
 }
 
-
 // 底部的数据模型
 class MenuItemModel {
-  MenuItemModel({this.icon,this.title,this.right,this.onTap});
+  MenuItemModel({this.icon, this.title, this.right, this.onTap});
 
   final IconData? icon;
   final String? title;
