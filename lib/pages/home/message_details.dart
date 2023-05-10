@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 
+import '../../utils/module_model/message/message_single.dart';
 import '../../widgets/appbar/back_appbar.dart';
 import '../../widgets/custom/category.dart';
+import 'message_info.dart';
 
 class MessageDetails extends StatefulWidget {
-  const MessageDetails({Key? key}) : super(key: key);
+  const MessageDetails({Key? key,required this.singleData, this.title}) : super(key: key);
 
+  final MessageSingle singleData;
+  final String? title;
   @override
   State<MessageDetails> createState() => _MessageDetailsState();
 }
@@ -17,7 +21,29 @@ class _MessageDetailsState extends State<MessageDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: BackBar(
-        titleName: "聊天框",
+        titleName: widget.title,
+        actions: [
+          Builder(builder: (context) {
+            return GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              child: Padding(
+                padding:
+                EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+                child: InkWell(
+                  onTap: (){
+                    // 跳转到更多的页面 分为群聊和单聊
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => MessageInfo(),));
+                  },
+                  child: Icon(Icons.more_horiz_rounded,color: Colors.black,),
+                ),
+              ),
+              onTap: () {
+                // 清空信息
+              },
+            );
+          }),
+        ],
       ),
       body: _mainView(),
     );

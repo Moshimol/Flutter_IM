@@ -93,7 +93,7 @@ class _HomePageState extends State<HomePage> {
                           onTap: () {
                             // 点击跳转到新的页面 MessageDetails()
                             Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => MessageDetails()),
+                              MaterialPageRoute(builder: (context) => MessageDetails(singleData: msg,title: HomePageUtils.getName(singleData!, msg),)),
                             );
                           },
                           child: Row(
