@@ -2,14 +2,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_im/main.dart';
-import 'package:flutter_im/utils/other/AdapUtil.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 import '../../../utils/global/global_params.dart';
 import '../../../utils/module_model/user/user_data.dart';
 import '../../../widgets/picker/picker_sheet.dart';
-import '../../../widgets/space/space.dart';
+import '../../../widgets/custom/space.dart';
 import 'create_moment_page.dart';
+import 'moment_message.dart';
+import 'moment_type_widget.dart';
 
 class MomentPage extends StatefulWidget {
   const MomentPage({Key? key}) : super(key: key);
@@ -91,11 +92,24 @@ class _MomentPageState extends State<MomentPage> {
           child: _momentHeader(),
         ),
         SliverPadding(padding: EdgeInsets.only(bottom: 10)),
+        _momentMessage(),
         _momentList()
       ],
     );
   }
 
+  Widget _momentMessage(){
+    return SliverToBoxAdapter(
+      child: MomentWidget().momentTopInfo(
+        onClickTap: (){
+          // 点击了个人提示的信息
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => MomentMessage()),
+          );
+        }
+      ),
+    );
+  }
   // list的一个列表
   Widget _momentList() {
     return SliverList(
