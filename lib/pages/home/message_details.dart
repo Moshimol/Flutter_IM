@@ -10,6 +10,7 @@ class MessageDetails extends StatefulWidget {
 
   final MessageSingle singleData;
   final String? title;
+
   @override
   State<MessageDetails> createState() => _MessageDetailsState();
 }
@@ -33,7 +34,7 @@ class _MessageDetailsState extends State<MessageDetails> {
                   onTap: (){
                     // 跳转到更多的页面 分为群聊和单聊
                     Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => MessageInfo(),));
+                      MaterialPageRoute(builder: (context) => MessageInfo(titleString:widget.singleData.chatType == 1 ? "聊天信息" : widget.title!,messageType: widget.singleData.chatType == 1 ? MessageInfoType.user : MessageInfoType.group,singleData: widget.singleData,),));
                   },
                   child: Icon(Icons.more_horiz_rounded,color: Colors.black,),
                 ),

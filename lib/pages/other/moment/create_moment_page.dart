@@ -95,7 +95,7 @@ class _CreateMomentPageState extends State<CreateMomentPage> {
             if (menu.right != null) Text(menu.right!),
           ],
         ),
-        trailing: const Icon(Icons.navigate_next_rounded),
+        trailing: Icon(Icons.navigate_next_rounded),
         horizontalTitleGap: -5, // 标题与图标间距
       ));
     }
