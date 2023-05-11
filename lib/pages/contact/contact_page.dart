@@ -80,37 +80,7 @@ class _ContactPageState extends State<ContactPage> {
       backgroundColor: Colors.white,
       appBar: MainAppBar(
           titleName: "通讯录",
-          rightIconName: "assets/images/message_add.png",
-          onClickTap: (context) {
-            Map<String, int> map = {
-              "d": 4,
-              "a": 1,
-              "c": 3,
-              "b": 2,
-            };
-
-            List<MapEntry<String, int>> entries = map.entries.toList();
-            entries.sort((a, b) => a.key.compareTo(b.key));
-            Map<String, int> sortedMap = Map.fromEntries(entries);
-
-            print(sortedMap);
-
-            for (int i = 0; i < contactList.length; i++) {
-              ContactData data = contactList[i];
-              var firstChr = PinyinHelper.getFirstWordPinyin(data.name!)
-                  .toUpperCase()
-                  .substring(0, 1);
-              if (contactDic.keys.contains(firstChr)) {
-                List<ContactData>? list = contactDic[firstChr];
-                list?.add(data);
-                contactDic.putIfAbsent(firstChr, () => list!);
-              } else {
-                contactDic.putIfAbsent(firstChr, () => [data]);
-              }
-            }
-            print("打印结果");
-            print(contactDic.length);
-          }),
+      ),
       body: Stack(
         children: [
           Column(

@@ -6,10 +6,10 @@ final MediaQueryData mediaQuery = MediaQueryData.fromWindow(window);
 final double ratio = mediaQuery.devicePixelRatio;
 
 //屏幕宽度dp
-final double width = mediaQuery.size.width;
+final double screenWidth = mediaQuery.size.width;
 //屏幕高度dp
-final double height = mediaQuery.size.height;
-final double dp2pxRatio = width / 750;
+final double screenHeight = mediaQuery.size.height;
+final double dp2pxRatio = screenWidth / 750;
 
 //方便外边调用，不用模块化导出了，打出类名就能拿出变量了
 class AdaptUtil {

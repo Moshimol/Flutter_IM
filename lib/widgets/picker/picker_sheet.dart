@@ -171,3 +171,36 @@ class MeHeadBottomSheet{
         ));
   }
 }
+
+// 清除聊天记录弹框
+class MessageClearSheet{
+  static Future<T?> showDeleteMessagePicker<T>({required BuildContext context, Function()? onClickTap, required String textAlertString}) {
+    return PickSheet.showModelSheet(context: context,child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        PickSheet.buildButton(
+            Text(
+              textAlertString,
+              style: TextStyle(fontSize: 18, color: Colors.redAccent),
+            ),
+            49, onClickTap: () {
+          Navigator.pop(context);
+          onClickTap!();
+        }),
+        Container(
+          height: 7,
+          color: Color(0xffF5F5F5),
+        ),
+        PickSheet.buildButton(
+            Text(
+              "取消",
+              style: TextStyle(fontSize: 18, color: Color(0xff333333)),
+            ),
+            49, onClickTap: () {
+          Navigator.pop(context);
+        }),
+      ],
+    ));
+  }
+
+}
