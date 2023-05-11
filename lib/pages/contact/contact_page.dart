@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_im/config/app_color.dart';
 import 'package:flutter_im/utils/manager/contact_manager.dart';
 import 'package:flutter_im/widgets/appbar/main_appbar.dart';
 
@@ -102,7 +103,7 @@ class _ContactPageState extends State<ContactPage> {
                       SizedBox(width: 10),
                       Text("搜索",
                           style: TextStyle(
-                              fontSize: 12, color: Color(0xFF999999))),
+                              fontSize: 12, color: color999)),
                     ],
                   ),
                   decoration: BoxDecoration(

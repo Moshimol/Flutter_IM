@@ -8,6 +8,7 @@ import '../../widgets/appbar/back_appbar.dart';
 import '../../widgets/custom/category.dart';
 import '../../widgets/custom/space.dart';
 import '../../widgets/picker/picker_sheet.dart';
+import '../../config/index.dart';
 
 enum MessageInfoType { user, group }
 // 邀请群聊的方式
@@ -300,7 +301,7 @@ class _MessageInfoState extends State<MessageInfo> {
         Text(
           "名字",
           style:
-          TextStyle(color: Color(0xff333333), fontSize: 12),
+          TextStyle(color: color333, fontSize: 12),
         )
       ],
     );
@@ -335,7 +336,7 @@ class _MessageInfoState extends State<MessageInfo> {
                         Text(
                           "${widget.singleData!.userInfo!.nickname}",
                           style:
-                              TextStyle(color: Color(0xff333333), fontSize: 12),
+                              TextStyle(color: color333, fontSize: 12),
                         )
                       ],
                     ),
@@ -357,7 +358,7 @@ class _MessageInfoState extends State<MessageInfo> {
             ),
             Container(
               height: 8,
-              color: Color(0xFFF5F5F5),
+              color: appBackColor,
             ),
           ],
         ),
@@ -391,7 +392,7 @@ class _MessageInfoState extends State<MessageInfo> {
             showBottomLine: false),
         Container(
           height: 8,
-          color: Color(0xFFF5F5F5),
+          color: appBackColor,
         ),
         _singleItemView(
             children: Icon(
@@ -436,7 +437,7 @@ class _MessageInfoState extends State<MessageInfo> {
                   children: [
                     Text(
                       leftText,
-                      style: TextStyle(fontSize: 17, color: Color(0xFF333333)),
+                      style: TextStyle(fontSize: 17, color: color333),
                     ),
                     Spacer(),
                     children!,
