@@ -48,7 +48,8 @@ dependencies:
   modal_bottom_sheet: ^2.1.2
   uuid: ^3.0.7
   path_provider: ^2.0.15
-  get:
+  get: ^4.6.5
+  flutter_slidable: ^3.0.0
 
 dev_dependencies:
   flutter_test:

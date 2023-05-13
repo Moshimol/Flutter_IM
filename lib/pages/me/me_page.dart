@@ -25,10 +25,7 @@ class _MePageState extends State<MePage> {
     return Scaffold(
       appBar: MainAppBar(
           titleName: "我",
-          rightIconName: "assets/images/me_camera.png",
-          onClickTap: (context) {
-            print("我");
-          }),
+      ),
       body: Column(
         children: [
           Expanded(
