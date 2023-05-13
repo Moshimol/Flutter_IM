@@ -4,6 +4,7 @@ import 'package:flutter_im/pages/other/launch_page.dart';
 import 'package:flutter_im/request/config.dart';
 import 'package:flutter_im/request/request/request.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:flutter_im/utils/router/router.dart';
 
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -22,6 +23,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
+      initialRoute: appInitialRoute,
+      getPages: appRouter,
       theme: ThemeData(
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
