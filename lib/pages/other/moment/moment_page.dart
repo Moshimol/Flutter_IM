@@ -251,8 +251,8 @@ class _MomentPageState extends State<MomentPage> {
                       ),
                       ClipRRect(
                         borderRadius: BorderRadius.circular(4),
-                        child: Image.network(
-                          _user?.avatar ?? "",
+                        child: CachedNetworkImage(
+                          imageUrl:_user?.avatar ?? "",
                           height: 70,
                           width: 70,
                           fit: BoxFit.cover,

@@ -113,7 +113,7 @@ class _ContactPageState extends State<ContactPage> {
               ),
               Expanded(
                   child: ListView(
-                children: [
+                  children: [
                   Column(
                     children: topItems.map((e) {
                       bool needBorder = e != topItems.last;

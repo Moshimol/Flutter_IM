@@ -12,6 +12,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../widgets/doalog/more_doalog.dart';
 
+// 默认的显示方式
+Widget defaultWidget = Container();
+
 class HomePage extends StatefulWidget {
 
   const HomePage({Key? key}) : super(key: key);
@@ -26,14 +29,12 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     AccountManager.clearBadge();
-    print("开始#");
     // 获取当前的列表
     _messageList = _getMessageListFuture();
   }
 
   Future<List<MessageSingle>> _getMessageListFuture() async {
     final value = await MessageManager.getMessageList();
-    print(value);
     if (value["state"] != 1) {
       // Data fetching failed.
       throw Exception('Failed to load message list.');
@@ -84,87 +85,96 @@ class _HomePageState extends State<HomePage> {
               child: FutureBuilder<List<MessageSingle>>(
                   future: _messageList,
                   builder: (BuildContext context, AsyncSnapshot<List<MessageSingle>> snapshot) {
-                    List<MessageSingle> data = snapshot.data ?? [];
-                    return ListView.builder(
-                      itemBuilder: (BuildContext context, int index) {
-                        MessageSingle msg = data[index];
-                        var singleData = jsonDecode(msg.msg!);
-                        return GestureDetector(
-                          onTap: () {
-                            // 点击跳转到新的页面 MessageDetails()
-                            Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => MessageDetails(singleData: msg,title: HomePageUtils.getName(singleData!, msg),)),
-                            );
-                          },
-                          child: Row(
-                            children: [
-                              Container(
-                                margin: EdgeInsets.only(
-                                    left: 16, top: 16, bottom: 16, right: 18),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(2),
-                                  child: msg.chatType == 2
-                                      ? Image.asset(
-                                    "assets/images/group_avatar.png",
-                                    width: 44,
-                                    height: 44,
-                                  )
-                                      : CachedNetworkImage(
-                                    imageUrl: HomePageUtils.getAvatar(msg),
-                                    width: 44,
-                                    height: 44,
-                                    fit: BoxFit.cover,
+                    print(context);
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.none:
+                        return Text("none");
+                      case ConnectionState.waiting:
+                        return defaultWidget;
+                      default:
+                        List<MessageSingle> data = snapshot.data ?? [];
+                        defaultWidget = ListView.builder(
+                          itemBuilder: (BuildContext context, int index) {
+                            MessageSingle msg = data[index];
+                            var singleData = jsonDecode(msg.msg!);
+                            return GestureDetector(
+                              onTap: () {
+                                // 点击跳转到新的页面 MessageDetails()
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(builder: (context) => MessageDetails(singleData: msg,title: HomePageUtils.getName(singleData!, msg),)),
+                                );
+                              },
+                              child: Row(
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.only(
+                                        left: 16, top: 16, bottom: 16, right: 18),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(2),
+                                      child: msg.chatType == 2
+                                          ? Image.asset(
+                                        "assets/images/group_avatar.png",
+                                        width: 44,
+                                        height: 44,
+                                      )
+                                          : CachedNetworkImage(
+                                        imageUrl: HomePageUtils.getAvatar(msg),
+                                        width: 44,
+                                        height: 44,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                              Expanded(
-                                  child: Container(
-                                    padding: EdgeInsets.only(top: 5),
-                                    height: 71,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
+                                  Expanded(
+                                      child: Container(
+                                        padding: EdgeInsets.only(top: 5),
+                                        height: 71,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Expanded(
-                                                child: Text(
-                                                    HomePageUtils.getName(singleData!, msg),
-                                                    maxLines: 1,
-                                                    style: TextStyle(
-                                                        color: Color(0xFF333333),
-                                                        fontSize: 17,
-                                                        overflow: TextOverflow.ellipsis))),
-                                            Container(
-                                              padding: EdgeInsets.only(right: 16),
-                                              child:
-                                              Text(Utils.getTimeDifference(msg.created!),
-                                                  style: TextStyle(
-                                                    color: Color(0xFFCCCCCC),
-                                                    fontSize: 12,
-                                                  )),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                    child: Text(
+                                                        HomePageUtils.getName(singleData!, msg),
+                                                        maxLines: 1,
+                                                        style: TextStyle(
+                                                            color: Color(0xFF333333),
+                                                            fontSize: 17,
+                                                            overflow: TextOverflow.ellipsis))),
+                                                Container(
+                                                  padding: EdgeInsets.only(right: 16),
+                                                  child:
+                                                  Text(Utils.getTimeDifference(msg.created!),
+                                                      style: TextStyle(
+                                                        color: Color(0xFFCCCCCC),
+                                                        fontSize: 12,
+                                                      )),
+                                                ),
+                                              ],
                                             ),
+                                            SizedBox(
+                                              height: 7.5,
+                                            ),
+                                            Text(Utils.getMsgType(singleData),
+                                                style: TextStyle(
+                                                    color: Color(0xFF999999), fontSize: 14))
                                           ],
                                         ),
-                                        SizedBox(
-                                          height: 7.5,
-                                        ),
-                                        Text(Utils.getMsgType(singleData),
-                                            style: TextStyle(
-                                                color: Color(0xFF999999), fontSize: 14))
-                                      ],
-                                    ),
-                                    decoration: BoxDecoration(
-                                        border: Border(
-                                            bottom: BorderSide(
-                                              color: Color(0xFFEEEEEE),
-                                            ))),
-                                  ))
-                            ],
-                          ),
+                                        decoration: BoxDecoration(
+                                            border: Border(
+                                                bottom: BorderSide(
+                                                  color: Color(0xFFEEEEEE),
+                                                ))),
+                                      ))
+                                ],
+                              ),
+                            );
+                          },
+                          itemCount: data.length,
                         );
-                      },
-                      itemCount: data.length,
-                    );
+                        return defaultWidget;
+                    }
                   }
               ),
                 // future and builder properties
