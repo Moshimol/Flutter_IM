@@ -48,6 +48,7 @@ dependencies:
   modal_bottom_sheet: ^2.1.2
   uuid: ^3.0.7
   path_provider: ^2.0.15
+  get:
 
 dev_dependencies:
   flutter_test:

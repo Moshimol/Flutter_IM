@@ -3,6 +3,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_im/pages/other/launch_page.dart';
 import 'package:flutter_im/request/config.dart';
 import 'package:flutter_im/request/request/request.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -19,7 +20,8 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,

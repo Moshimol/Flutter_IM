@@ -119,15 +119,11 @@ class MeHeadBottomSheet{
           mainAxisSize: MainAxisSize.min,
           children: [
             PickSheet.buildButton(
-                Column(
-                  children: [
-                    Text(
-                      "拍照",
-                      style: TextStyle(fontSize: 18, color: Color(0xff333333)),
-                    )
-                  ],
+                Text(
+                  "拍照",
+                  style: TextStyle(fontSize: 18, color: Color(0xff333333)),
                 ),
-                sheetSingleHeight, onClickTap: () {
+                49, onClickTap: () {
               Navigator.pop(context);
               onClickTap!(0);
             }),
@@ -136,24 +132,12 @@ class MeHeadBottomSheet{
             ),
             PickSheet.buildButton(
                 Text(
-                  "从手机相册选择",
+                  "从相册选择",
                   style: TextStyle(fontSize: 18, color: Color(0xff333333)),
                 ),
                 49, onClickTap: () {
               Navigator.pop(context);
               onClickTap!(1);
-            }),
-            Divider(
-              height: 1,
-            ),
-            PickSheet.buildButton(
-                Text(
-                  "保存照片",
-                  style: TextStyle(fontSize: 18, color: Color(0xff333333)),
-                ),
-                49, onClickTap: () {
-              Navigator.pop(context);
-              onClickTap!(2);
             }),
             Container(
               height: 7,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_im/request/config.dart';
 import '../../utils/module_model/user/user_data.dart';
 import '../../widgets/appbar/back_appbar.dart';
+import '../../widgets/picker/picker_sheet.dart';
 
 // 枚举类型
 enum MeItem {
@@ -28,10 +29,39 @@ class _MeInfoPageState extends State<MeInfoPage> {
   }
 
   // 点击处理的跳转问题
-  void clickPush(MeItem item){
-    if (item == MeItem.name) {
+  void clickPush(MeItem item, BuildContext context){
+    if (item == MeItem.avatar) {
       // 点击头像 更换照片
+      changeUrl(context);
+    } else if (item == MeItem.name) {
+      // 跳转到修改名字界面
+      pushChangeName(context);
+    } else if (item == MeItem.account) {
+      showAccount(context);
+    } else if (item == MeItem.qrcode) {
+      showQrCode(context);
     }
+  }
+
+
+  void changeUrl(BuildContext context){
+    MeHeadBottomSheet.showBottomPicker(context: context, onClickTap: (index){
+      print(index);
+    });
+  }
+
+  void pushChangeName(BuildContext context) {
+
+  }
+
+  /// 显示账号
+  void showAccount(BuildContext context) {
+
+  }
+
+  // 去展示二维码界面
+  void showQrCode(BuildContext context) {
+
   }
 
   @override
@@ -61,8 +91,7 @@ class _MeInfoPageState extends State<MeInfoPage> {
                     ),
                   ),
                   onClickTap: (context){
-                    print("点击了头像");
-                    clickPush(MeItem.avatar);
+                    clickPush(MeItem.avatar,context);
                   },
                 ),
                 MeInfoItem(

@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter_im/utils/manager/account_manager.dart';
 import 'package:flutter_im/utils/module_model/message/message_single.dart';
 import 'package:flutter_im/utils/utils.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import '../../utils/manager/message_manager.dart';
 import 'message_details.dart';
 
@@ -100,9 +102,7 @@ class _HomePageState extends State<HomePage> {
                             return GestureDetector(
                               onTap: () {
                                 // 点击跳转到新的页面 MessageDetails()
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(builder: (context) => MessageDetails(singleData: msg,title: HomePageUtils.getName(singleData!, msg),)),
-                                );
+                                Get.to(MessageDetails(singleData: msg,title: HomePageUtils.getName(singleData!, msg),));
                               },
                               child: Row(
                                 children: [
