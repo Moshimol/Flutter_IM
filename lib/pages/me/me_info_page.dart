@@ -1,9 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_im/request/config.dart';
+import 'package:flutter_im/pages/me/me_avatar_page.dart';
+import 'package:get/get.dart';
 import '../../utils/module_model/user/user_data.dart';
 import '../../widgets/appbar/back_appbar.dart';
-import '../../widgets/picker/picker_sheet.dart';
 
 // 枚举类型
 enum MeItem {
@@ -45,9 +45,7 @@ class _MeInfoPageState extends State<MeInfoPage> {
 
 
   void changeUrl(BuildContext context){
-    MeHeadBottomSheet.showBottomPicker(context: context, onClickTap: (index){
-      print(index);
-    });
+    Get.to(MeAvatarPage(data: widget.data,));
   }
 
   void pushChangeName(BuildContext context) {
@@ -102,7 +100,7 @@ class _MeInfoPageState extends State<MeInfoPage> {
                     style: TextStyle(fontSize: 17, color: Color(0xFF999999)),
                   ),
                   onClickTap: (context){
-                    print("点击了名字");
+                    clickPush(MeItem.name,context);
                   },
                 ),
                 MeInfoItem(

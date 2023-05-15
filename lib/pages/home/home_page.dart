@@ -5,7 +5,7 @@ import 'package:flutter_im/utils/module_model/message/message_single.dart';
 import 'package:flutter_im/utils/utils.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
+import '../../config/app_color.dart';
 import '../../utils/manager/message_manager.dart';
 import 'message_details.dart';
 
@@ -76,8 +76,7 @@ class _HomePageState extends State<HomePage> {
                     height: 15,
                   ),
                   SizedBox(width: 10),
-                  Text("搜索",
-                      style: TextStyle(fontSize: 12, color: Color(0xFF999999))),
+                  Text("搜索", style: TextStyle(fontSize: 12, color: color999)),
                 ],
               ),
               decoration: BoxDecoration(
@@ -98,7 +97,7 @@ class _HomePageState extends State<HomePage> {
                       return defaultWidget;
                     default:
                       List<MessageSingle> data = snapshot.data ?? [];
-                      defaultWidget = ListView.builder(
+                      defaultWidget = ListView.separated(
                         itemBuilder: (BuildContext context, int index) {
                           MessageSingle msg = data[index];
                           var singleData = jsonDecode(msg.msg!);
@@ -131,89 +130,93 @@ class _HomePageState extends State<HomePage> {
                                         HomePageUtils.getName(singleData!, msg),
                                   ));
                                 },
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      margin: EdgeInsets.only(
-                                          left: 16,
-                                          top: 16,
-                                          bottom: 16,
-                                          right: 18),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(2),
-                                        child: msg.chatType == 2
-                                            ? Image.asset(
-                                                "assets/images/group_avatar.png",
-                                                width: 44,
-                                                height: 44,
-                                              )
-                                            : CachedNetworkImage(
-                                                imageUrl:
-                                                    HomePageUtils.getAvatar(
-                                                        msg),
-                                                width: 44,
-                                                height: 44,
-                                                fit: BoxFit.cover,
-                                              ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                        child: Container(
-                                      padding: EdgeInsets.only(top: 5),
-                                      height: 76,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Expanded(
-                                                  child: Text(
-                                                      HomePageUtils.getName(
-                                                          singleData!, msg),
-                                                      maxLines: 1,
-                                                      style: TextStyle(
-                                                          color:
-                                                              Color(0xFF333333),
-                                                          fontSize: 17,
-                                                          overflow: TextOverflow
-                                                              .ellipsis))),
-                                              Container(
-                                                padding:
-                                                    EdgeInsets.only(right: 16),
-                                                child: Text(
-                                                    Utils.getTimeDifference(
-                                                        msg.created!),
-                                                    style: TextStyle(
-                                                      color: Color(0xFFCCCCCC),
-                                                      fontSize: 12,
-                                                    )),
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(
-                                            height: 7.5,
-                                          ),
-                                          Text(Utils.getMsgType(singleData),
-                                              style: TextStyle(
-                                                  color: Color(0xFF999999),
-                                                  fontSize: 14)),
-                                          SizedBox(
-                                            height: 22.4,
-                                          ),
-                                          Divider(
-                                            height: 1,
+                                child: Container(
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        margin: EdgeInsets.only(
+                                            left: 16,
+                                            top: 16,
+                                            bottom: 16,
+                                            right: 18),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(2),
+                                          child: msg.chatType == 2
+                                              ? Image.asset(
+                                            "assets/images/group_avatar.png",
+                                            width: 44,
+                                            height: 44,
                                           )
-                                        ],
+                                              : CachedNetworkImage(
+                                            imageUrl:
+                                            HomePageUtils.getAvatar(
+                                                msg),
+                                            width: 44,
+                                            height: 44,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
                                       ),
-                                    )),
-                                  ],
+                                      Expanded(
+                                          child: Container(
+                                            padding: EdgeInsets.only(top: 12),
+                                            height: 76,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Expanded(
+                                                        child: Text(
+                                                            HomePageUtils.getName(
+                                                                singleData!, msg),
+                                                            maxLines: 1,
+                                                            style: TextStyle(
+                                                                color:
+                                                                Color(0xFF333333),
+                                                                fontSize: 17,
+                                                                overflow: TextOverflow
+                                                                    .ellipsis))),
+                                                    Container(
+                                                      padding:
+                                                      EdgeInsets.only(right: 16),
+                                                      child: Text(
+                                                          Utils.getTimeDifference(
+                                                              msg.created!),
+                                                          style: TextStyle(
+                                                            color: Color(0xFFCCCCCC),
+                                                            fontSize: 12,
+                                                          )),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                  height: 7.5,
+                                                ),
+                                                Text(Utils.getMsgType(singleData),
+                                                    style: TextStyle(
+                                                        color: color999,
+                                                        fontSize: 14)),
+                                              ],
+                                            ),
+                                          )),
+                                    ],
+                                  ),
                                 ),
                               ));
                         },
                         itemCount: data.length,
+                        separatorBuilder: (BuildContext context, int index) {
+                          return Container(
+                            padding: EdgeInsets.only(left: 80),
+                            child: Divider(
+                              height: 0.5,
+                              color: colorEEE,
+                            ),
+                          );
+                        },
                       );
-
                       return defaultWidget;
                   }
                 }),
