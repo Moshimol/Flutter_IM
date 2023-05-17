@@ -13,7 +13,7 @@ class AppRouter {
     GetPage(name: '/home', page: () => HomePage()),
   ];
 
-  static GetPage unKnowRoute = GetPage(name: "notFound", page: () => WidgetNotFound());
+  static GetPage unKnowRoute = GetPage(name: "/notFound", page: () => WidgetNotFound());
 
   static void configureRouters(AppRouter router) {
 

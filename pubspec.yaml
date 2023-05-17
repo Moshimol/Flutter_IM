@@ -50,6 +50,8 @@ dependencies:
   path_provider: ^2.0.15
   get: ^4.6.5
   flutter_slidable: ^3.0.0
+  # 平台
+  platform: ^3.1.0
 
 dev_dependencies:
   flutter_test:
