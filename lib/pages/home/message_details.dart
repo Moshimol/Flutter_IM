@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../../utils/module_model/message/message_single.dart';
@@ -17,6 +19,10 @@ class MessageDetails extends StatefulWidget {
 
 class _MessageDetailsState extends State<MessageDetails> {
   TextEditingController sendTextController = TextEditingController();
+  FocusNode _textFocusNode = FocusNode();
+  int _textBaseOffset = 0;
+
+  ScrollController? chatController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +71,22 @@ class _MessageDetailsState extends State<MessageDetails> {
   }
 
   Widget _mainChatView() {
-    return Expanded(child: Container());
+    return Expanded(child: CustomScrollView(
+      controller: chatController,
+      scrollDirection: Axis.vertical,
+      reverse: false,
+      slivers: [
+        SliverList(
+          delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+            return Container(
+              color: Colors.lightBlue,
+              height: 100,
+              child: Text("111 = ${index}"),
+            );
+          },childCount: 15),
+        ),
+      ],
+    ));
   }
 
   Widget _bottomSendVie() {
@@ -85,43 +106,79 @@ class _MessageDetailsState extends State<MessageDetails> {
             ),
             Expanded(
                 child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 10),
+              padding: EdgeInsets.symmetric(vertical: 5),
               child: Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(4)),
                     color: Colors.white),
-                child: TextField(
-                  textAlignVertical: TextAlignVertical.top,
-                  controller: sendTextController,
-                  onChanged: (value) {
-                    print(value);
-                  },
-                  cursorColor: Colors.black26,
-                  decoration: InputDecoration(
-                      hintText: "说点什么吧...",
-                      border: InputBorder.none,
-                      hintStyle:
-                          TextStyle(fontSize: 15, color: Color(0xffD8D8D8))),
+                constraints: BoxConstraints(minHeight: 40.0, maxHeight: 150.0),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 5),
+                  child: TextField(
+                    maxLines: null,
+                    keyboardType: TextInputType.multiline,
+                    focusNode: _textFocusNode,
+                    textAlignVertical: TextAlignVertical.top,
+                    controller: sendTextController,
+                    onChanged: (value) {
+                      setState(() {
+                        _textBaseOffset = sendTextController.selection.baseOffset;
+                      });
+                    },
+                    cursorColor: Colors.black26,
+                    decoration: InputDecoration(
+                        hintText: "说点什么吧...",
+                        isDense: true,
+                        border: InputBorder.none,
+                        hintStyle:
+                        TextStyle(fontSize: 15, color: Color(0xffD8D8D8))),
+                  ),
                 ),
               ),
             )),
             SizedBox(
               width: 10,
             ),
-            LocalIconWidget(
-              iconName: "chat_smile",
-              iconSize: 26,
+            InkWell(
+              onTap: (){
+                _scrollMessageBottom();
+              },
+              child: LocalIconWidget(
+                iconName: "chat_smile",
+                iconSize: 26,
+              ),
             ),
             SizedBox(
               width: 10,
             ),
-            LocalIconWidget(
-              iconName: "chat_add",
-              iconSize: 26,
+            InkWell(
+              onTap: (){
+                _openPhotoAction();
+              },
+              child: LocalIconWidget(
+                iconName: "chat_add",
+                iconSize: 26,
+              ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  // request
+
+
+  // action 滑动到底部
+  void _scrollMessageBottom(){
+    Timer(Duration(milliseconds: 100), () {
+      chatController!.jumpTo(chatController!.position.maxScrollExtent);
+    });
+  }
+
+
+  // 打开相册
+  void _openPhotoAction(){
+
   }
 }
