@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import '../../utils/manager/message_manager.dart';
+import '../../utils/module_model/message/chat_message_info.dart';
 import '../../utils/module_model/message/message_single.dart';
 import '../../widgets/appbar/back_appbar.dart';
 import '../../widgets/custom/category.dart';
@@ -20,6 +22,10 @@ class MessageDetails extends StatefulWidget {
 }
 
 class _MessageDetailsState extends State<MessageDetails> {
+
+  // 消息的列表
+  Future<List<ChatMessageInfo>>? _messageList;
+
   TextEditingController sendTextController = TextEditingController();
   FocusNode _textFocusNode = FocusNode();
   int _textBaseOffset = 0;
@@ -33,6 +39,14 @@ class _MessageDetailsState extends State<MessageDetails> {
 
   ScrollController? chatController = ScrollController();
 
+  @override
+  void initState() {
+    super.initState();
+    _messageList = _requestMessageInfo();
+    _messageList?.then((value) {
+      print(value);
+    });
+  }
   @override
   Widget build(BuildContext context) {
     if (keyBoardHeight == 270.0 &&
@@ -187,17 +201,37 @@ class _MessageDetailsState extends State<MessageDetails> {
           return SendMessageItem();
         },
         controller: chatController,
-        padding: EdgeInsets.all(15),
+        padding: EdgeInsets.symmetric(horizontal: 12),
         dragStartBehavior: DragStartBehavior.down,
         reverse: false,
         itemCount: 15,
         scrollDirection: Axis.vertical,
       ),
-    )
-    );
+    ));
   }
 
   // request
+
+  Future<List<ChatMessageInfo>> _requestMessageInfo() async {
+    final value = await MessageManager.getMessageBySessionList(
+        chatType: widget.singleData.chatType == 1
+            ? ChatType.ChatUserType
+            : ChatType.ChatGroupType,
+        lastMsgId: 0,
+        page: "1",
+        perPage: false,
+        to: widget.singleData.userInfo!.accountId!);
+
+    if (value["state"] != 1) {
+      throw Exception('Failed to load message list.');
+    }
+
+    List responseJson = value["data"];
+    List<ChatMessageInfo> msgList =
+    responseJson.map((m) => new ChatMessageInfo.fromJson(m)).toList();
+
+    return msgList;
+  }
 
   // action 滑动到底部
   void _scrollMessageBottom() {
