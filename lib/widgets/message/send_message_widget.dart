@@ -1,14 +1,15 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_text/extended_text.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_im/config/app_color.dart';
 import 'package:flutter_im/utils/other/AdapUtil.dart';
 
 import '../../utils/global/global_params.dart';
 import '../../utils/module_model/message/chat_message_info.dart';
 import '../custom/space.dart';
+import 'messag_helper_widget.dart';
 import 'message_time_widget.dart';
 
 const double defaultChatSpace = 6;
@@ -54,6 +55,8 @@ class _SendMessageItemState extends State<SendMessageItem> {
           showTime: widget.showTime,
           timeStr: widget.timeStr,
         );
+      case "merge":
+        return Text("merge");
       default:
         return Text("1111");
     }
@@ -80,6 +83,22 @@ class BaseMessage extends StatelessWidget {
       required this.isSelf})
       : super(key: key);
 
+
+  Widget arrow(){
+    return Align(
+      alignment: Alignment.topRight,
+      child: Container(
+        padding: EdgeInsets.only(top: 4),
+        // color: Colors.red,
+        height: 8,
+        width: 6,
+        child: CustomPaint(
+          painter: ChatArrowPainter(),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var body = [
@@ -89,6 +108,7 @@ class BaseMessage extends StatelessWidget {
       SpaceHorizontalWidget(
         space: defaultChatSpace,
       ),
+      arrow(),
       currentWidget,
       Spacer(),
     ];
@@ -239,13 +259,17 @@ class FileMessage extends StatelessWidget {
         height: 46,
       ),
       Spacer(),
-      Column(
-        crossAxisAlignment: isSelf ? CrossAxisAlignment.start : CrossAxisAlignment.end,
-        children: [
-          SizedBox(height: 12,),
-          Text("文件名字",style: TextStyle(color: color333,fontSize: 16),),
-          Text("文件大小",style: TextStyle(color: color999,fontSize: 12))
-        ],
+      Container(
+        width: 240 - 80,
+        child: Column(
+          crossAxisAlignment: isSelf ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 12,),
+            Text("${contentOrigin["file_name"]}",style: TextStyle(color: color333,fontSize: 16),maxLines: 1,
+              overflow: TextOverflow.ellipsis,),
+            Text("${double.parse(contentOrigin["size"]) / 1000} KB",style: TextStyle(color: color999,fontSize: 12))
+          ],
+        ),
       ),
       SizedBox(
         width: 12,
