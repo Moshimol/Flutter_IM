@@ -7,6 +7,7 @@ class GlobalParams {
   static GlobalParams instance = GlobalParams._internal();
   
   String accountId = "";
+
   UserData currentUser = UserData.new();
 
   factory GlobalParams() => instance;

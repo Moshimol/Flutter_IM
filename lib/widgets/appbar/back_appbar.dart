@@ -3,8 +3,8 @@ import 'package:flutter_im/main.dart';
 
 class BackBar extends AppBar {
   final List<Widget>? actions;
-
-  BackBar({Key? key, required titleName, this.actions})
+  final Color? color;
+  BackBar({Key? key, required titleName, this.actions, this.color})
       : super(
             title: Text(
               titleName,
@@ -13,7 +13,7 @@ class BackBar extends AppBar {
                   fontSize: 18,
                   fontWeight: FontWeight.w300),
             ),
-            backgroundColor: Color(0xFFF5F5F5),
+            backgroundColor: color == null ? Color(0xFFF5F5F5) : color,
             elevation: 0,
             leading: InkWell(
               onTap: () {

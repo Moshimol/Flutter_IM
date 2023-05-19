@@ -93,6 +93,7 @@ class Content {
   String? url;
   String? originalUrl;
   Size? size;
+  String? fileSize;
   Expand? expand;
 
   Content(
@@ -101,6 +102,7 @@ class Content {
         this.url,
         this.originalUrl,
         this.size,
+        this.fileSize,
         this.expand});
 
   Content.fromJson(Map<String, dynamic> json) {
@@ -108,7 +110,12 @@ class Content {
     fileName = json['file_name'];
     url = json['url'];
     originalUrl = json['original_url'];
-    size = json['size'] != null ? new Size.fromJson(json['size']) : null;
+    if (type == "img") {
+      size = json['size'] != null ? new Size.fromJson(json['size']) : null;
+    } else {
+      fileSize = json['size'];
+    }
+
     expand =
     json['expand'] != null ? new Expand.fromJson(json['expand']) : null;
   }
@@ -119,7 +126,7 @@ class Content {
     data['file_name'] = this.fileName;
     data['url'] = this.url;
     data['original_url'] = this.originalUrl;
-    if (this.size != null) {
+    if (this.size != null &&  data['type'] == "img") {
       data['size'] = this.size!.toJson();
     }
     if (this.expand != null) {

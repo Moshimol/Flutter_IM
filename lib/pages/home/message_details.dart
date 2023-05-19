@@ -10,6 +10,9 @@ import '../../widgets/custom/category.dart';
 import '../../widgets/message/send_message_widget.dart';
 import 'message_info.dart';
 
+// 默认的显示方式
+Widget defaultWidget = Container();
+
 class MessageDetails extends StatefulWidget {
   const MessageDetails({Key? key, required this.singleData, this.title})
       : super(key: key);
@@ -22,9 +25,8 @@ class MessageDetails extends StatefulWidget {
 }
 
 class _MessageDetailsState extends State<MessageDetails> {
-
   // 消息的列表
-  Future<List<ChatMessageInfo>>? _messageList;
+  List<ChatMessageInfo> _messageList = [];
 
   TextEditingController sendTextController = TextEditingController();
   FocusNode _textFocusNode = FocusNode();
@@ -35,18 +37,15 @@ class _MessageDetailsState extends State<MessageDetails> {
   bool _isMore = false;
   double keyBoardHeight = 270.0;
 
-  // StreamSubscription<dynamic> _msgStreamSubs;
 
   ScrollController? chatController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    _messageList = _requestMessageInfo();
-    _messageList?.then((value) {
-      print(value);
-    });
+    _requestMessageInfo();
   }
+
   @override
   Widget build(BuildContext context) {
     if (keyBoardHeight == 270.0 &&
@@ -54,7 +53,9 @@ class _MessageDetailsState extends State<MessageDetails> {
       keyBoardHeight = MediaQuery.of(context).viewInsets.bottom;
     }
     return Scaffold(
+      backgroundColor: Color(0xffF5F5F5),
       appBar: BackBar(
+        color : Colors.white,
         titleName: widget.title,
         actions: [
           Builder(builder: (context) {
@@ -194,25 +195,25 @@ class _MessageDetailsState extends State<MessageDetails> {
   Widget _buildChatBody() {
     return Flexible(
         child: ScrollConfiguration(
-      behavior: MyBehavior(),
-      child: ListView.builder(
-        itemBuilder: (context, int index) {
-          // 根据不同数据进行
-          return SendMessageItem();
-        },
-        controller: chatController,
-        padding: EdgeInsets.symmetric(horizontal: 12),
-        dragStartBehavior: DragStartBehavior.down,
-        reverse: false,
-        itemCount: 15,
-        scrollDirection: Axis.vertical,
-      ),
-    ));
+            behavior: MyBehavior(),
+            child: ListView.builder(
+              itemBuilder: (context, int index) {
+                // 根据不同数据进行
+                return SendMessageItem(index: index,showTimeMessage: true, chatMessage: _messageList[index],);
+              },
+              controller: chatController,
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              dragStartBehavior: DragStartBehavior.down,
+              reverse: false,
+              itemCount: _messageList.length,
+              scrollDirection: Axis.vertical,
+            ))
+    );
   }
 
   // request
 
-  Future<List<ChatMessageInfo>> _requestMessageInfo() async {
+  Future _requestMessageInfo() async {
     final value = await MessageManager.getMessageBySessionList(
         chatType: widget.singleData.chatType == 1
             ? ChatType.ChatUserType
@@ -228,9 +229,14 @@ class _MessageDetailsState extends State<MessageDetails> {
 
     List responseJson = value["data"];
     List<ChatMessageInfo> msgList =
-    responseJson.map((m) => new ChatMessageInfo.fromJson(m)).toList();
+        responseJson.map((m) => new ChatMessageInfo.fromJson(m)).toList();
 
-    return msgList;
+    _messageList = msgList;
+    if (mounted) {
+      setState(() {
+
+      });
+    }
   }
 
   // action 滑动到底部
