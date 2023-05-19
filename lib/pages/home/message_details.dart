@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../utils/manager/message_manager.dart';
 import '../../utils/module_model/message/chat_message_info.dart';
 import '../../utils/module_model/message/message_single.dart';
+import '../../utils/utils.dart';
 import '../../widgets/appbar/back_appbar.dart';
 import '../../widgets/custom/category.dart';
 import '../../widgets/message/send_message_widget.dart';
@@ -199,7 +200,11 @@ class _MessageDetailsState extends State<MessageDetails> {
             child: ListView.builder(
               itemBuilder: (context, int index) {
                 // 根据不同数据进行
-                return SendMessageItem(index: index,showTimeMessage: true, chatMessage: _messageList[index],);
+                bool showTime = MessageUtils.showTime(currentInfo: _messageList[index],preInfo:index - 1 < 0 ? ChatMessageInfo() : _messageList[index - 1],isFirst: index ==0);
+                // 当前时间转化
+                String timeStr = MessageUtils.getMessageTime(_messageList[index]);
+
+                return SendMessageItem(index: index, showTime: showTime, chatMessage: _messageList[index],timeStr: timeStr,);
               },
               controller: chatController,
               padding: EdgeInsets.symmetric(horizontal: 12),
@@ -221,7 +226,7 @@ class _MessageDetailsState extends State<MessageDetails> {
         lastMsgId: 0,
         page: "1",
         perPage: false,
-        to: widget.singleData.userInfo!.accountId!);
+        to:widget.singleData.chatType == 1 ? widget.singleData.userInfo!.accountId! : widget.singleData.groupInfo!.gid!);
 
     if (value["state"] != 1) {
       throw Exception('Failed to load message list.');
@@ -275,5 +280,37 @@ class MyBehavior extends ScrollBehavior {
       default:
         return child;
     }
+  }
+}
+
+
+
+// 消息的扩展
+class MessageUtils {
+  static bool showTime({required ChatMessageInfo currentInfo, required bool isFirst, ChatMessageInfo? preInfo,}) {
+    if (isFirst) {
+      return true;
+    } else {
+      return int.parse(currentInfo.created!) - int.parse(preInfo!.created!) > 3 * 60 * 1000;
+    }
+  }
+
+  // 当前的时间戳转化
+  static String getMessageTime(ChatMessageInfo currentInfo) {
+    // 计算时间
+    int time = (new DateTime.now().millisecondsSinceEpoch).round() ~/ 1000;
+    int timeStamp = int.parse(currentInfo.created!)~/ 1000;
+    int _distance = time - timeStamp;
+
+    if(_distance <= 60){
+      return '刚刚';
+    } else if(DateTime.fromMicrosecondsSinceEpoch(time).year == DateTime.fromMillisecondsSinceEpoch(timeStamp).year){
+      return '${Utils.customStampStr(timestamp: timeStamp, date: 'MM-DD hh:mm', toInt: false)}';
+    } else if (DateTime.fromMillisecondsSinceEpoch(time).day == DateTime.fromMillisecondsSinceEpoch(timeStamp).day) {
+      return '${Utils.customStampStr(timestamp: timeStamp, date: 'hh:mm', toInt: false)}';
+    } else{
+      return '${Utils.customStampStr(timestamp: timeStamp, date: 'YY-MM-DD hh:mm', toInt: false)}';
+    }
+
   }
 }

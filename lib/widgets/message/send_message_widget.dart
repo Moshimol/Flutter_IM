@@ -14,12 +14,18 @@ import 'message_time_widget.dart';
 const double defaultChatSpace = 6;
 
 class SendMessageItem extends StatefulWidget {
-
   final ChatMessageInfo chatMessage;
   final int index;
-  final bool showTimeMessage;
+  final bool showTime;
+  final String timeStr;
 
-  const SendMessageItem({Key? key, required this.chatMessage, required this.index, required this.showTimeMessage}) : super(key: key);
+  const SendMessageItem(
+      {Key? key,
+      required this.chatMessage,
+      required this.index,
+      required this.showTime, required this.timeStr})
+      : super(key: key);
+
   @override
   State<SendMessageItem> createState() => _SendMessageItemState();
 }
@@ -28,39 +34,54 @@ class _SendMessageItemState extends State<SendMessageItem> {
   @override
   Widget build(BuildContext context) {
     // 判断是不是拿个属性  来处理 显示方式
-    var contentOrigin = JsonDecoder().convert(widget.chatMessage.contentOrigin!);
-    print(contentOrigin);
-
-    switch(contentOrigin["type"]) {
+    var contentOrigin =
+        JsonDecoder().convert(widget.chatMessage.contentOrigin!);
+    switch (contentOrigin["type"]) {
       case "txt":
-        return TextMessage(chatMessage: widget.chatMessage, showTimeMessage: widget.showTimeMessage,avatar: "https://s2-cdn.oneitfarm.com/FpVycNkmE9dOnXyiHpIGdgqAb8zO",text: contentOrigin["msg"],);
+        return TextMessage(
+          chatMessage: widget.chatMessage,
+          avatar: "https://s2-cdn.oneitfarm.com/FpVycNkmE9dOnXyiHpIGdgqAb8zO",
+          text: contentOrigin["msg"],
+          showTime: widget.showTime,
+          timeStr: widget.timeStr,
+        );
       default:
         return Text("1111");
     }
-
-
   }
 }
 
 /// 文字
 class TextMessage extends StatelessWidget {
-
   final ChatMessageInfo chatMessage;
-  final bool showTimeMessage;
   final String? avatar;
   final String text;
+  final bool showTime;
+  final String? timeStr;
 
-  const TextMessage({Key? key, required this.chatMessage, required this.showTimeMessage, this.avatar, required this.text}) : super(key: key);
+  const TextMessage(
+      {Key? key,
+      required this.chatMessage,
+      this.avatar,
+      required this.text,
+      required this.showTime, this.timeStr})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     bool isSelf = chatMessage.fromAccountId == GlobalParams().accountId;
 
     var body = [
-      HeaderContainer(avatar: avatar!,),
-      SpaceHorizontalWidget(space: defaultChatSpace,),
-      TextContainer(text: text,isSelf: isSelf,),
+      HeaderContainer(
+        avatar: avatar!,
+      ),
+      SpaceHorizontalWidget(
+        space: defaultChatSpace,
+      ),
+      TextContainer(
+        text: text,
+        isSelf: isSelf,
+      ),
       Spacer(),
     ];
 
@@ -72,8 +93,15 @@ class TextMessage extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 10),
       child: Column(
         children: [
-          MessageTimeWidget(messageText: "星期一 12:32",),
-          SpaceVerticalWidget(space: defaultChatSpace,),
+          Visibility(
+            child: MessageTimeWidget(
+              messageText: timeStr!,
+            ),
+            visible: showTime,
+          ),
+          SpaceVerticalWidget(
+            space: defaultChatSpace,
+          ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: body,
@@ -87,6 +115,7 @@ class TextMessage extends StatelessWidget {
 // 头像
 class HeaderContainer extends StatelessWidget {
   final String avatar;
+
   const HeaderContainer({Key? key, required this.avatar}) : super(key: key);
 
   @override
@@ -97,23 +126,25 @@ class HeaderContainer extends StatelessWidget {
         imageUrl: avatar,
         width: 40,
         height: 40,
-        fit: BoxFit.cover,),
+        fit: BoxFit.cover,
+      ),
     );
   }
 }
 
-
 class TextContainer extends StatelessWidget {
   final String text;
   final bool isSelf;
-  const TextContainer({Key? key, required this.text, required this.isSelf}) : super(key: key);
+
+  const TextContainer({Key? key, required this.text, required this.isSelf})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: text.length > 22 ? screenWidth - 66 - 55 : null,
       margin: EdgeInsets.only(right: 5),
-      padding: EdgeInsets.all(5.0),
+      padding: EdgeInsets.all(10.0),
       decoration: BoxDecoration(
         color: isSelf ? Color(0xff4CA1F6) : Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(5.0)),
@@ -122,12 +153,13 @@ class TextContainer extends StatelessWidget {
         text,
         maxLines: 100,
         overflow: TextOverflow.ellipsis,
-        style: TextStyle(fontSize: 16,color: isSelf ? Colors.white : color333,),
+        style: TextStyle(
+          fontSize: 16,
+          color: isSelf ? Colors.white : color333,
+        ),
       ),
     );
   }
 }
 
-
 // 图片
-

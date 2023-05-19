@@ -82,14 +82,14 @@ class Utils {
     }else if(_distance <= 43200){
       return '${(_distance / 60 / 60).floor()}小时前';
     }else if(DateTime.fromMillisecondsSinceEpoch(time*1000).year == DateTime.fromMillisecondsSinceEpoch(timeStamp*1000).year){
-      return '${CustomStamp_str(timestamp: timeStamp, date: 'MM/DD hh:mm', toInt: false)}';
+      return '${customStampStr(timestamp: timeStamp, date: 'MM/DD hh:mm', toInt: false)}';
     }else{
-      return '${CustomStamp_str(timestamp: timeStamp, date: 'YY/MM/DD hh:mm', toInt: false)}';
+      return '${customStampStr(timestamp: timeStamp, date: 'YY/MM/DD hh:mm', toInt: false)}';
     }
   }
 
   // 时间戳转时间
-  static String CustomStamp_str({
+  static String customStampStr({
     int? timestamp,             // 为空则显示当前时间
     String? date,               // 显示格式，比如：'YY年MM月DD日 hh:mm:ss'
     bool toInt = true,         // 去除0开头
