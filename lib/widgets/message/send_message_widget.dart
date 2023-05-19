@@ -23,7 +23,8 @@ class SendMessageItem extends StatefulWidget {
       {Key? key,
       required this.chatMessage,
       required this.index,
-      required this.showTime, required this.timeStr})
+      required this.showTime,
+      required this.timeStr})
       : super(key: key);
 
   @override
@@ -41,7 +42,15 @@ class _SendMessageItemState extends State<SendMessageItem> {
         return TextMessage(
           chatMessage: widget.chatMessage,
           avatar: "https://s2-cdn.oneitfarm.com/FpVycNkmE9dOnXyiHpIGdgqAb8zO",
-          text: contentOrigin["msg"],
+          contentOrigin: contentOrigin,
+          showTime: widget.showTime,
+          timeStr: widget.timeStr,
+        );
+      case "file":
+        return FileMessage(
+          chatMessage: widget.chatMessage,
+          avatar: "https://s2-cdn.oneitfarm.com/FpVycNkmE9dOnXyiHpIGdgqAb8zO",
+          contentOrigin: contentOrigin,
           showTime: widget.showTime,
           timeStr: widget.timeStr,
         );
@@ -51,26 +60,28 @@ class _SendMessageItemState extends State<SendMessageItem> {
   }
 }
 
-/// 文字
-class TextMessage extends StatelessWidget {
+// 基础的类 包含这些
+class BaseMessage extends StatelessWidget {
+  final Widget currentWidget;
+
   final ChatMessageInfo chatMessage;
   final String? avatar;
-  final String text;
   final bool showTime;
   final String? timeStr;
+  final bool isSelf;
 
-  const TextMessage(
+  const BaseMessage(
       {Key? key,
+      required this.currentWidget,
       required this.chatMessage,
       this.avatar,
-      required this.text,
-      required this.showTime, this.timeStr})
+      required this.showTime,
+      this.timeStr,
+      required this.isSelf})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    bool isSelf = chatMessage.fromAccountId == GlobalParams().accountId;
-
     var body = [
       HeaderContainer(
         avatar: avatar!,
@@ -78,10 +89,7 @@ class TextMessage extends StatelessWidget {
       SpaceHorizontalWidget(
         space: defaultChatSpace,
       ),
-      TextContainer(
-        text: text,
-        isSelf: isSelf,
-      ),
+      currentWidget,
       Spacer(),
     ];
 
@@ -108,6 +116,42 @@ class TextMessage extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+}
+
+/// 文字
+class TextMessage extends StatelessWidget {
+  final ChatMessageInfo chatMessage;
+  final String? avatar;
+  final Map contentOrigin;
+  final bool showTime;
+  final String? timeStr;
+
+  const TextMessage(
+      {Key? key,
+      required this.chatMessage,
+      this.avatar,
+      required this.contentOrigin,
+      required this.showTime,
+      this.timeStr})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    bool isSelf = chatMessage.fromAccountId == GlobalParams().accountId;
+    String text = contentOrigin["msg"];
+
+    return BaseMessage(
+      currentWidget: TextContainer(
+        text: text,
+        isSelf: isSelf,
+      ),
+      chatMessage: chatMessage,
+      showTime: showTime,
+      isSelf: isSelf,
+      avatar: avatar,
+      timeStr: timeStr,
     );
   }
 }
@@ -163,3 +207,68 @@ class TextContainer extends StatelessWidget {
 }
 
 // 图片
+
+// 文件
+class FileMessage extends StatelessWidget {
+  final ChatMessageInfo chatMessage;
+  final String? avatar;
+  final Map contentOrigin;
+  final bool showTime;
+  final String? timeStr;
+
+  const FileMessage(
+      {Key? key,
+        required this.chatMessage,
+        this.avatar,
+        required this.contentOrigin,
+        required this.showTime,
+        this.timeStr})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    bool isSelf = chatMessage.fromAccountId == GlobalParams().accountId;
+
+    var _fileContainer = [
+      SizedBox(
+        width: 20,
+      ),
+      Container(
+        color: Colors.red,
+        width: 41,
+        height: 46,
+      ),
+      Spacer(),
+      Column(
+        crossAxisAlignment: isSelf ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+        children: [
+          SizedBox(height: 12,),
+          Text("文件名字",style: TextStyle(color: color333,fontSize: 16),),
+          Text("文件大小",style: TextStyle(color: color999,fontSize: 12))
+        ],
+      ),
+      SizedBox(
+        width: 12,
+      ),
+    ];
+
+    return BaseMessage(
+      currentWidget: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(5)),
+          color: Colors.white
+        ),
+        height: 70,
+        width: 240,
+        child: Row(
+          children: !isSelf ? _fileContainer : _fileContainer.reversed.toList(),
+        ),
+      ),
+      chatMessage: chatMessage,
+      showTime: showTime,
+      isSelf: isSelf,
+      avatar: avatar,
+      timeStr: timeStr,
+    );
+  }
+}
