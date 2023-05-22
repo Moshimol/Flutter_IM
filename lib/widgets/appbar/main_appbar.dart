@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_im/config/index.dart';
 
 class MainAppBar extends AppBar {
   MainAppBar(
@@ -8,6 +9,13 @@ class MainAppBar extends AppBar {
       void Function(BuildContext)? onClickTap})
       : super(
             backgroundColor: Color(0xFFF5F5F5),
+            leading: Builder(builder: (cxt) {
+              return IconButton(
+                  onPressed: () {
+                    print("11");
+                  },
+                  icon: const Icon(Icons.read_more_sharp),color: color999,);
+            }),
             elevation: 0,
             actions: [
               Builder(builder: (context) {

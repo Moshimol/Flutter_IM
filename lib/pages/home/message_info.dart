@@ -59,7 +59,7 @@ class _MessageInfoState extends State<MessageInfo> {
     );
   }
 
-  // request 网络请求
+  // request 网络请求 请求个人或者是群组的信息
 
   // view
   Widget _mainGroupView() {

@@ -21,7 +21,7 @@ class BottomModel {
 class _RootPageState extends State<RootPage> {
   int currentIndex = 0;
   double iconWidthAndHeight = 22;
-
+  BuildContext? currentContext;
   PageController pageController = PageController();
 
   List<BottomModel> items = [
@@ -33,8 +33,33 @@ class _RootPageState extends State<RootPage> {
 
   List<Widget> pages = [HomePage(), ContactPage(), DisPage(), MePage()];
 
+  // 侧边栏的显示方式
+  Widget _showDrawer(BuildContext context){
+    return Drawer(
+      child: ListView(
+        children: [
+          DrawerHeader( // drawer的头部控件
+            decoration: BoxDecoration(
+              color: Colors.blue,
+            ),
+            child: UnconstrainedBox( // 解除父级的大小限制
+              child: CircleAvatar(
+                radius: 40,
+                backgroundColor: Colors.transparent,
+                backgroundImage: NetworkImage(
+                  'https://i.loli.net/2020/01/21/4t5hLOoF3YeKSHT.png',
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    currentContext = context;
     return Scaffold(
       bottomNavigationBar: Stack(
         children: [
@@ -94,6 +119,7 @@ class _RootPageState extends State<RootPage> {
         },
         children: pages,
       ),
+      drawer: currentIndex == 0 ? _showDrawer(context) : null,
     );
   }
 }

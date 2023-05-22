@@ -236,7 +236,8 @@ class _MessageDetailsState extends State<MessageDetails> {
     List<ChatMessageInfo> msgList =
         responseJson.map((m) => new ChatMessageInfo.fromJson(m)).toList();
 
-    _messageList = msgList;
+    // 进行反转
+    _messageList = msgList.reversed.toList();
     if (mounted) {
       setState(() {
 
@@ -311,6 +312,5 @@ class MessageUtils {
     } else{
       return '${Utils.customStampStr(timestamp: timeStamp, date: 'YY-MM-DD hh:mm', toInt: false)}';
     }
-
   }
 }

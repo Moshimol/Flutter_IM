@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -48,6 +49,7 @@ class _SendMessageItemState extends State<SendMessageItem> {
           timeStr: widget.timeStr,
         );
       case "img":
+      case "image":
         return ImageMessage(
           chatMessage: widget.chatMessage,
           avatar: "https://s2-cdn.oneitfarm.com/FpVycNkmE9dOnXyiHpIGdgqAb8zO",
@@ -55,7 +57,22 @@ class _SendMessageItemState extends State<SendMessageItem> {
           showTime: widget.showTime,
           timeStr: widget.timeStr,
         );
-
+      case "audio":
+        return VoiceMessage(
+          chatMessage: widget.chatMessage,
+          avatar: "https://s2-cdn.oneitfarm.com/FpVycNkmE9dOnXyiHpIGdgqAb8zO",
+          contentOrigin: contentOrigin,
+          showTime: widget.showTime,
+          timeStr: widget.timeStr,
+        );
+      case "video":
+        return VideoMessage(
+          chatMessage: widget.chatMessage,
+          avatar: "https://s2-cdn.oneitfarm.com/FpVycNkmE9dOnXyiHpIGdgqAb8zO",
+          contentOrigin: contentOrigin,
+          showTime: widget.showTime,
+          timeStr: widget.timeStr,
+        );
       case "file":
         return FileMessage(
           chatMessage: widget.chatMessage,
@@ -81,6 +98,7 @@ class BaseMessage extends StatelessWidget {
   final bool showTime;
   final String? timeStr;
   final bool isSelf;
+  final bool? isArrow;
 
   const BaseMessage(
       {Key? key,
@@ -89,7 +107,8 @@ class BaseMessage extends StatelessWidget {
       this.avatar,
       required this.showTime,
       this.timeStr,
-      required this.isSelf})
+      required this.isSelf,
+      this.isArrow = false})
       : super(key: key);
 
   Widget otherArrow({required bool isSelf}) {
@@ -116,7 +135,9 @@ class BaseMessage extends StatelessWidget {
       SpaceHorizontalWidget(
         space: defaultChatSpace,
       ),
-      currentWidget.runtimeType == TextContainer ? otherArrow(isSelf: isSelf) : SpaceHorizontalWidget(),
+      (currentWidget.runtimeType == TextContainer || isArrow!)
+          ? otherArrow(isSelf: isSelf)
+          : SpaceHorizontalWidget(),
       currentWidget,
       Spacer(),
     ];
@@ -255,7 +276,7 @@ class ImageMessage extends StatelessWidget {
       borderRadius: BorderRadius.circular(2),
       child: CachedNetworkImage(
         imageUrl:
-        "https://p3-passport.byteimg.com/img/user-avatar/391dcd0276451aabb45d49700e55bb90~100x100.awebp",
+            "https://p3-passport.byteimg.com/img/user-avatar/391dcd0276451aabb45d49700e55bb90~100x100.awebp",
         width: 100,
         height: 200,
         fit: BoxFit.cover,
@@ -354,6 +375,93 @@ class FileMessage extends StatelessWidget {
       avatar: avatar,
       timeStr: timeStr,
     );
+  }
+}
+
+// 声音
+class VoiceMessage extends StatelessWidget {
+  final ChatMessageInfo chatMessage;
+  final String? avatar;
+  final Map contentOrigin;
+  final bool showTime;
+  final String? timeStr;
+
+  const VoiceMessage(
+      {Key? key,
+      required this.chatMessage,
+      this.avatar,
+      required this.contentOrigin,
+      required this.showTime,
+      this.timeStr})
+      : super(key: key);
+
+  Widget voiceWidget() {
+    bool isSelf = chatMessage.fromAccountId == GlobalParams().accountId;
+    return Container(
+      height: 40,
+      // 根据声音长度来计算
+      width: max(80, ((screenWidth - 160) / 60) * contentOrigin["length"]!),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(5.0)),
+          color: Colors.white),
+      child: Row(
+        children: [
+          SpaceHorizontalWidget(),
+          Transform.rotate(
+            angle: isSelf ? -pi / 2 : pi / 2,
+            child: Icon(Icons.wifi),
+          ),
+          SpaceHorizontalWidget(),
+          Text(
+            "${contentOrigin["length"]} ”",
+            style: TextStyle(
+                color: isSelf ? Colors.white : color333, fontSize: 14),
+          )
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    bool isSelf = chatMessage.fromAccountId == GlobalParams().accountId;
+    return BaseMessage(
+      currentWidget: voiceWidget(),
+      chatMessage: chatMessage,
+      showTime: showTime,
+      isSelf: isSelf,
+      avatar: avatar,
+      timeStr: timeStr,
+      isArrow: true,
+    );
+  }
+}
+
+// 视频
+class VideoMessage extends StatelessWidget {
+  final ChatMessageInfo chatMessage;
+  final String? avatar;
+  final Map contentOrigin;
+  final bool showTime;
+  final String? timeStr;
+
+  const VideoMessage(
+      {Key? key,
+      required this.chatMessage,
+      this.avatar,
+      required this.contentOrigin,
+      required this.showTime,
+      this.timeStr})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    bool isSelf = chatMessage.fromAccountId == GlobalParams().accountId;
+    return BaseMessage(
+        currentWidget: Container(),
+        chatMessage: chatMessage,
+        showTime: showTime,
+        isSelf: isSelf);
   }
 }
 
