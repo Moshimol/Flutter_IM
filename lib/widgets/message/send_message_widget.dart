@@ -47,6 +47,15 @@ class _SendMessageItemState extends State<SendMessageItem> {
           showTime: widget.showTime,
           timeStr: widget.timeStr,
         );
+      case "img":
+        return ImageMessage(
+          chatMessage: widget.chatMessage,
+          avatar: "https://s2-cdn.oneitfarm.com/FpVycNkmE9dOnXyiHpIGdgqAb8zO",
+          contentOrigin: contentOrigin,
+          showTime: widget.showTime,
+          timeStr: widget.timeStr,
+        );
+
       case "file":
         return FileMessage(
           chatMessage: widget.chatMessage,
@@ -83,8 +92,7 @@ class BaseMessage extends StatelessWidget {
       required this.isSelf})
       : super(key: key);
 
-
-  Widget otherArrow({required bool isSelf}){
+  Widget otherArrow({required bool isSelf}) {
     return Align(
       alignment: Alignment.topRight,
       child: Container(
@@ -98,8 +106,6 @@ class BaseMessage extends StatelessWidget {
       ),
     );
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -228,6 +234,28 @@ class TextContainer extends StatelessWidget {
   }
 }
 
+class ImageMessage extends StatelessWidget {
+  final ChatMessageInfo chatMessage;
+  final String? avatar;
+  final Map contentOrigin;
+  final bool showTime;
+  final String? timeStr;
+
+  const ImageMessage(
+      {Key? key,
+      required this.chatMessage,
+      this.avatar,
+      required this.contentOrigin,
+      required this.showTime,
+      this.timeStr})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
+}
+
 // 图片
 
 // 文件
@@ -240,23 +268,24 @@ class FileMessage extends StatelessWidget {
 
   const FileMessage(
       {Key? key,
-        required this.chatMessage,
-        this.avatar,
-        required this.contentOrigin,
-        required this.showTime,
-        this.timeStr})
+      required this.chatMessage,
+      this.avatar,
+      required this.contentOrigin,
+      required this.showTime,
+      this.timeStr})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     bool isSelf = chatMessage.fromAccountId == GlobalParams().accountId;
-
+    var fileType = MessageUtil.getFileTypeForFileName(chatMessage.content!.fileName!);
     var _fileContainer = [
       SizedBox(
-        width: 20,
+        width: 15,
       ),
-      Container(
-        color: Colors.red,
+      //getFileTypeForFileName
+      Image.asset(
+        "assets/images/${MessageUtil.getFileNameType(fileType)}.png",
         width: 41,
         height: 46,
       ),
@@ -264,12 +293,20 @@ class FileMessage extends StatelessWidget {
       Container(
         width: 240 - 80,
         child: Column(
-          crossAxisAlignment: isSelf ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          crossAxisAlignment:
+              isSelf ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 12,),
-            Text("${contentOrigin["file_name"]}",style: TextStyle(color: color333,fontSize: 16),maxLines: 1,
-              overflow: TextOverflow.ellipsis,),
-            Text("${double.parse(contentOrigin["size"]) / 1000} KB",style: TextStyle(color: color999,fontSize: 12))
+            SizedBox(
+              height: 15,
+            ),
+            Text(
+              "${contentOrigin["file_name"]}",
+              style: TextStyle(color: color333, fontSize: 16),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            Text("${double.parse(contentOrigin["size"]) / 1000} KB",
+                style: TextStyle(color: color999, fontSize: 12))
           ],
         ),
       ),
@@ -281,9 +318,8 @@ class FileMessage extends StatelessWidget {
     return BaseMessage(
       currentWidget: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-          color: Colors.white
-        ),
+            borderRadius: BorderRadius.all(Radius.circular(5)),
+            color: Colors.white),
         height: 70,
         width: 240,
         child: Row(
@@ -296,5 +332,33 @@ class FileMessage extends StatelessWidget {
       avatar: avatar,
       timeStr: timeStr,
     );
+  }
+}
+
+// 文件相关处理部分
+class MessageUtil {
+
+  // 从文件名拿到文件类型
+  static String getFileTypeForFileName(String fileName) {
+    var fileArr = fileName.split(".");
+    return fileArr.last;
+  }
+
+  static String getFileNameType(String type) {
+    String defaultName = "file_unknow";
+    if (type == "doc" || type == "doxc") {
+      defaultName = "file_doc";
+    } else if (type == "ppt" || type == "pptx") {
+      defaultName = "file_ppt";
+    } else if (type == "xls" || type == "xlsx") {
+      defaultName = "file_xls";
+    } else if (type == "pdf") {
+      defaultName = "file_pdf";
+    } else if (type == "zip") {
+      defaultName = "file_zip";
+    } else if (type == "txt") {
+      defaultName = "file_txt";
+    }
+    return defaultName;
   }
 }
