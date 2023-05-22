@@ -116,7 +116,7 @@ class BaseMessage extends StatelessWidget {
       SpaceHorizontalWidget(
         space: defaultChatSpace,
       ),
-      otherArrow(isSelf: isSelf),
+      currentWidget.runtimeType == TextContainer ? otherArrow(isSelf: isSelf) : SpaceHorizontalWidget(),
       currentWidget,
       Spacer(),
     ];
@@ -250,9 +250,30 @@ class ImageMessage extends StatelessWidget {
       this.timeStr})
       : super(key: key);
 
+  Widget imageWidget() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(2),
+      child: CachedNetworkImage(
+        imageUrl:
+        "https://p3-passport.byteimg.com/img/user-avatar/391dcd0276451aabb45d49700e55bb90~100x100.awebp",
+        width: 100,
+        height: 200,
+        fit: BoxFit.cover,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    bool isSelf = chatMessage.fromAccountId == GlobalParams().accountId;
+    return BaseMessage(
+      currentWidget: imageWidget(),
+      chatMessage: chatMessage,
+      showTime: showTime,
+      isSelf: isSelf,
+      avatar: avatar,
+      timeStr: timeStr,
+    );
   }
 }
 
@@ -278,7 +299,8 @@ class FileMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isSelf = chatMessage.fromAccountId == GlobalParams().accountId;
-    var fileType = MessageUtil.getFileTypeForFileName(chatMessage.content!.fileName!);
+    var fileType =
+        MessageUtil.getFileTypeForFileName(chatMessage.content!.fileName!);
     var _fileContainer = [
       SizedBox(
         width: 15,
@@ -337,7 +359,6 @@ class FileMessage extends StatelessWidget {
 
 // 文件相关处理部分
 class MessageUtil {
-
   // 从文件名拿到文件类型
   static String getFileTypeForFileName(String fileName) {
     var fileArr = fileName.split(".");
