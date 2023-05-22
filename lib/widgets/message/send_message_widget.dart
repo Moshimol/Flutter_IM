@@ -84,20 +84,22 @@ class BaseMessage extends StatelessWidget {
       : super(key: key);
 
 
-  Widget arrow(){
+  Widget otherArrow({required bool isSelf}){
     return Align(
       alignment: Alignment.topRight,
       child: Container(
         padding: EdgeInsets.only(top: 4),
         // color: Colors.red,
-        height: 8,
-        width: 6,
+        height: 10,
+        width: 4,
         child: CustomPaint(
-          painter: ChatArrowPainter(),
+          painter: ChatArrowPainter(isSelf: isSelf),
         ),
       ),
     );
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +110,7 @@ class BaseMessage extends StatelessWidget {
       SpaceHorizontalWidget(
         space: defaultChatSpace,
       ),
-      arrow(),
+      otherArrow(isSelf: isSelf),
       currentWidget,
       Spacer(),
     ];
@@ -207,10 +209,10 @@ class TextContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: text.length > 22 ? screenWidth - 66 - 55 : null,
-      margin: EdgeInsets.only(right: 5),
-      padding: EdgeInsets.all(10.0),
+      margin: EdgeInsets.only(right: isSelf ? 0 : 5),
+      padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: isSelf ? Color(0xff4CA1F6) : Colors.white,
+        color: isSelf ? appChatSelfColor : Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(5.0)),
       ),
       child: ExtendedText(
