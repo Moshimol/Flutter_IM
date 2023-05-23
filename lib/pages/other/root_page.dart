@@ -33,26 +33,29 @@ class _RootPageState extends State<RootPage> {
 
   List<Widget> pages = [HomePage(), ContactPage(), DisPage(), MePage()];
 
-  // 侧边栏的显示方式
+  // 侧边栏的显示方式 - 目前暂不处理这个 后续处理
   Widget _showDrawer(BuildContext context){
     return Drawer(
-      child: ListView(
-        children: [
-          DrawerHeader( // drawer的头部控件
-            decoration: BoxDecoration(
-              color: Colors.blue,
-            ),
-            child: UnconstrainedBox( // 解除父级的大小限制
-              child: CircleAvatar(
-                radius: 40,
-                backgroundColor: Colors.transparent,
-                backgroundImage: NetworkImage(
-                  'https://i.loli.net/2020/01/21/4t5hLOoF3YeKSHT.png',
-                ),
+      child: Container(
+        color: Colors.white,
+        child: ListView(
+          children: [
+            DrawerHeader( // drawer的头部控件
+              decoration: BoxDecoration(
+                color: Colors.white,
+              ),
+              child: Row(
+                children: [CircleAvatar(
+                  radius: 40,
+                  backgroundColor: Colors.transparent,
+                  backgroundImage: NetworkImage(
+                    'https://i.loli.net/2020/01/21/4t5hLOoF3YeKSHT.png',
+                  ),
+                )],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -119,7 +122,6 @@ class _RootPageState extends State<RootPage> {
         },
         children: pages,
       ),
-      drawer: currentIndex == 0 ? _showDrawer(context) : null,
     );
   }
 }
