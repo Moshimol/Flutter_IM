@@ -60,4 +60,12 @@ class AccountManager {
   }
 
   // 清除
+
+
+  // 获取用户信息
+
+  static getUserInfoByChatId(String chatId) async {
+    var res = await Request().post(UserInfo.GetUserInfo,data: {"chat_id":chatId});
+    return res;
+  }
 }

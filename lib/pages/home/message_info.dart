@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../utils/manager/account_manager.dart';
 import '../../utils/module_model/message/message_single.dart';
 import '../../utils/other/AdapUtil.dart';
 import '../../widgets/appbar/back_appbar.dart';
@@ -33,7 +34,11 @@ class MessageInfo extends StatefulWidget {
 }
 
 class _MessageInfoState extends State<MessageInfo> {
+
   bool isSwitched = false;
+  bool isTop = false;
+  bool isDisturb = false;
+  bool isBlock = false;
   List<dynamic> groupUserList = [
     "1",
     "1",
@@ -49,6 +54,25 @@ class _MessageInfoState extends State<MessageInfo> {
     "1"];
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    if (widget.messageType == MessageInfoType.user) {
+      isTop = widget.singleData!.top! == "1" ? true : false;
+      isDisturb = widget.singleData!.disturb! == "1" ? true : false;
+      _requestUserInfo();
+    } else {
+
+    }
+    if (mounted) {
+      setState(() {
+
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFF5F5F5),
@@ -60,6 +84,23 @@ class _MessageInfoState extends State<MessageInfo> {
   }
 
   // request 网络请求 请求个人或者是群组的信息
+  Future _requestUserInfo() async {
+    print(widget.singleData!.userInfo!.chatId);
+    var res = AccountManager.getUserInfoByChatId(widget.singleData!.userInfo!.chatId!);
+    if (res["state"] != 1) {
+      throw Exception('Failed to load message list.');
+    }
+    var data = res["data"];
+    isBlock = data["is_block"];
+  }
+
+  // 置顶聊天
+  // 免打扰
+  // 黑名单
+
+  Future _requestGroupInfo() async {
+
+  }
 
   // view
   Widget _mainGroupView() {
@@ -364,10 +405,10 @@ class _MessageInfoState extends State<MessageInfo> {
         ),
         _singleItemView(
             children: CupertinoSwitch(
-              value: isSwitched,
+              value: isTop,
               onChanged: (value) {
                 setState(() {
-                  isSwitched = value;
+                  isTop = value;
                 });
               },
               activeColor: CupertinoColors.activeBlue,
@@ -378,10 +419,10 @@ class _MessageInfoState extends State<MessageInfo> {
             showBottomLine: true),
         _singleItemView(
             children: CupertinoSwitch(
-              value: isSwitched,
+              value: isDisturb,
               onChanged: (value) {
                 setState(() {
-                  isSwitched = value;
+                  isDisturb = value;
                 });
               },
               activeColor: CupertinoColors.activeBlue,
@@ -389,6 +430,20 @@ class _MessageInfoState extends State<MessageInfo> {
               thumbColor: CupertinoColors.white,
             ),
             leftText: "消息免打扰",
+            showBottomLine: true),
+        _singleItemView(
+            children: CupertinoSwitch(
+              value: isBlock,
+              onChanged: (value) {
+                setState(() {
+                  isBlock = value;
+                });
+              },
+              activeColor: CupertinoColors.activeBlue,
+              trackColor: CupertinoColors.inactiveGray,
+              thumbColor: CupertinoColors.white,
+            ),
+            leftText: "黑名单",
             showBottomLine: false),
         Container(
           height: 8,
