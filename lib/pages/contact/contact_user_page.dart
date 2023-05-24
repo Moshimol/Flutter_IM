@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_im/widgets/appbar/back_appbar.dart';
 import 'package:get/get.dart';
@@ -12,24 +14,29 @@ class ContactUserPage extends StatefulWidget {
 }
 
 class _ContactUserPageState extends State<ContactUserPage> {
-  String? name = Get.parameters['chat_id'];
-  ContactData? singleData;
+  String? chatId;
+
+  ContactData? useData;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    singleData = Get.parameters['data']! as ContactData?;
+    // singleData = Get.arguments!;
+    chatId = Get.parameters['chat_id'];
+    useData = ContactData.fromJson(Get.arguments['user_data']!);
 
-    print(singleData!.name!);
-    print(singleData!.accountId!);
+    if (mounted) {
+      setState(() {
 
+      });
+    }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: BackBar(
-        titleName: name!,
+        titleName: useData!.name!,
       ),
     );
   }

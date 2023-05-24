@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_im/config/app_color.dart';
 import 'package:flutter_im/utils/manager/contact_manager.dart';
@@ -228,7 +230,7 @@ class FriendItem extends StatelessWidget {
         ],
       ),
       onTap: (){
-        Get.toNamed("/user_page/${singleData.chatId}",arguments: {"data":singleData});
+        Get.toNamed("/user_page/${singleData.chatId}",arguments: {"user_data":singleData.toJson()});
       },
     );
   }
