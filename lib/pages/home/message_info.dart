@@ -55,7 +55,6 @@ class _MessageInfoState extends State<MessageInfo> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     if (widget.messageType == MessageInfoType.user) {
@@ -63,7 +62,8 @@ class _MessageInfoState extends State<MessageInfo> {
       isDisturb = widget.singleData!.disturb! == "1" ? true : false;
       _requestUserInfo();
     } else {
-
+      // 请求群组的信息
+      _requestGroupInfo();
     }
     if (mounted) {
       setState(() {
@@ -95,8 +95,18 @@ class _MessageInfoState extends State<MessageInfo> {
   }
 
   // 置顶聊天
+  Future _requestTopChat() async {
+
+  }
+
   // 免打扰
+  Future _requestMuteChat() async {
+
+  }
   // 黑名单
+  Future _requestBlackChat() async {
+
+  }
 
   Future _requestGroupInfo() async {
 

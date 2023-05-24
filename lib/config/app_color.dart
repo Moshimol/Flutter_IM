@@ -10,3 +10,5 @@ const Color colorEEE = Color(0xffEEEEEE);
 const Color appMainColor = Color(0xffEEEEEE);
 const Color appBackColor = Color(0xffF5F5F5);
 const Color appChatSelfColor = Color(0xff4CA1F6);
+
+const Color appChatAvatarBackColor = Color(0xff65B5F7);

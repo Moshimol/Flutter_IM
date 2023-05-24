@@ -1,11 +1,14 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_im/config/app_color.dart';
 import 'package:flutter_im/utils/manager/contact_manager.dart';
 import 'package:flutter_im/widgets/appbar/main_appbar.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 import '../../utils/module_model/contact/contact_data.dart';
 import 'package:lpinyin/lpinyin.dart';
+
+import '../../utils/other/custom_avatar.dart';
 
 final double height = 36;
 
@@ -26,30 +29,6 @@ class _ContactPageState extends State<ContactPage> {
     ["标签", "tag"],
     ["公众号", "message"],
   ];
-
-  List<Map<String, List<Map<String, String>>>> contactItems = [
-    {
-      'A': [
-        {
-          'name': 'A,',
-          'avatar': 'https://s2-cdn.oneitfarm.com/FpiT0YQLPvrW5aGxsCfRWTsbslLp'
-        },
-        {'name': 'A1', 'avatar': 'http://via.placeholder.com/440x440'},
-        {'name': 'A2', 'avatar': 'http://via.placeholder.com/440x440'}
-      ]
-    },
-    {
-      "B": [
-        {'name': 'B', 'avatar': 'http://via.placeholder.com/440x440'},
-      ]
-    },
-    {
-      'C': [
-        {'name': 'C', 'avatar': 'http://via.placeholder.com/440x440'},
-      ]
-    }
-  ];
-
 
   Map<String, List<ContactData>> contactDic = {};
   List<ContactData> contactList = [];
@@ -72,7 +51,27 @@ class _ContactPageState extends State<ContactPage> {
     _getContactListFuture().then((value) {
       // 对value进行处理
       contactList = value;
+      _sortContact();
     });
+  }
+
+  _sortContact() {
+    for (int i = 0; i < contactList.length; i++) {
+      ContactData data = contactList[i];
+      var firstChr = PinyinHelper.getFirstWordPinyin(data.name!)
+          .toUpperCase()
+          .substring(0, 1);
+      if (contactDic.keys.contains(firstChr)) {
+        List<ContactData>? list = contactDic[firstChr];
+        list?.add(data);
+        contactDic.putIfAbsent(firstChr, () => list!);
+      } else {
+        contactDic.putIfAbsent(firstChr, () => [data]);
+      }
+    }
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -81,7 +80,10 @@ class _ContactPageState extends State<ContactPage> {
       backgroundColor: Colors.white,
       appBar: MainAppBar(
           titleName: "通讯录",
-      ),
+          rightIconName: "assets/images/message_add.png",
+          onClickTap: (context) {
+            _sortContact();
+          }),
       body: Stack(
         children: [
           Column(
@@ -102,8 +104,7 @@ class _ContactPageState extends State<ContactPage> {
                       ),
                       SizedBox(width: 10),
                       Text("搜索",
-                          style: TextStyle(
-                              fontSize: 12, color: color999)),
+                          style: TextStyle(fontSize: 12, color: color999)),
                     ],
                   ),
                   decoration: BoxDecoration(
@@ -113,43 +114,16 @@ class _ContactPageState extends State<ContactPage> {
               ),
               Expanded(
                   child: ListView(
-                  children: [
+                children: [
                   Column(
                     children: topItems.map((e) {
                       bool needBorder = e != topItems.last;
                       return ContactTopItem(e: e, needBorder: needBorder);
                     }).toList(),
                   ),
-                  Column(
-                    children: contactItems.map((e) {
-                      Map<String, List<Map<String, String>>> map = e;
-                      // 一般定义只有一个key
-                      var firstKey = map.keys.first;
-                      List<Map<String, String>>? valueList = map[firstKey];
-                      return Column(
-                        children: [
-                          Container(
-                            color: Color(0xFFF5F5F5),
-                            child: Text(firstKey),
-                            alignment: Alignment.centerLeft,
-                            height: 33,
-                            padding: EdgeInsets.only(left: 16),
-                          ),
-                          Column(
-                            children: valueList!.map((current) {
-                              print(current);
-                              return FriendItem(
-                                needBottom: current != valueList.last,
-                                map: current,
-                              );
-                            }).toList(),
-                          )
-                          // FriendItem(e: e)
-                        ],
-                      );
-                    }).toList(),
-                  ),
-                  SizedBox(height: 160)
+                  _contactList(),
+                  // ),
+                  SizedBox(height: 80)
                 ],
               ))
             ],
@@ -174,50 +148,88 @@ class _ContactPageState extends State<ContactPage> {
       ),
     );
   }
+
+  Widget _contactList() {
+    List<dynamic> list = [];
+    List<String> keyList = contactDic.keys.toList()..sort();
+
+    return Column(
+      children: keyList.map((key) {
+        List<ContactData>? listData = contactDic[key];
+        // 一般定义只有一个key
+        return Column(
+          children: [
+            Container(
+              color: Color(0xFFF5F5F5),
+              child: Text(key),
+              alignment: Alignment.centerLeft,
+              height: 33,
+              padding: EdgeInsets.only(left: 16),
+            ),
+            Column(
+              children: listData!.map((current) {
+                return FriendItem(
+                  needBottom: current != listData.last,
+                  singleData: current,
+                );
+              }).toList(),
+            )
+            // FriendItem(e: e)
+          ],
+        );
+      }).toList(),
+    );
+  }
 }
 
 class FriendItem extends StatelessWidget {
-  final Map<String, String> map;
+  final ContactData singleData;
   final bool needBottom;
 
-  const FriendItem({required this.map, this.needBottom = false, Key? key})
+  const FriendItem(
+      {required this.singleData, this.needBottom = false, Key? key})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 16,
-        ),
-        Container(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: CachedNetworkImage(
-              imageUrl: map["avatar"]!,
-              width: height,
-              height: height,
-            ),
+    return GestureDetector(
+      child: Row(
+        children: [
+          SizedBox(
+            width: 16,
           ),
-          margin: EdgeInsets.symmetric(vertical: 10),
-        ),
-        SizedBox(
-          width: 16,
-        ),
-        Expanded(
-            child: Container(
-          height: 54,
-          child: Text(map["name"]!,
-              style: TextStyle(fontSize: 17, color: Color(0xFF333333))),
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                  color: needBottom ? Color(0xffEEEEEE) : Colors.transparent),
+          Container(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: CustomCacheAvatar(
+                name: singleData.name!,
+                size: 36,
+                url: singleData.avatar!,
+              ),
             ),
+            margin: EdgeInsets.symmetric(vertical: 10),
           ),
-          alignment: Alignment.centerLeft,
-        ))
-      ],
+          SizedBox(
+            width: 16,
+          ),
+          Expanded(
+              child: Container(
+                height: 54,
+                child: Text(singleData.name!,
+                    style: TextStyle(fontSize: 17, color: Color(0xFF333333))),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                        color: needBottom ? Color(0xffEEEEEE) : Colors.transparent),
+                  ),
+                ),
+                alignment: Alignment.centerLeft,
+              ))
+        ],
+      ),
+      onTap: (){
+        Get.toNamed("/user_page/${singleData.chatId}",arguments: {"data":singleData});
+      },
     );
   }
 }
