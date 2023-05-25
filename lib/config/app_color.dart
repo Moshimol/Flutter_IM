@@ -4,6 +4,7 @@ const Color color333 = Color(0xff333333);
 const Color color666 = Color(0xff666666);
 const Color color999 = Color(0xff999999);
 const Color colorEEE = Color(0xffEEEEEE);
+const Color color576B95 = Color(0xff576B95 );
 
 
 // app的主要颜色

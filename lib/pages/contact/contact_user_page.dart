@@ -9,6 +9,7 @@ import 'package:get/get_core/src/get_main.dart';
 
 import '../../utils/module_model/contact/contact_data.dart';
 import '../../utils/other/custom_avatar.dart';
+import '../../widgets/custom/category.dart';
 
 class ContactUserPage extends StatefulWidget {
   const ContactUserPage({Key? key}) : super(key: key);
@@ -108,15 +109,86 @@ class _ContactUserPageState extends State<ContactUserPage> {
         ),
         ContactItem(
           leftText: "更多信息",
-          children: Text("11"),
+          children: Container(),
           showBottomLine: false,
         ),
+        SpaceVerticalWidget(
+          space: 10,
+        ),
+        ContactItem(
+          leftText: "手机号",
+          children: Text("暂无",style: TextStyle(fontSize: 16, color: color333)),
+          showBottomLine: true,
+        ),
+        ContactItem(
+          leftText: "邮箱",
+          children: Text("暂无",style: TextStyle(fontSize: 16, color: color333)),
+          showBottomLine: false,
+        ),
+        SpaceVerticalWidget(
+          space: 10,
+        )
       ],
     );
   }
 
   Widget _bottomInfoView() {
-    return Text("底部是否可以视频通话和发消息");
+    return Column(
+      children: [
+        Container(
+          color: Colors.white,
+          height: 47,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    LocalIconWidget(
+                      iconName: "user_chat_message",
+                      iconSize: 18,
+                    ),
+                    SpaceHorizontalWidget(
+                      space: 5,
+                    ),
+                    Text(
+                      "发消息",
+                      style: TextStyle(fontSize: 17, color: color576B95),
+                    )
+                  ],
+                ),
+                height: 46,
+              ),
+              Container(
+                  decoration: BoxDecoration(
+                      border: Border(
+                bottom: BorderSide(
+                  color: Color(0xffEEEEEE),
+                ),
+              )))
+            ],
+          ),
+        ),
+        Container(
+          color: Colors.white,
+          height: 47,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              LocalIconWidget(
+                iconName: "user_chat_video",
+                iconSize: 18,
+              ),
+              SpaceHorizontalWidget(
+                space: 5,
+              ),
+              Text("音视频通话", style: TextStyle(fontSize: 17, color: color576B95))
+            ],
+          ),
+        )
+      ],
+    );
   }
 
   // 封装细腻
@@ -144,7 +216,8 @@ class ContactItem extends StatefulWidget {
       required this.showBottomLine,
       required this.leftText,
       required this.children,
-      this.onClickTap, this.height = 56})
+      this.onClickTap,
+      this.height = 56})
       : super(key: key);
 
   @override
