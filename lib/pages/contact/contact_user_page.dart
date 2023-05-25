@@ -7,6 +7,7 @@ import 'package:flutter_im/widgets/custom/space.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
+import '../../utils/manager/account_manager.dart';
 import '../../utils/module_model/contact/contact_data.dart';
 import '../../utils/other/custom_avatar.dart';
 import '../../widgets/custom/category.dart';
@@ -30,21 +31,36 @@ class _ContactUserPageState extends State<ContactUserPage> {
   ContactUserType? type;
   ContactData? useData;
 
+  // 是不是朋友
+  bool isFriend = false;
+
   @override
   void initState() {
     super.initState();
     // singleData = Get.arguments!;
     chatId = Get.parameters['chat_id'];
     useData = ContactData.fromJson(Get.arguments['user_data']!);
-    type = Get.arguments["type"] == 1 ? ContactUserType.Contact : ContactUserType.BusinessCard;
-
-    if (mounted) {
-      setState(() {});
-    }
+    type = Get.arguments["type"] == 1
+        ? ContactUserType.Contact
+        : ContactUserType.BusinessCard;
+    _requestUserInfo().then((value)  {
+      isFriend = value["is_friend"];
+      isFriend = false;
+      if (mounted) {
+        setState(() {});
+      }
+    });
   }
 
   // request 来判断是不是朋友
-  
+  Future<Map<String,dynamic>>  _requestUserInfo() async {
+    var res = await AccountManager.getUserInfoByChatId(chatId!);
+    if (res["state"] != 1) {
+      throw Exception('Failed to load message list.');
+    }
+    var data = res["data"];
+    return data;
+  }
 
   Widget _mainView() {
     return ListView(
@@ -52,10 +68,32 @@ class _ContactUserPageState extends State<ContactUserPage> {
         Column(
           children: [
             _topInfoView(),
-            _userInfoView(),
-            _bottomInfoView(),
+            Visibility(child: _userInfoView(),visible: isFriend,),
+            Visibility(child: _bottomInfoView(),visible: isFriend,),
+            Visibility(child: _addFriendView(),visible: !isFriend,),
           ],
         )
+      ],
+    );
+  }
+
+  Widget _addFriendView() {
+    return Column(
+      children: [
+        SpaceVerticalWidget(),
+        GestureDetector(
+          child: Container(
+            height: 50,
+            color: Colors.white,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [Text("添加到通讯录",style: TextStyle(fontSize: 17,color: color576B95),)],
+            ),
+          ),
+          onTap: (){
+            print("调用添加好友的方法");
+          },
+        ),
       ],
     );
   }
