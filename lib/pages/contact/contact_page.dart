@@ -230,7 +230,7 @@ class FriendItem extends StatelessWidget {
         ],
       ),
       onTap: (){
-        Get.toNamed("/user_page/${singleData.chatId}",arguments: {"user_data":singleData.toJson()});
+        Get.toNamed("/user_page/${singleData.chatId}",arguments: {"user_data":singleData.toJson(),"type": 1});
       },
     );
   }

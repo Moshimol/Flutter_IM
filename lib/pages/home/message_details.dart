@@ -14,12 +14,20 @@ import 'message_info.dart';
 // 默认的显示方式
 Widget defaultWidget = Container();
 
+enum MessageType {
+  user,
+  group
+}
+
 class MessageDetails extends StatefulWidget {
-  const MessageDetails({Key? key, required this.singleData, this.title})
+  const MessageDetails({Key? key,this.singleData, this.title, required this.type, this.requestId})
       : super(key: key);
 
-  final MessageSingle singleData;
+  final MessageType type;
+  final MessageSingle? singleData;
   final String? title;
+  // 如果是个人传的是chatId ,群组则是groupId
+  final String? requestId;
 
   @override
   State<MessageDetails> createState() => _MessageDetailsState();
@@ -69,10 +77,10 @@ class _MessageDetailsState extends State<MessageDetails> {
                     // 跳转到更多的页面 分为群聊和单聊
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => MessageInfo(
-                        titleString: widget.singleData.chatType == 1
+                        titleString: widget.type == MessageType.group
                             ? "聊天信息"
                             : widget.title!,
-                        messageType: widget.singleData.chatType == 1
+                        messageType: widget.type == MessageType.user
                             ? MessageInfoType.user
                             : MessageInfoType.group,
                         singleData: widget.singleData,
@@ -220,13 +228,13 @@ class _MessageDetailsState extends State<MessageDetails> {
 
   Future _requestMessageInfo() async {
     final value = await MessageManager.getMessageBySessionList(
-        chatType: widget.singleData.chatType == 1
+        chatType: widget.type == MessageType.user
             ? ChatType.ChatUserType
             : ChatType.ChatGroupType,
         lastMsgId: 0,
         page: "1",
         perPage: false,
-        to:widget.singleData.chatType == 1 ? widget.singleData.userInfo!.accountId! : widget.singleData.groupInfo!.gid!);
+        to:widget.type == MessageType.user ? widget.singleData!.userInfo!.accountId! : widget.singleData!.groupInfo!.gid!);
 
     if (value["state"] != 1) {
       throw Exception('Failed to load message list.');

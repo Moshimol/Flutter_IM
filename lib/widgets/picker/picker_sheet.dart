@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_im/config/app_color.dart';
 
 const double radius = 10;
 const double sheetSingleHeight = 65;
@@ -43,7 +44,8 @@ class PickSheet {
 /// 底部弹出的操作 朋友圈底部弹出
 class MomentBottomSheet {
   /// 选择拍摄或者是相机的相关资源
-  static Future<T?> showBottomPicker<T>({required BuildContext context, Function(int index)? onClickTap}) {
+  static Future<T?> showBottomPicker<T>(
+      {required BuildContext context, Function(int index)? onClickTap}) {
     return PickSheet.showModelSheet(
         context: context,
         child: Column(
@@ -58,7 +60,7 @@ class MomentBottomSheet {
                     ),
                     Text("照片或视频",
                         style:
-                        TextStyle(fontSize: 12, color: Color(0xff999999))),
+                            TextStyle(fontSize: 12, color: Color(0xff999999))),
                   ],
                 ),
                 sheetSingleHeight, onClickTap: () {
@@ -110,9 +112,67 @@ class MomentBottomSheet {
   }
 }
 
+/// 通用的
+class CommentBottomSheet {
+  static Future<T?> showCommentBottomPicker<T>(
+      {required BuildContext context,
+      Function(int index)? onClickTap,
+      required List<String> sheets}) {
+    Widget _buildItem(
+        String text, int index, bool isLast, Function(int index)? onClickTap) {
+      return Column(
+        children: [
+          PickSheet.buildButton(
+              Text(
+                text,
+                style: TextStyle(fontSize: 18, color: Color(0xff333333)),
+              ),
+              49, onClickTap: () {
+            Navigator.pop(context);
+            onClickTap!(index);
+          }),
+          if (isLast)
+            Container(
+              height: 7,
+              color: Color(0xffF5F5F5),
+            )
+          else
+            Divider(
+              height: 1,
+            )
+        ],
+      );
+    }
+
+    return PickSheet.showModelSheet(
+        context: context,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (final textString in sheets)
+              _buildItem(
+                textString,
+                sheets.indexOf(textString),
+                textString == sheets.last,
+                onClickTap,
+              ),
+            PickSheet.buildButton(
+                Text(
+                  "取消",
+                  style: TextStyle(fontSize: 18, color: color333),
+                ),
+                49, onClickTap: () {
+              Navigator.pop(context);
+            }),
+          ],
+        ));
+  }
+}
+
 // 个人页面修改照片
-class MeHeadBottomSheet{
-  static Future<T?> showBottomPicker<T>({required BuildContext context, Function(int index)? onClickTap}) {
+class MeHeadBottomSheet {
+  static Future<T?> showBottomPicker<T>(
+      {required BuildContext context, Function(int index)? onClickTap}) {
     return PickSheet.showModelSheet(
         context: context,
         child: Column(
@@ -121,7 +181,7 @@ class MeHeadBottomSheet{
             PickSheet.buildButton(
                 Text(
                   "拍照",
-                  style: TextStyle(fontSize: 18, color: Color(0xff333333)),
+                  style: TextStyle(fontSize: 18, color: color333),
                 ),
                 49, onClickTap: () {
               Navigator.pop(context);
@@ -157,34 +217,38 @@ class MeHeadBottomSheet{
 }
 
 // 清除聊天记录弹框
-class MessageClearSheet{
-  static Future<T?> showDeleteMessagePicker<T>({required BuildContext context, Function()? onClickTap, required String textAlertString}) {
-    return PickSheet.showModelSheet(context: context,child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        PickSheet.buildButton(
-            Text(
-              textAlertString,
-              style: TextStyle(fontSize: 18, color: Colors.redAccent),
+class MessageClearSheet {
+  static Future<T?> showDeleteMessagePicker<T>(
+      {required BuildContext context,
+      Function()? onClickTap,
+      required String textAlertString}) {
+    return PickSheet.showModelSheet(
+        context: context,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            PickSheet.buildButton(
+                Text(
+                  textAlertString,
+                  style: TextStyle(fontSize: 18, color: Colors.redAccent),
+                ),
+                49, onClickTap: () {
+              Navigator.pop(context);
+              onClickTap!();
+            }),
+            Container(
+              height: 7,
+              color: Color(0xffF5F5F5),
             ),
-            49, onClickTap: () {
-          Navigator.pop(context);
-          onClickTap!();
-        }),
-        Container(
-          height: 7,
-          color: Color(0xffF5F5F5),
-        ),
-        PickSheet.buildButton(
-            Text(
-              "取消",
-              style: TextStyle(fontSize: 18, color: Color(0xff333333)),
-            ),
-            49, onClickTap: () {
-          Navigator.pop(context);
-        }),
-      ],
-    ));
+            PickSheet.buildButton(
+                Text(
+                  "取消",
+                  style: TextStyle(fontSize: 18, color: Color(0xff333333)),
+                ),
+                49, onClickTap: () {
+              Navigator.pop(context);
+            }),
+          ],
+        ));
   }
-
 }

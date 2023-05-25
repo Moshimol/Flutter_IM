@@ -127,7 +127,9 @@ class _HomePageState extends State<HomePage> {
                                   Get.to(MessageDetails(
                                     singleData: msg,
                                     title:
-                                        HomePageUtils.getName(singleData!, msg),
+                                        HomePageUtils.getName(singleData!, msg), type: msg.chatType == 1
+                                      ? MessageType.user
+                                      : MessageType.group,
                                   ));
                                 },
                                 child: Container(

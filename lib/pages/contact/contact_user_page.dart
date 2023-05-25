@@ -10,6 +10,13 @@ import 'package:get/get_core/src/get_main.dart';
 import '../../utils/module_model/contact/contact_data.dart';
 import '../../utils/other/custom_avatar.dart';
 import '../../widgets/custom/category.dart';
+import '../../widgets/picker/picker_sheet.dart';
+import '../home/message_details.dart';
+
+enum ContactUserType {
+  BusinessCard,
+  Contact,
+}
 
 class ContactUserPage extends StatefulWidget {
   const ContactUserPage({Key? key}) : super(key: key);
@@ -20,7 +27,7 @@ class ContactUserPage extends StatefulWidget {
 
 class _ContactUserPageState extends State<ContactUserPage> {
   String? chatId;
-
+  ContactUserType? type;
   ContactData? useData;
 
   @override
@@ -29,11 +36,15 @@ class _ContactUserPageState extends State<ContactUserPage> {
     // singleData = Get.arguments!;
     chatId = Get.parameters['chat_id'];
     useData = ContactData.fromJson(Get.arguments['user_data']!);
+    type = Get.arguments["type"] == 1 ? ContactUserType.Contact : ContactUserType.BusinessCard;
 
     if (mounted) {
       setState(() {});
     }
   }
+
+  // request 来判断是不是朋友
+  
 
   Widget _mainView() {
     return ListView(
@@ -96,7 +107,7 @@ class _ContactUserPageState extends State<ContactUserPage> {
         ),
         ContactItem(
           height: 100,
-          leftText: "朋友圈",
+          leftText: "工作圈",
           children: Padding(
             padding: EdgeInsets.symmetric(vertical: 10),
             child: CustomCacheAvatar(
@@ -159,43 +170,54 @@ class _ContactUserPageState extends State<ContactUserPage> {
                   ),
                   height: 46,
                 ),
-                onTap: (){
+                onTap: () {
                   // 点击聊天 跳转到聊天界面
+                  Get.to(MessageDetails(
+                    type: MessageType.user,
+                    title: useData!.name,
+                    requestId: useData!.chatId!,
+                  ));
                 },
               ),
-              GestureDetector(
-                child: Container(
-                    decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color: Color(0xffEEEEEE),
-                          ),
-                        ))),
-                onTap: (){
-                  // 点击音视频通话
-
-                },
-              )
+              Container(
+                  decoration: BoxDecoration(
+                      border: Border(
+                bottom: BorderSide(
+                  color: Color(0xffEEEEEE),
+                ),
+              )))
             ],
           ),
         ),
-        Container(
-          color: Colors.white,
-          height: 47,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              LocalIconWidget(
-                iconName: "user_chat_video",
-                iconSize: 18,
+        GestureDetector(
+            child: Container(
+              color: Colors.white,
+              height: 47,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  LocalIconWidget(
+                    iconName: "user_chat_video",
+                    iconSize: 18,
+                  ),
+                  SpaceHorizontalWidget(
+                    space: 5,
+                  ),
+                  Text("音视频通话",
+                      style: TextStyle(fontSize: 17, color: color576B95))
+                ],
               ),
-              SpaceHorizontalWidget(
-                space: 5,
-              ),
-              Text("音视频通话", style: TextStyle(fontSize: 17, color: color576B95))
-            ],
-          ),
-        )
+            ),
+            onTap: () {
+              // 点击音视频通话
+              print("11");
+              CommentBottomSheet.showCommentBottomPicker(
+                  context: context,
+                  sheets: ["视频通话", "语音通话"],
+                  onClickTap: (index) {
+                    print(index);
+                  });
+            })
       ],
     );
   }
