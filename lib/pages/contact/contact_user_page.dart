@@ -45,7 +45,6 @@ class _ContactUserPageState extends State<ContactUserPage> {
         : ContactUserType.BusinessCard;
     _requestUserInfo().then((value)  {
       isFriend = value["is_friend"];
-      isFriend = false;
       if (mounted) {
         setState(() {});
       }

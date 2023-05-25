@@ -98,18 +98,17 @@ class _MomentPageState extends State<MomentPage> {
     );
   }
 
-  Widget _momentMessage(){
+  Widget _momentMessage() {
     return SliverToBoxAdapter(
-      child: MomentWidget().momentTopInfo(
-        onClickTap: (){
-          // 点击了个人提示的信息
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => MomentMessage()),
-          );
-        }
-      ),
+      child: MomentWidget().momentTopInfo(onClickTap: () {
+        // 点击了个人提示的信息
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => MomentMessage()),
+        );
+      }),
     );
   }
+
   // list的一个列表
   Widget _momentList() {
     return SliverList(
@@ -194,7 +193,10 @@ class _MomentPageState extends State<MomentPage> {
               // 时间
               SpaceVerticalWidget(),
               Row(
-                children: [Text("1分钟前",style: TextStyle(fontSize: 14, color: Color(0xff999999)))],
+                children: [
+                  Text("1分钟前",
+                      style: TextStyle(fontSize: 14, color: Color(0xff999999)))
+                ],
               ),
             ],
           )),
@@ -206,6 +208,8 @@ class _MomentPageState extends State<MomentPage> {
   Widget _momentHeader() {
     // 获取屏幕的宽高
     final width = MediaQuery.of(context).size.width;
+
+    print(_user!.friendCirclePic!);
 
     return _user == null
         ? Image.asset(
@@ -219,11 +223,17 @@ class _MomentPageState extends State<MomentPage> {
                 width: width,
                 child: Padding(
                   padding: EdgeInsets.only(bottom: 30),
-                  child: Image.network(
-                    _user?.friendCirclePic ?? "",
-                    height: width * 0.75,
-                    fit: BoxFit.cover,
-                  ),
+                  child: _user!.friendCirclePic!.length == 0
+                      ? Image.asset(
+                          "assets/images/moment_bg.png",
+                          height: width * 0.75,
+                          fit: BoxFit.cover,
+                        )
+                      : CachedNetworkImage(
+                          imageUrl: _user!.friendCirclePic!,
+                          height: width * 0.75,
+                          fit: BoxFit.cover,
+                        ),
                 ),
               ),
               // 昵称 头像
@@ -252,7 +262,7 @@ class _MomentPageState extends State<MomentPage> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(4),
                         child: CachedNetworkImage(
-                          imageUrl:_user?.avatar ?? "",
+                          imageUrl: _user?.avatar ?? "",
                           height: 70,
                           width: 70,
                           fit: BoxFit.cover,
