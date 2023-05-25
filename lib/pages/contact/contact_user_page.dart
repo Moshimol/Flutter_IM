@@ -115,6 +115,7 @@ class _ContactUserPageState extends State<ContactUserPage> {
         SpaceVerticalWidget(
           space: 10,
         ),
+        /*
         ContactItem(
           leftText: "手机号",
           children: Text("暂无",style: TextStyle(fontSize: 16, color: color333)),
@@ -124,10 +125,7 @@ class _ContactUserPageState extends State<ContactUserPage> {
           leftText: "邮箱",
           children: Text("暂无",style: TextStyle(fontSize: 16, color: color333)),
           showBottomLine: false,
-        ),
-        SpaceVerticalWidget(
-          space: 10,
-        )
+        ),*/
       ],
     );
   }
@@ -141,32 +139,43 @@ class _ContactUserPageState extends State<ContactUserPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    LocalIconWidget(
-                      iconName: "user_chat_message",
-                      iconSize: 18,
-                    ),
-                    SpaceHorizontalWidget(
-                      space: 5,
-                    ),
-                    Text(
-                      "发消息",
-                      style: TextStyle(fontSize: 17, color: color576B95),
-                    )
-                  ],
+              GestureDetector(
+                child: Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      LocalIconWidget(
+                        iconName: "user_chat_message",
+                        iconSize: 18,
+                      ),
+                      SpaceHorizontalWidget(
+                        space: 5,
+                      ),
+                      Text(
+                        "发消息",
+                        style: TextStyle(fontSize: 17, color: color576B95),
+                      )
+                    ],
+                  ),
+                  height: 46,
                 ),
-                height: 46,
+                onTap: (){
+                  // 点击聊天 跳转到聊天界面
+                },
               ),
-              Container(
-                  decoration: BoxDecoration(
-                      border: Border(
-                bottom: BorderSide(
-                  color: Color(0xffEEEEEE),
-                ),
-              )))
+              GestureDetector(
+                child: Container(
+                    decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: Color(0xffEEEEEE),
+                          ),
+                        ))),
+                onTap: (){
+                  // 点击音视频通话
+
+                },
+              )
             ],
           ),
         ),
