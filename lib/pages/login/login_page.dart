@@ -13,6 +13,7 @@ import '../../request/request/request.dart';
 import '../../utils/global/global_params.dart';
 import '../../utils/manager/request_manager.dart';
 import '../../utils/module_model/user/user_data.dart';
+import '../../utils/sqflite/sqflite.dart';
 import '../../utils/storage/storage_shared.dart';
 import '../../constant/cache_key.dart';
 
@@ -131,8 +132,6 @@ class _LoginPage extends State<LoginPage> {
                   msg: accountRes["msg"], gravity: ToastGravity.CENTER);
             } else {
               // 存储用户信息
-              print("记录信息");
-              print(accountRes);
               StorageShared().setStorage(CacheKey.loginState, "LoginState");
               StorageShared()
                   .setStorage(CacheKey.accountId, accountRes["data"]["account_id"]);
@@ -144,6 +143,9 @@ class _LoginPage extends State<LoginPage> {
 
               GlobalParams().accountId = accountRes["data"]["account_id"];
               GlobalParams().currentUser = UserData.fromJson(accountRes["data"]);
+
+              // 初始化数据库
+              SqlLite().initWithChatId(accountRes["data"]["chat_id"]);
 
               Navigator.of(context).pushAndRemoveUntil(
                   CupertinoPageRoute(builder: (context) {

@@ -8,6 +8,7 @@ import 'package:flutter_im/utils/storage/storage_shared.dart';
 import '../../constant/cache_key.dart';
 import '../../request/config.dart';
 import '../../utils/global/global_params.dart';
+import '../../utils/sqflite/sqflite.dart';
 
 // 一个容器的组件
 class LaunchPage extends StatefulWidget {
@@ -48,8 +49,12 @@ class _LaunchPage extends State<LaunchPage> {
       // 如果已经登录的话 再设置Host
       StorageShared().getStorage(CacheKey.host).then((value) {
         API.requestHost = value;
-        print(value);
         Request().reloadNetBaseUrl();
+
+        GlobalParams.getChatId().then((value) {
+          SqlLite().initWithChatId(value);
+        });
+
         Navigator.of(context).pushAndRemoveUntil(
             new MaterialPageRoute(builder: (context) => new RootPage()),
                 (Route<dynamic> rout) => false);
