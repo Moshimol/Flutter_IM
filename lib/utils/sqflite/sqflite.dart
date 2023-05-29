@@ -15,4 +15,16 @@ class SqlLite {
     var db = await openDatabase("sql/chat_db_${chatId}.db");
     print(db);
   }
+
+  // 创建用户表
+  static createUserTable(){
+    String userSql = 'CREATE TABLE IF NOT EXISTS user_table (id INTEGER PRIMARY KEY, name TEXT,age INTEGER)';
+    //_createDb(dbName, version, dbTables)
+  }
+
+
+  static _createDb(String dbName, int version, String dbTables) async {
+
+  }
+
 }
