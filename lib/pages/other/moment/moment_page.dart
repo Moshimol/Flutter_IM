@@ -5,6 +5,7 @@ import 'package:flutter_im/main.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 import '../../../utils/global/global_params.dart';
+import '../../../utils/manager/moment_manager.dart';
 import '../../../utils/module_model/user/user_data.dart';
 import '../../../widgets/picker/picker_sheet.dart';
 import '../../../widgets/custom/space.dart';
@@ -329,11 +330,28 @@ class _MomentPageState extends State<MomentPage> {
         });
   }
 
+  /// 加载朋友圈数据
   Future _loadData() async {
+    final value = await MomentManager.getFriendList(requestId: "0");
+    if (value["state"] != 1) {
+      // Data fetching failed.
+      throw Exception('Failed to load message list.');
+    }
+
     if (mounted) {
       setState(() {
         _timeLineItems = ["1", "2", "3"];
       });
     }
+  }
+
+  /// 请求prompt
+  Future<dynamic> _loadPrompt() async {
+    final value = await MomentManager.getFriendCirclePrompt();
+    if (value["state"] != 1) {
+      // Data fetching failed.
+      throw Exception('Failed to load message list.');
+    }
+    return value["data"];
   }
 }
