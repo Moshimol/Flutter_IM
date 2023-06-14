@@ -27,8 +27,9 @@ class MomentWidget {
     );
   }
 
-  Widget momentTopInfo({Function()? onClickTap}) {
-    return Padding(
+  Widget momentTopInfo({Function()? onClickTap, required Map<String, dynamic> promptInfo}) {
+
+    return Visibility(child: Padding(
       padding: EdgeInsets.only(top: 30, bottom: 16),
       child: Column(
         children: [
@@ -47,7 +48,7 @@ class MomentWidget {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(4),
                     child: CachedNetworkImage(
-                      imageUrl: "https://p3-passport.byteimg.com/img/user-avatar/d4e4ff8f64d24fa24208deb7b926f4ca~180x180.awebp",
+                      imageUrl: promptInfo["new_notify_creator"] != null ? promptInfo["new_notify_creator"] : "",
                       width: 30,
                       height: 30,
                       fit: BoxFit.cover,
@@ -55,7 +56,7 @@ class MomentWidget {
                   ),
                   Expanded(
                       child: Text(
-                        "2条消息",
+                        "${promptInfo["new_notify_num"]}条消息",
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.white, fontSize: 14),
                       )),
@@ -78,6 +79,6 @@ class MomentWidget {
           )
         ],
       ),
-    );
+    ),visible: promptInfo["new_notify_num"] > 0,);
   }
 }

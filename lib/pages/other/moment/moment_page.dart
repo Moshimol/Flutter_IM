@@ -25,14 +25,24 @@ class _MomentPageState extends State<MomentPage> {
 
   // 朋友圈列表
   List<dynamic> _timeLineItems = ["1", "2", "3", "4", "1", "2", "3", "4"];
+  Map<String, dynamic> _prompt = {"new_notify_num" : 0};
 
   @override
   void initState() {
     super.initState();
     _user = GlobalParams().currentUser;
-    if (mounted) {
-      setState(() {});
-    }
+
+    // 加载消息
+    _loadPrompt().then((value) {
+      // 对value进行处理
+      _prompt = value;
+      if (mounted) {
+        setState(() {
+
+        });
+      }
+    });
+
   }
 
   @override
@@ -101,7 +111,7 @@ class _MomentPageState extends State<MomentPage> {
 
   Widget _momentMessage() {
     return SliverToBoxAdapter(
-      child: MomentWidget().momentTopInfo(onClickTap: () {
+      child: MomentWidget().momentTopInfo(promptInfo: _prompt,onClickTap: () {
         // 点击了个人提示的信息
         Navigator.of(context).push(
           MaterialPageRoute(builder: (context) => MomentMessage()),
@@ -224,17 +234,16 @@ class _MomentPageState extends State<MomentPage> {
                 width: width,
                 child: Padding(
                   padding: EdgeInsets.only(bottom: 30),
-                  child: _user!.friendCirclePic!.length == 0
-                      ? Image.asset(
-                          "assets/images/moment_bg.png",
-                          height: width * 0.75,
-                          fit: BoxFit.cover,
-                        )
-                      : CachedNetworkImage(
-                          imageUrl: _user!.friendCirclePic!,
-                          height: width * 0.75,
-                          fit: BoxFit.cover,
-                        ),
+                  child: CachedNetworkImage(
+                    placeholder: (context, url) => Image.asset(
+                      "assets/images/moment_bg.png",
+                      height: width * 0.75,
+                      fit: BoxFit.cover,
+                    ),
+                    imageUrl: _user!.friendCirclePic!,
+                    height: width * 0.75,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
               // 昵称 头像
