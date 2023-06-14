@@ -6,6 +6,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 import '../../../utils/global/global_params.dart';
 import '../../../utils/manager/moment_manager.dart';
+import '../../../utils/module_model/momet/time_line_info.dart';
 import '../../../utils/module_model/user/user_data.dart';
 import '../../../widgets/picker/picker_sheet.dart';
 import '../../../widgets/custom/space.dart';
@@ -24,25 +25,35 @@ class _MomentPageState extends State<MomentPage> {
   UserData? _user;
 
   // 朋友圈列表
-  List<dynamic> _timeLineItems = ["1", "2", "3", "4", "1", "2", "3", "4"];
-  Map<String, dynamic> _prompt = {"new_notify_num" : 0};
+  List<TimeLineInfo> _timeLineItems = [];
+  Map<String, dynamic> _prompt = {"new_notify_num": 0};
+
+
+  // 滚动控制器
+  final ScrollController _scrollController = ScrollController();
+  // appbar 背景色
+  Color _appBarColor = Colors.transparent;
 
   @override
   void initState() {
     super.initState();
-    _user = GlobalParams().currentUser;
 
-    // 加载消息
-    _loadPrompt().then((value) {
-      // 对value进行处理
-      _prompt = value;
-      if (mounted) {
+    //  监听  scrollController 动滚动高度 来处理顶部的高度
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels > 200) {
         setState(() {
-
+          _appBarColor = Colors.black87;
+        });
+      } else {
+        setState(() {
+          _appBarColor = Colors.transparent;
         });
       }
     });
 
+    _user = GlobalParams().currentUser;
+
+    _loadMomentRequest();
   }
 
   @override
@@ -50,7 +61,7 @@ class _MomentPageState extends State<MomentPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: _appBarColor,
         elevation: 0,
         leading: InkWell(
           onTap: () {
@@ -98,6 +109,7 @@ class _MomentPageState extends State<MomentPage> {
 
   Widget _mainView() {
     return CustomScrollView(
+      controller: _scrollController,
       slivers: [
         SliverToBoxAdapter(
           child: _momentHeader(),
@@ -111,12 +123,14 @@ class _MomentPageState extends State<MomentPage> {
 
   Widget _momentMessage() {
     return SliverToBoxAdapter(
-      child: MomentWidget().momentTopInfo(promptInfo: _prompt,onClickTap: () {
-        // 点击了个人提示的信息
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => MomentMessage()),
-        );
-      }),
+      child: MomentWidget().momentTopInfo(
+          promptInfo: _prompt,
+          onClickTap: () {
+            // 点击了个人提示的信息
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => MomentMessage()),
+            );
+          }),
     );
   }
 
@@ -124,10 +138,10 @@ class _MomentPageState extends State<MomentPage> {
   Widget _momentList() {
     return SliverList(
       delegate: SliverChildBuilderDelegate((context, index) {
-        var item = _timeLineItems[index];
+        TimeLineInfo item = _timeLineItems[index];
         return Column(
           children: [
-            _momentListItem(),
+            _momentListItem(info: item),
             Divider(
               color: Color(0xffEEEEEE),
               height: 1,
@@ -138,7 +152,8 @@ class _MomentPageState extends State<MomentPage> {
     );
   }
 
-  Widget _momentListItem() {
+  Widget _momentListItem({required TimeLineInfo info}) {
+
     int imageCount = 3;
     return Padding(
       padding: EdgeInsets.all(15),
@@ -148,7 +163,7 @@ class _MomentPageState extends State<MomentPage> {
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
             child: CachedNetworkImage(
-              imageUrl: _user?.avatar ?? "",
+              imageUrl: info.creator!.avatar ?? "",
               width: 44,
               height: 44,
               fit: BoxFit.cover,
@@ -162,19 +177,19 @@ class _MomentPageState extends State<MomentPage> {
             children: [
               // 昵称
               Text(
-                "德玛夏雨",
+                info.creator!.nickname!,
                 style: TextStyle(
                     fontSize: 17,
                     color: Color(0xff576B95),
                     fontWeight: FontWeight.bold),
               ),
-              SpaceVerticalWidget(),
+              Visibility(child: SpaceVerticalWidget(),visible: info.content!.length > 0,),
               // 正文
               Text(
-                "出式进眼分标起战上目工和革法更平事出那速速示光利亲才列重每再种题须。是很表行到不口几布生切地京该全从适听原华色都群本是感然达利反国平主飞验组大知工。",
+                info.content!,
                 style: TextStyle(fontSize: 17, color: Color(0xff333333)),
               ),
-              SpaceVerticalWidget(),
+              Visibility(child: SpaceVerticalWidget(),visible: info.content!.length > 0,),
               // 图片
               // 九宫格图片列表 GridView 性能比较差点
               LayoutBuilder(
@@ -219,8 +234,6 @@ class _MomentPageState extends State<MomentPage> {
   Widget _momentHeader() {
     // 获取屏幕的宽高
     final width = MediaQuery.of(context).size.width;
-
-    print(_user!.friendCirclePic!);
 
     return _user == null
         ? Image.asset(
@@ -340,18 +353,20 @@ class _MomentPageState extends State<MomentPage> {
   }
 
   /// 加载朋友圈数据
-  Future _loadData() async {
+  Future<dynamic> _loadData() async {
     final value = await MomentManager.getFriendList(requestId: "0");
     if (value["state"] != 1) {
       // Data fetching failed.
       throw Exception('Failed to load message list.');
     }
 
-    if (mounted) {
-      setState(() {
-        _timeLineItems = ["1", "2", "3"];
-      });
+    List<TimeLineInfo> items = [];
+
+    for (var item in value["data"]) {
+      items.add(TimeLineInfo.fromJson(item));
     }
+
+    return items;
   }
 
   /// 请求prompt
@@ -362,5 +377,17 @@ class _MomentPageState extends State<MomentPage> {
       throw Exception('Failed to load message list.');
     }
     return value["data"];
+  }
+
+  // 多个网络请求  initState不允许加上async 所以需要单独提出来进行处理
+  Future _loadMomentRequest() async {
+    _prompt = await _loadPrompt();
+    // 数据请求
+    _timeLineItems = await _loadData();
+
+    if (mounted) {
+      setState(() {
+      });
+    }
   }
 }
