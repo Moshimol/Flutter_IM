@@ -8,12 +8,16 @@ import '../../../utils/module_model/momet/time_line_info.dart';
 
 class MomentWidget {
   Widget momentDetails({required TimeLineInfo info}) {
-    if (int.parse(info.type!) == 1) {
-      return Container();
-    } else if (int.parse(info.type!) == 2) {
-      return momentPic(info: info);
+    // type:string, 类型：1-文本 ，2-图片(文本)， 3-视频(文本)， 4-转载(文本)
+
+    switch(int.parse(info.type!)) {
+      case 1:
+        return Container();
+      case 2:
+        return momentPic(info: info);
+      default:
+        return Container();
     }
-    return Container();
   }
 
   // 图片
@@ -59,7 +63,6 @@ class MomentWidget {
   }
 
   Widget momentTopInfo({Function()? onClickTap, required Map<String, dynamic> promptInfo}) {
-
     return Visibility(child: Padding(
       padding: EdgeInsets.only(top: 30, bottom: 16),
       child: Column(
@@ -111,5 +114,13 @@ class MomentWidget {
         ],
       ),
     ),visible: promptInfo["new_notify_num"] > 0,);
+  }
+
+  Widget likeMenuView(){
+    return Container(
+      color: Colors.red,
+      width: 80,
+      height: 20,
+    );
   }
 }

@@ -42,9 +42,12 @@ class _MomentPageState extends State<MomentPage> {
     //  监听  scrollController 动滚动高度 来处理顶部的高度
     _scrollController.addListener(() {
       if (_scrollController.position.pixels > 200) {
-        setState(() {
-          _appBarColor = Colors.black87;
-        });
+        double opacity = (_scrollController.position.pixels - 200) / 100;
+        if (opacity < 0.85) {
+          setState(() {
+            _appBarColor = Colors.black.withOpacity(opacity);
+          });
+        }
       } else {
         setState(() {
           _appBarColor = Colors.transparent;
@@ -55,6 +58,12 @@ class _MomentPageState extends State<MomentPage> {
     _user = GlobalParams().currentUser;
 
     _loadMomentRequest();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -203,7 +212,9 @@ class _MomentPageState extends State<MomentPage> {
               Row(
                 children: [
                   Text("1分钟前",
-                      style: TextStyle(fontSize: 14, color: Color(0xff999999)))
+                      style: TextStyle(fontSize: 14, color: Color(0xff999999))),
+                  Spacer(),
+                  MomentWidget().likeMenuView()
                 ],
               ),
             ],
