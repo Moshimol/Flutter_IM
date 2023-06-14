@@ -15,7 +15,7 @@ class TimeLineInfo {
   String? createdAt;
   String? updatedAt;
   Creator? creator;
-  List<Null>? resources;
+  List<Resources>? resources;
   int? createTimestamp;
   List<TimeLineUser>? comments;
   List<TimeLineUser>? likes;
@@ -63,9 +63,9 @@ class TimeLineInfo {
     creator =
     json['creator'] != null ? new Creator.fromJson(json['creator']) : null;
     if (json['resources'] != null) {
-      resources = <Null>[];
+      resources = <Resources>[];
       json['resources'].forEach((v) {
-        // resources!.add(new Null.fromJson(v));
+        resources!.add(new Resources.fromJson(v));
       });
     }
     createTimestamp = json['create_timestamp'];
@@ -160,6 +160,31 @@ class Creator {
     data['note'] = this.note;
     data['avatar'] = this.avatar;
     data['account_id'] = this.accountId;
+    return data;
+  }
+}
+
+class Resources {
+  String? url;
+  int? width;
+  int? height;
+
+  Resources(
+      {this.url,
+        this.width,
+        this.height,});
+
+  Resources.fromJson(Map<String, dynamic> json) {
+    url = json['url'];
+    width = json['width'];
+    height = json['height'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['url'] = this.url;
+    data['width'] = this.width;
+    data['height'] = this.height;
     return data;
   }
 }

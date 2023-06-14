@@ -2,18 +2,49 @@ import 'dart:ffi';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+
+import '../../../utils/module_model/momet/time_line_info.dart';
 // 朋友圈各种类型的Widget
 
 class MomentWidget {
-  Widget momentDetails() {
+  Widget momentDetails({required TimeLineInfo info}) {
+    if (int.parse(info.type!) == 1) {
+      return Container();
+    } else if (int.parse(info.type!) == 2) {
+      return momentPic(info: info);
+    }
     return Container();
   }
 
   // 图片
   // 视频
   // 转发
-  Widget momentPic() {
-    return Container();
+  Widget momentPic({required TimeLineInfo info}) {
+    int imageCount = info.resources!.length;
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          double width = (constraints.maxWidth - 4 * 2) / 3;
+          if (imageCount == 1) {
+            width = constraints.maxWidth * 0.7;
+          } else if (imageCount == 2) {
+            width = (constraints.maxWidth - 4) / 2;
+          }
+          return Wrap(
+            spacing: 4,
+            runSpacing: 4,
+            children: info.resources!.map((e) {
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: CachedNetworkImage(
+                  imageUrl: e.url!,
+                  width: width,
+                  height: width,
+                  fit: BoxFit.cover,
+                ),
+              );
+            }).toList(),
+          );
+        });
   }
 
   Widget momentVideo() {

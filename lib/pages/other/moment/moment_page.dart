@@ -8,6 +8,7 @@ import '../../../utils/global/global_params.dart';
 import '../../../utils/manager/moment_manager.dart';
 import '../../../utils/module_model/momet/time_line_info.dart';
 import '../../../utils/module_model/user/user_data.dart';
+import '../../../utils/other/custom_avatar.dart';
 import '../../../widgets/picker/picker_sheet.dart';
 import '../../../widgets/custom/space.dart';
 import 'create_moment_page.dart';
@@ -28,9 +29,9 @@ class _MomentPageState extends State<MomentPage> {
   List<TimeLineInfo> _timeLineItems = [];
   Map<String, dynamic> _prompt = {"new_notify_num": 0};
 
-
   // 滚动控制器
   final ScrollController _scrollController = ScrollController();
+
   // appbar 背景色
   Color _appBarColor = Colors.transparent;
 
@@ -154,7 +155,6 @@ class _MomentPageState extends State<MomentPage> {
 
   Widget _momentListItem({required TimeLineInfo info}) {
 
-    int imageCount = 3;
     return Padding(
       padding: EdgeInsets.all(15),
       child: Row(
@@ -162,11 +162,10 @@ class _MomentPageState extends State<MomentPage> {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
-            child: CachedNetworkImage(
-              imageUrl: info.creator!.avatar ?? "",
-              width: 44,
-              height: 44,
-              fit: BoxFit.cover,
+            child: CustomCacheAvatar(
+              name: info.creator!.nickname!,
+              size: 44,
+              url: info.creator!.avatar ?? "",
             ),
           ),
           SpaceHorizontalWidget(),
@@ -183,39 +182,22 @@ class _MomentPageState extends State<MomentPage> {
                     color: Color(0xff576B95),
                     fontWeight: FontWeight.bold),
               ),
-              Visibility(child: SpaceVerticalWidget(),visible: info.content!.length > 0,),
+              Visibility(
+                child: SpaceVerticalWidget(),
+                visible: info.content!.length > 0,
+              ),
               // 正文
               Text(
                 info.content!,
                 style: TextStyle(fontSize: 17, color: Color(0xff333333)),
               ),
-              Visibility(child: SpaceVerticalWidget(),visible: info.content!.length > 0,),
+              Visibility(
+                child: SpaceVerticalWidget(),
+                visible: info.content!.length > 0,
+              ),
               // 图片
               // 九宫格图片列表 GridView 性能比较差点
-              LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                double width = (constraints.maxWidth - 4 * 2) / 3;
-                if (imageCount == 1) {
-                  width = constraints.maxWidth * 0.7;
-                } else if (imageCount == 2) {
-                  width = (constraints.maxWidth - 4) / 2;
-                }
-                return Wrap(
-                  spacing: 4,
-                  runSpacing: 4,
-                  children: ["1", "1", "1"].map((e) {
-                    return ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: CachedNetworkImage(
-                        imageUrl: _user?.avatar ?? "",
-                        width: width,
-                        height: width,
-                        fit: BoxFit.cover,
-                      ),
-                    );
-                  }).toList(),
-                );
-              }),
+              MomentWidget().momentDetails(info: info),
               // 时间
               SpaceVerticalWidget(),
               Row(
@@ -386,8 +368,7 @@ class _MomentPageState extends State<MomentPage> {
     _timeLineItems = await _loadData();
 
     if (mounted) {
-      setState(() {
-      });
+      setState(() {});
     }
   }
 }
