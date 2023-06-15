@@ -342,7 +342,7 @@ class _MomentPageState extends State<MomentPage>
     bool? isLike = (item?.isLike == true);
     return Container(
       decoration: BoxDecoration(
-        color: Colors.red,
+        color: Colors.black87,
         borderRadius: BorderRadius.circular(4),
       ),
       child: LayoutBuilder(
@@ -353,7 +353,8 @@ class _MomentPageState extends State<MomentPage>
               if (constraints.maxWidth > 80)
                 TextButton.icon(
                   onPressed: () {
-
+                    // 点击按钮
+                    _onLike();
                   },
                   icon: Icon(
                     Icons.favorite,
@@ -362,6 +363,7 @@ class _MomentPageState extends State<MomentPage>
                   ),
                   label: Text(
                     isLike ? "取消" : "点赞",
+                    style: textStylePopMenu,
                   ),
                 ),
               if (constraints.maxWidth >= 150)
@@ -378,6 +380,7 @@ class _MomentPageState extends State<MomentPage>
                   ),
                   label: Text(
                     "评论",
+                    style: textStylePopMenu,
                   ),
                 ),
             ],
@@ -471,11 +474,7 @@ class _MomentPageState extends State<MomentPage>
                       child: SizedBox(
                         width: _sizeTween.value,
                         height: 40,
-                        child: Container(
-                          width: 100,
-                          height: 100,
-                          color: Colors.deepOrange,
-                        ),
+                        child: _buildIsLikeMenu(item: item),
                       ),
                     );
                   },

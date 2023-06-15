@@ -18,6 +18,12 @@ var textStyleComment = const TextStyle(
   fontWeight: FontWeight.w500,
 );
 
+var textStylePopMenu = const TextStyle(
+  color: Colors.white,
+  fontSize: 14.0,
+  fontWeight: FontWeight.w500,
+);
+
 class MomentWidget {
   Widget momentDetails({required TimeLineInfo info}) {
     // type:string, 类型：1-文本 ，2-图片(文本)， 3-视频(文本)， 4-转载(文本)
