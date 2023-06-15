@@ -56,6 +56,16 @@ class _MomentPageState extends State<MomentPage>
   // appbar 背景色
   TimeLineInfo? _currentItem;
 
+  bool _isShowInput = false;
+  // 是否展开表情列表:
+  bool _isShowEmoji = false;
+  bool _isInputWords = false;
+  // 评论输入框:
+  final TextEditingController _textEditingController = TextEditingController()..addListener(() {});
+
+  // 输入框焦点:
+  FocusNode _focusNode = FocusNode();
+
   final double _keyboardHeight = 100;
 
   @override
@@ -85,6 +95,13 @@ class _MomentPageState extends State<MomentPage>
       setState(() {});
     });
 
+    // 输入框的监听:
+    _textEditingController.addListener(() {
+      setState(() {
+        _isInputWords = _textEditingController.text.isNotEmpty;
+      });
+    });
+
     _user = GlobalParams().currentUser;
 
     _loadMomentRequest();
@@ -106,6 +123,9 @@ class _MomentPageState extends State<MomentPage>
   @override
   void dispose() {
     _scrollController.dispose();
+    _animationController.dispose();
+    _textEditingController.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -158,6 +178,7 @@ class _MomentPageState extends State<MomentPage>
         ],
       ),
       body: _mainView(),
+      bottomNavigationBar: _isShowInput ? _buildCommentBar() : null,
     );
   }
 
@@ -172,6 +193,124 @@ class _MomentPageState extends State<MomentPage>
         _momentMessage(),
         _momentList()
       ],
+    );
+  }
+
+  Widget _buildCommentBar() {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 100),
+      padding: MediaQuery.of(context).viewInsets,
+      child: SafeArea(
+        child: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.grey[100],
+          ),
+          child: Column(
+            // 保证纵向容器高度与子widget的高度一致:
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  // 评论输入框:
+                  Expanded(
+                    child: TextField(
+                      onTap: () {
+                        // 点击评论框自动取消表情列表样式改为键盘样式防止键盘在下面 , 表情在上面 , 评论区在顶部的怪异显示:
+                        setState(() {
+                          _isShowEmoji = false;
+                        });
+                      },
+                      controller: _textEditingController,
+                      focusNode: _focusNode,
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.done,
+                      decoration: InputDecoration(
+                        hintText: "评论",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(4),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 0,
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        hintStyle: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black26,
+                          letterSpacing: 2,
+                        ),
+                      ),
+                      maxLines: 1,
+                      minLines: 1,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ),
+                  const SpaceHorizontalWidget(),
+                  // 表情图标:
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _isShowEmoji = !_isShowEmoji;
+                      });
+                      if (_isShowEmoji) {
+                        _focusNode.unfocus();
+                      } else {
+                        _focusNode.requestFocus();
+                      }
+                    },
+                    child: Icon(
+                      _isShowEmoji ? Icons.keyboard_alt_outlined : Icons.mood_outlined,
+                      size: 32,
+                      color: Colors.black54,
+                    ),
+                  ),
+                  const SpaceHorizontalWidget(),
+                  // 发送按钮:
+                  ElevatedButton(
+                    onPressed: () {
+                      // !_isInputWords ? null : _onComment(item);
+                    },
+                    child: const Text(
+                      "发送",
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              if (_isShowEmoji)
+                Container(
+                  padding: const EdgeInsets.all(spacing),
+                  height: _keyboardHeight,
+                  child: GridView.builder(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      // 横轴上的组件数量:
+                      crossAxisCount: 7,
+                      // 沿主轴的组件之间的间距:
+                      mainAxisSpacing: 10,
+                      // 沿次轴的组件之间的间距:
+                      crossAxisSpacing: 10,
+                    ),
+                    itemCount: 100,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Container(
+                        color: Colors.grey[200],
+                      );
+                    },
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -337,6 +476,17 @@ class _MomentPageState extends State<MomentPage>
           );
   }
 
+  void _onSwitchCommentBar() {
+    setState(() {
+      _isShowInput = !_isShowInput;
+      if (_isShowInput) {
+        _focusNode.requestFocus();
+      } else {
+        _focusNode.unfocus();
+      }
+      _textEditingController.text = "";
+    });
+  }
   // 是否喜欢菜单:
   Widget _buildIsLikeMenu({TimeLineInfo? item}) {
     bool? isLike = (item?.isLike == true);
@@ -370,6 +520,7 @@ class _MomentPageState extends State<MomentPage>
                 TextButton.icon(
                   onPressed: () {
                     // 显示评论栏:
+                    _onSwitchCommentBar();
                     // 关闭菜单:
                     _onCloseMenu();
                   },
