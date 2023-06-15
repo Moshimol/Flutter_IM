@@ -22,8 +22,29 @@ class MomentPage extends StatefulWidget {
   State<MomentPage> createState() => _MomentPageState();
 }
 
-class _MomentPageState extends State<MomentPage> {
+class _MomentPageState extends State<MomentPage>
+    with SingleTickerProviderStateMixin {
   UserData? _user;
+
+  // 标题
+  Text? _title;
+
+  OverlayState? _overlayState;
+
+  // 遮罩层:
+  OverlayEntry? _overlayEntry;
+
+  // 更多按钮位置 offset:
+  Offset _buttonOffset = Offset.zero;
+
+  // 动画控制器:
+  late final AnimationController _animationController;
+
+  // 动画本身: (监听的操作放到了动画的`builder`方法里了~)
+  late Animation<double> _sizeTween;
+
+  Color _appBarColor = Colors.transparent;
+  double _elevation = 0;
 
   // 朋友圈列表
   List<TimeLineInfo> _timeLineItems = [];
@@ -33,7 +54,9 @@ class _MomentPageState extends State<MomentPage> {
   final ScrollController _scrollController = ScrollController();
 
   // appbar 背景色
-  Color _appBarColor = Colors.transparent;
+  TimeLineInfo? _currentItem;
+
+  final double _keyboardHeight = 100;
 
   @override
   void initState() {
@@ -41,18 +64,25 @@ class _MomentPageState extends State<MomentPage> {
 
     //  监听  scrollController 动滚动高度 来处理顶部的高度
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels > 200) {
-        double opacity = (_scrollController.position.pixels - 200) / 100;
-        if (opacity < 0.85) {
-          setState(() {
-            _appBarColor = Colors.black.withOpacity(opacity);
-          });
+      double pixels = _scrollController.position.pixels;
+      if (pixels < 0) pixels = 0;
+      if (pixels > 200) {
+        double opacity = (pixels - 200) / 100;
+        if (opacity < 0.95) {
+          _appBarColor = Colors.black.withOpacity(opacity);
         }
+        _elevation = 1;
+        _title = Text("工作圈");
       } else {
-        setState(() {
-          _appBarColor = Colors.transparent;
-        });
+        _appBarColor = Colors.transparent;
+        if (pixels > 150) {
+          _elevation = pixels / 200;
+        } else {
+          _elevation = 0;
+        }
+        _title = null;
       }
+      setState(() {});
     });
 
     _user = GlobalParams().currentUser;
@@ -71,6 +101,7 @@ class _MomentPageState extends State<MomentPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
+        title: _title,
         backgroundColor: _appBarColor,
         elevation: 0,
         leading: InkWell(
@@ -163,7 +194,6 @@ class _MomentPageState extends State<MomentPage> {
   }
 
   Widget _momentListItem({required TimeLineInfo info}) {
-
     return Padding(
       padding: EdgeInsets.all(15),
       child: Row(
@@ -200,10 +230,6 @@ class _MomentPageState extends State<MomentPage> {
                 info.content!,
                 style: TextStyle(fontSize: 17, color: Color(0xff333333)),
               ),
-              Visibility(
-                child: SpaceVerticalWidget(),
-                visible: info.content!.length > 0,
-              ),
               // 图片
               // 九宫格图片列表 GridView 性能比较差点
               MomentWidget().momentDetails(info: info),
@@ -214,7 +240,13 @@ class _MomentPageState extends State<MomentPage> {
                   Text("1分钟前",
                       style: TextStyle(fontSize: 14, color: Color(0xff999999))),
                   Spacer(),
-                  MomentWidget().likeMenuView()
+                  MomentWidget().likeMenuView(onClickTap: () {
+                    //点击的事件  出现点赞或者是其他的
+                    setState(() {
+                      _currentItem = info;
+                    });
+                    _showMoreMomentAction();
+                  })
                 ],
               ),
             ],
@@ -345,6 +377,26 @@ class _MomentPageState extends State<MomentPage> {
         });
   }
 
+  _showMoreMomentAction({Function()? onTap}) {
+    // 会展示评论和点赞操作
+  }
+
+  _closeMenu() async {}
+
+  _onLike() {
+    if (_currentItem == null) return;
+
+    setState(() {
+      _currentItem?.isLike = !(_currentItem?.isLike ?? false);
+    });
+
+    // 关闭菜单
+    _closeMenu();
+
+    // 执行点赞操作
+    _likeRequest();
+  }
+
   /// 加载朋友圈数据
   Future<dynamic> _loadData() async {
     final value = await MomentManager.getFriendList(requestId: "0");
@@ -365,6 +417,16 @@ class _MomentPageState extends State<MomentPage> {
   /// 请求prompt
   Future<dynamic> _loadPrompt() async {
     final value = await MomentManager.getFriendCirclePrompt();
+    if (value["state"] != 1) {
+      // Data fetching failed.
+      throw Exception('Failed to load message list.');
+    }
+    return value["data"];
+  }
+
+  Future<dynamic> _likeRequest() async {
+    final value = await MomentManager.priseMoment(
+        circleID: _currentItem!.id!, isLike: _currentItem!.isLike!);
     if (value["state"] != 1) {
       // Data fetching failed.
       throw Exception('Failed to load message list.');

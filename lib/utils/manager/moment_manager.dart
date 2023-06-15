@@ -16,10 +16,15 @@ class MomentManager {
     return res;
   }
 
-  /// 获取朋友圈显示关于自己的信息
-
+  /// 获取朋友圈显示关于自己朋友圈被点赞等相关信息
   static Future<dynamic> cleanMomentNotice({required String requestId}) async {
     var res = await Request().post(Moment.FriendClean);
+    return res;
+  }
+
+  /// 点赞某一个朋友圈
+  static Future<dynamic> priseMoment({required String circleID, required bool isLike}) async {
+    var res = await Request().post(Moment.FriendMomentMod,data: {"friend_circle_id":circleID,"like": isLike ?  1 : 0});
     return res;
   }
 

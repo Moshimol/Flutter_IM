@@ -17,7 +17,7 @@ class TimeLineInfo {
   Creator? creator;
   List<Resources>? resources;
   int? createTimestamp;
-  List<TimeLineUser>? comments;
+  List<TimeComment>? comments;
   List<TimeLineUser>? likes;
   bool? isLike;
 
@@ -70,9 +70,9 @@ class TimeLineInfo {
     }
     createTimestamp = json['create_timestamp'];
     if (json['comments'] != null) {
-      comments = <TimeLineUser>[];
+      comments = <TimeComment>[];
       json['comments'].forEach((v) {
-        comments!.add(new TimeLineUser.fromJson(v));
+        comments!.add(new TimeComment.fromJson(v));
       });
     }
     if (json['likes'] != null) {
@@ -187,6 +187,40 @@ class Resources {
     data['height'] = this.height;
     return data;
   }
+}
+
+class TimeComment {
+  String? commentID;
+  String? content;
+  TimeLineUser? toUser;
+  TimeLineUser? fromUser;
+
+  TimeComment({this.commentID,this.content,this.toUser,this.fromUser});
+
+  TimeComment.fromJson(Map<String, dynamic> json) {
+    commentID = json['id'];
+    content = json['content'];
+    fromUser = json['from_user'] != null ? new TimeLineUser.fromJson(json['from_user']) : null;
+    toUser = json['to_user'] != null ? new TimeLineUser.fromJson(json['to_user']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.commentID;
+    data['content'] = this.content;
+
+    if (this.fromUser != null) {
+      data['from_user'] = this.fromUser!.toJson();
+    }
+
+    if (this.toUser != null) {
+      data['to_user'] = this.toUser!.toJson();
+    }
+
+    return data;
+  }
+
+
 }
 
 class TimeLineUser {
