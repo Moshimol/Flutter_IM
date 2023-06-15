@@ -261,9 +261,10 @@ class MomentWidget {
     );
   }
 
-  Widget likeMenuView({Function()? onClickTap}) {
+  Widget likeMenuView({Function()? onClickTap, required GlobalKey buttonKey}) {
     return GestureDetector(
       child: Container(
+        key: buttonKey,
         child: Image.asset("assets/images/moment_more_action.png",
             width: 32, height: 20, fit: BoxFit.fill),
         width: 32,

@@ -88,6 +88,19 @@ class _MomentPageState extends State<MomentPage>
     _user = GlobalParams().currentUser;
 
     _loadMomentRequest();
+
+
+    // 初始化层:
+    _overlayState = Overlay.of(context);
+    // 初始化动画控制器:
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+
+    _sizeTween = Tween(begin: 0.0, end: 160.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
   }
 
   @override
@@ -194,6 +207,7 @@ class _MomentPageState extends State<MomentPage>
   }
 
   Widget _momentListItem({required TimeLineInfo info}) {
+    GlobalKey buttonKey = GlobalKey();
     return Padding(
       padding: EdgeInsets.all(15),
       child: Row(
@@ -245,8 +259,9 @@ class _MomentPageState extends State<MomentPage>
                     setState(() {
                       _currentItem = info;
                     });
-                    _showMoreMomentAction();
-                  })
+                    _getMoreButtonOffset(buttonKey);
+                    _showMoreMomentAction(item: info, onTap: _onCloseMenu);
+                  },buttonKey: buttonKey)
                 ],
               ),
             ],
@@ -322,6 +337,55 @@ class _MomentPageState extends State<MomentPage>
           );
   }
 
+  // 是否喜欢菜单:
+  Widget _buildIsLikeMenu({TimeLineInfo? item}) {
+    bool? isLike = (item?.isLike == true);
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.red,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              if (constraints.maxWidth > 80)
+                TextButton.icon(
+                  onPressed: () {
+
+                  },
+                  icon: Icon(
+                    Icons.favorite,
+                    size: 18,
+                    color: isLike ? Colors.red : Colors.white,
+                  ),
+                  label: Text(
+                    isLike ? "取消" : "点赞",
+                  ),
+                ),
+              if (constraints.maxWidth >= 150)
+                TextButton.icon(
+                  onPressed: () {
+                    // 显示评论栏:
+                    // 关闭菜单:
+                    _onCloseMenu();
+                  },
+                  icon: const Icon(
+                    Icons.chat_bubble_outline_rounded,
+                    size: 18,
+                    color: Colors.white,
+                  ),
+                  label: Text(
+                    "评论",
+                  ),
+                ),
+            ],
+          );
+        },
+      ),
+    );
+  }
   //action
   _onPublish() {
     MomentBottomSheet.showBottomPicker(
@@ -377,11 +441,67 @@ class _MomentPageState extends State<MomentPage>
         });
   }
 
-  _showMoreMomentAction({Function()? onTap}) {
-    // 会展示评论和点赞操作
+  // 获取更多按钮位置 offset:
+  void _getMoreButtonOffset(GlobalKey key) {
+    final RenderBox? renderBox = key.currentContext?.findRenderObject() as RenderBox?;
+    final Offset offset = renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
+    _buttonOffset = offset;
   }
 
-  _closeMenu() async {}
+  _showMoreMomentAction({Function()? onTap,required TimeLineInfo item}) {
+    // 会展示评论和点赞操作
+    _overlayEntry = OverlayEntry(builder: (BuildContext context) {
+      return Positioned(
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          child: GestureDetector(
+            onTap: onTap,
+            child: Stack(
+              children: [
+                AnimatedContainer(duration: Duration(microseconds: 300),color: Colors.black.withOpacity(0.4),),
+                // 菜单:
+                AnimatedBuilder(
+                  animation: _animationController,
+                  builder: (BuildContext context, Widget? child) {
+                    return Positioned(
+                      left: _buttonOffset.dx - _sizeTween.value - 10,
+                      top: _buttonOffset.dy - 10,
+                      child: SizedBox(
+                        width: _sizeTween.value,
+                        height: 40,
+                        child: Container(
+                          width: 100,
+                          height: 100,
+                          color: Colors.deepOrange,
+                        ),
+                      ),
+                    );
+                  },
+                )
+              ],
+            ),
+          ));
+    });
+
+    Future.delayed(const Duration(milliseconds: 100), () {
+      if (_animationController.status == AnimationStatus.dismissed) {
+        _animationController.forward();
+      }
+    });
+
+    if (_overlayEntry == null) return;
+    _overlayState?.insert(_overlayEntry!);
+  }
+
+  // 关闭菜单:
+  Future<void> _onCloseMenu() async {
+    if (_animationController.status != AnimationStatus.completed) return;
+    await _animationController.reverse();
+    _overlayEntry?.remove();
+    _overlayEntry?.dispose();
+  }
 
   _onLike() {
     if (_currentItem == null) return;
@@ -391,7 +511,7 @@ class _MomentPageState extends State<MomentPage>
     });
 
     // 关闭菜单
-    _closeMenu();
+    _onCloseMenu();
 
     // 执行点赞操作
     _likeRequest();
