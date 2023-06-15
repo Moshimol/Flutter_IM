@@ -95,11 +95,11 @@ class _MomentPageState extends State<MomentPage>
     // 初始化动画控制器:
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 300),
     );
 
     _sizeTween = Tween(begin: 0.0, end: 160.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOutBack),
     );
   }
 
