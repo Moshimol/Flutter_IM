@@ -1,7 +1,6 @@
-import 'dart:ffi';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_im/config/app_color.dart';
 import 'package:flutter_im/utils/other/custom_avatar.dart';
 import 'package:flutter_im/widgets/custom/space.dart';
 
@@ -12,10 +11,19 @@ import '../../../widgets/custom/category.dart';
 const double spacing = 10.0;
 const double radius = 2;
 
+var textStyleCommentMain  = const TextStyle(
+  fontSize: 17,
+  color: color333,
+);
+
+var textStylePrise = const TextStyle(
+  fontSize: 16.0,
+  color: Color(0xff576B95),
+);
+
 var textStyleComment = const TextStyle(
   fontSize: 14.0,
-  color: Colors.black54,
-  fontWeight: FontWeight.w500,
+  color: color333,
 );
 
 var textStylePopMenu = const TextStyle(

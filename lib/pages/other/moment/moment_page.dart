@@ -614,7 +614,7 @@ class _MomentPageState extends State<MomentPage>
             onTap: onTap,
             child: Stack(
               children: [
-                AnimatedContainer(duration: Duration(microseconds: 300),color: Colors.black.withOpacity(0.4),),
+                AnimatedContainer(duration: Duration(microseconds: 100),color: Colors.transparent,),
                 // 菜单:
                 AnimatedBuilder(
                   animation: _animationController,
