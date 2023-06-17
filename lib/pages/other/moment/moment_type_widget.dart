@@ -11,19 +11,16 @@ import '../../../widgets/custom/category.dart';
 const double spacing = 10.0;
 const double radius = 2;
 
-var textStyleCommentMain  = const TextStyle(
-  fontSize: 17,
-  color: color333,
+// 评论的字体类型
+var textStyleCommentMain = TextStyle(
+    fontSize: 16,
+    color: color333,
 );
 
-var textStylePrise = const TextStyle(
-  fontSize: 16.0,
-  color: Color(0xff576B95),
-);
-
-var textStyleComment = const TextStyle(
-  fontSize: 14.0,
-  color: color333,
+var textStyleComment = TextStyle(
+    fontSize: 16.0,
+    color: Color(0xff576B95),
+    fontWeight: FontWeight.bold
 );
 
 var textStylePopMenu = const TextStyle(
@@ -102,7 +99,7 @@ class MomentWidget {
 
   Widget momentReply({required TimeLineInfo info}) {
     return Container(
-      // padding: EdgeInsets.symmetric(horizontal: spacing),
+      padding: EdgeInsets.all(4),
       decoration: BoxDecoration(
         color: Colors.grey[100],
       ),
@@ -110,13 +107,9 @@ class MomentWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Padding(
-            padding: EdgeInsets.all(5),
-            child: Icon(
-              Icons.chat_bubble_outline,
-              size: 20,
-              color: Colors.black54,
-            ),
+          Divider(
+            height: 1,
+            color: Colors.red,
           ),
           SpaceHorizontalWidget(
             space: 4,
@@ -127,43 +120,21 @@ class MomentWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               for (TimeComment comment in info.comments ?? [])
-                Row(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(2),
-                      child: CustomCacheAvatar(
-                          name: comment.fromUser!.nickname!,
-                          size: 22,
-                          url: comment.fromUser!.avatar),
-                    ),
-                    SpaceHorizontalWidget(),
-                    Expanded(
-                        child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              comment.fromUser!.nickname!,
-                              style: textStyleComment,
-                            ),
-                            Spacer(),
-                            Text(
-                              "上午3点",
-                              style: textStyleComment,
-                            ),
-                            SizedBox(
-                              width: 10,
-                            )
-                          ],
-                        ),
-                        Text(
-                          comment.content ?? "",
-                          style: textStyleComment,
-                        )
-                      ],
-                    )),
-                  ],
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    children: [
+                      Text(
+                        comment.fromUser!.nickname! + ":",
+                        style: textStyleComment,
+                      ),
+                      SpaceHorizontalWidget(space: 4,),
+                      Text(
+                        comment.content ?? "",
+                        style: textStyleComment,
+                      )
+                    ],
+                  ),
                 )
             ],
           ))
@@ -248,10 +219,9 @@ class MomentWidget {
             children: [
               Padding(
                 padding: EdgeInsets.only(top: 0),
-                child: Icon(
-                  Icons.favorite_border_outlined,
-                  size: 20,
-                  color: Colors.black54,
+                child: LocalIconWidget(
+                  iconName: "moment_like",
+                  iconSize: 22,
                 ),
               ),
               SpaceHorizontalWidget(),

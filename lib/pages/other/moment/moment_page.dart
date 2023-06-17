@@ -381,7 +381,7 @@ class _MomentPageState extends State<MomentPage>
               // 正文
               Text(
                 info.content!,
-                style: TextStyle(fontSize: 17, color: Color(0xff333333)),
+                style: textStyleCommentMain,
               ),
               // 图片
               // 九宫格图片列表 GridView 性能比较差点
